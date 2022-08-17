@@ -13,25 +13,25 @@
           "strict": true
         }
       },
-      "root": "project/threadbox",
-      "sourceRoot": "projects/threadbox/src",
+      "root": "",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/threadbox",
-            "index": "projects/threadbox/src/index.html",
-            "main": "projects/threadbox/src/main.ts",
-            "polyfills": "projects/threadbox/src/polyfills.ts",
-            "tsConfig": "projects/threadbox/tsconfig.app.json",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/threadbox/src/favicon.ico",
-              "projects/threadbox/src/assets"
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "projects/threadbox/src/styles.scss"
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -51,8 +51,8 @@
               ],
               "fileReplacements": [
                 {
-                  "replace": "projects/threadbox/src/environments/environment.ts",
-                  "with": "projects/threadbox/src/environments/environment.prod.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ],
               "outputHashing": "all"
@@ -89,17 +89,17 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/threadbox/src/test.ts",
-            "polyfills": "projects/threadbox/src/polyfills.ts",
-            "tsConfig": "projects/threadbox/tsconfig.spec.json",
-            "karmaConfig": "projects/threadbox/karma.conf.js",
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/threadbox/src/favicon.ico",
-              "projects/threadbox/src/assets"
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "projects/threadbox/src/styles.scss"
+              "src/styles.scss"
             ],
             "scripts": []
           }
@@ -108,120 +108,8 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/threadbox/**/*.ts",
-              "projects/threadbox/**/*.html"
-            ]
-          }
-        }
-      }
-    },
-    "cms": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        },
-        "@schematics/angular:application": {
-          "strict": true
-        }
-      },
-      "root": "projects/cms",
-      "sourceRoot": "projects/cms/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/cms",
-            "index": "projects/cms/src/index.html",
-            "main": "projects/cms/src/main.ts",
-            "polyfills": "projects/cms/src/polyfills.ts",
-            "tsConfig": "projects/cms/tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/cms/src/favicon.ico",
-              "projects/cms/src/assets"
-            ],
-            "styles": [
-              "projects/cms/src/styles.scss"
-            ],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "projects/cms/src/environments/environment.ts",
-                  "with": "projects/cms/src/environments/environment.prod.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "browserTarget": "cms:build:production"
-            },
-            "development": {
-              "browserTarget": "cms:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "cms:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/cms/src/test.ts",
-            "polyfills": "projects/cms/src/polyfills.ts",
-            "tsConfig": "projects/cms/tsconfig.spec.json",
-            "karmaConfig": "projects/cms/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/cms/src/favicon.ico",
-              "projects/cms/src/assets"
-            ],
-            "styles": [
-              "projects/cms/src/styles.scss"
-            ],
-            "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/cms/**/*.ts",
-              "projects/cms/**/*.html"
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }

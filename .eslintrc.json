@@ -1,7 +1,7 @@
 {
-  "extends": "../../.eslintrc.json",
+  "root": true,
   "ignorePatterns": [
-    "!**/*"
+    "projects/**/*"
   ],
   "overrides": [
     {
@@ -10,8 +10,7 @@
       ],
       "parserOptions": {
         "project": [
-          "projects/cms/tsconfig.app.json",
-          "projects/cms/tsconfig.spec.json"
+          "tsconfig.json"
         ],
         "createDefaultProgram": true
       },
