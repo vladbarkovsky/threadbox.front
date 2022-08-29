@@ -4,7 +4,7 @@
   "plugins": ["@html-eslint"],
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": ["*.{ts,js}"],
       "parserOptions": {
         "project": ["tsconfig.json"],
         "createDefaultProgram": true

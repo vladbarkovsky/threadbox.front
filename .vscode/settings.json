@@ -4,6 +4,7 @@
   },
   "eslint.validate": [
     "typescript",
+    "javascript",
     "html"
   ],
 
