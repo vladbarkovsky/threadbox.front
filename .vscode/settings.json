@@ -1,0 +1,21 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "typescript",
+    "html"
+  ],
+
+  "cSpell.words": [
+    "threadbox"
+  ],
+  "cSpell.ignorePaths": [
+    ".vscode",
+    ".eslintrc.json",
+    "angular.json",
+    "package.json",
+    "api-client.ts",
+    "package-lock.json"
+  ]
+}
