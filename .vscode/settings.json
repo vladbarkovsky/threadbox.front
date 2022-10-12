@@ -1,22 +1,6 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "eslint.validate": [
-    "typescript",
-    "javascript",
-    "html"
-  ],
-
-  "cSpell.words": [
-    "threadbox"
-  ],
-  "cSpell.ignorePaths": [
-    ".vscode",
-    ".eslintrc.json",
-    "angular.json",
-    "package.json",
-    "api-client.ts",
-    "package-lock.json"
-  ]
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "cSpell.words": [],
+  "cSpell.ignorePaths": []
 }

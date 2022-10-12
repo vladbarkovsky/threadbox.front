@@ -9,18 +9,11 @@ import { API_BASE_URL } from 'api-client';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    NgbModule,
-    HttpClientModule
-  ],
+  declarations: [AppComponent],
+  imports: [BrowserModule, AppRoutingModule, NgbModule, HttpClientModule],
   providers: [
-    { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl }
+    { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
