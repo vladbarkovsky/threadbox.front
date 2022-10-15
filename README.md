@@ -55,5 +55,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Compile project
 
-Threadbox - `npm start`
-CMS - `ng serve cms --port 4201`
+Threadbox - `npm start` CMS - `ng serve cms --port 4201`
