@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ConnectionClient } from 'api-client';
 
 @Component({
   selector: 'app-root',
@@ -7,16 +6,7 @@ import { ConnectionClient } from 'api-client';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  constructor(private connectionClient: ConnectionClient) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.connectionClient
-      .check()
-      .subscribe({
-        error: () => {
-          // Redirection to "Server unavailable" page
-        },
-      })
-      .unsubscribe();
-  }
+  ngOnInit(): void {}
 }
