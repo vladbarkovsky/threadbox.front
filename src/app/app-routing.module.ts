@@ -2,16 +2,9 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: 'header', loadChildren: () => import('./header/header.module').then(m => m.HeaderModule) },
-  {
-    path: '',
-    redirectTo: 'header',
-    pathMatch: 'full',
-  },
-  {
-    path: '**',
-    redirectTo: 'header',
-  },
+  { path: 'app', loadChildren: () => import('./components/header/header.module').then(m => m.HeaderModule) },
+  { path: '', redirectTo: 'app', pathMatch: 'full' },
+  { path: '**', redirectTo: 'app' },
 ];
 
 @NgModule({

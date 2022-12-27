@@ -1,0 +1,12 @@
+<!-- https://ng-bootstrap.github.io/#/components/toast/overview#toast-service -->
+
+<ngb-toast
+  *ngFor="let toast of toastService.toasts"
+  class="text-light"
+  [ngClass]="{ 'bg-success': toast.type === 'success', 'bg-danger': toast.type === 'danger'}"
+  [autohide]="true"
+  [delay]="toast.delay || 5000"
+  (hidden)="toastService.remove(toast)"
+>
+  <div class="toast-text">{{ toast.text }}</div>
+</ngb-toast>

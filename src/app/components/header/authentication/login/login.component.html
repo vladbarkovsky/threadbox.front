@@ -1,0 +1,118 @@
+<!-- https://github.com/nauvalazhar/bootstrap-5-login-page -->
+
+<div class="card-body p-5">
+  <h1 class="fs-4 card-title fw-bold mb-4">Login</h1>
+  <form
+    (submit)="onSubmit()"
+    [formGroup]="loginForm"
+  >
+    <div class="mb-3">
+      <label
+        class="mb-2 text-muted"
+        for="user-name"
+        >User name</label
+      >
+      <input
+        id="user-name"
+        class="form-control"
+        formControlName="userName"
+        type="text"
+      />
+
+      <ng-container *ngIf="loginForm.controls['userName'] as userName">
+        <ng-container *ngIf="(userName.dirty || userName.touched) && userName.errors as errors">
+          <small
+            class="text-danger"
+            *ngIf="errors.required"
+          >
+            User name required.
+          </small>
+          <small
+            class="text-danger"
+            *ngIf="errors.minlength"
+          >
+            Minimal length is {{ errors.minlength.requiredLength }}.
+          </small>
+          <small
+            class="text-danger"
+            *ngIf="errors.maxlength"
+          >
+            Maximal length is {{ errors.maxlength.requiredLength }}.
+          </small>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <div class="mb-3">
+      <div class="mb-2 w-100">
+        <label
+          class="text-muted"
+          for="password"
+          >Password</label
+        >
+        <!-- <a class="float-end"> Forgot Password? </a> -->
+      </div>
+      <input
+        id="password"
+        formControlName="password"
+        type="password"
+        class="form-control"
+      />
+
+      <ng-container *ngIf="loginForm.controls['password'] as password">
+        <ng-container *ngIf="(password.dirty || password.touched) && password.errors as errors">
+          <small
+            class="text-danger"
+            *ngIf="errors.required"
+          >
+            Password required.
+          </small>
+          <small
+            class="text-danger"
+            *ngIf="errors.minlength"
+          >
+            Minimal length is {{ errors.minlength.requiredLength }}.
+          </small>
+          <small
+            class="text-danger"
+            *ngIf="errors.maxlength"
+          >
+            Maximal length is {{ errors.maxlength.requiredLength }}.
+          </small>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <div class="d-flex align-items-center">
+      <!-- <div class="form-check">
+        <input
+          type="checkbox"
+          name="remember"
+          id="remember"
+          class="form-check-input"
+        />
+        <label
+          for="remember"
+          class="form-check-label"
+          >Remember Me</label
+        >
+      </div> -->
+      <button
+        type="submit"
+        class="btn btn-primary ms-auto"
+        [disabled]="loginForm.invalid"
+      >
+        Login
+      </button>
+    </div>
+  </form>
+</div>
+<div class="card-footer py-3 border-0">
+  <div class="text-center">
+    <a
+      routerLink="/app/authentication/registration"
+      class="text-dark"
+      >Registration</a
+    >
+  </div>
+</div>
