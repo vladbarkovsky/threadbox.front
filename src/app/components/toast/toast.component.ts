@@ -7,5 +7,7 @@ import { ToastService } from 'src/app/services/toast.service';
   styleUrls: ['./toast.component.scss'],
 })
 export class ToastComponent {
+  readonly defaultDelay: number = 10000;
+
   constructor(public toastService: ToastService) {}
 }

@@ -1,6 +1,6 @@
 <!-- https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
 
-<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light mb-3">
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <div class="navbar-brand d-flex">
       <div class="mr-2">Threadbox</div>
@@ -14,13 +14,13 @@
     <button
       class="navbar-toggler"
       type="button"
-      (click)="isMenuCollapsed = !isMenuCollapsed"
+      (click)="isCollapsed = !isCollapsed"
     >
       &#9776;
     </button>
 
     <div
-      [ngbCollapse]="isMenuCollapsed"
+      [ngbCollapse]="isCollapsed"
       class="collapse navbar-collapse"
     >
       <ul class="navbar-nav">
@@ -41,4 +41,6 @@
   </div>
 </nav>
 
-<router-outlet></router-outlet>
+<div class="m-2">
+  <router-outlet></router-outlet>
+</div>

@@ -5,8 +5,9 @@
   class="text-light"
   [ngClass]="{ 'bg-success': toast.type === 'success', 'bg-danger': toast.type === 'danger'}"
   [autohide]="true"
-  [delay]="toast.delay || 5000"
+  [delay]="toast.delay || defaultDelay"
   (hidden)="toastService.remove(toast)"
+  (click)="toastService.remove(toast)"
 >
   <div class="toast-text">{{ toast.text }}</div>
 </ngb-toast>

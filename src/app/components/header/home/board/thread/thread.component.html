@@ -1,0 +1,31 @@
+<div class="card border-dark">
+  <div class="card-header thread-title">
+    {{ thread.title }}
+  </div>
+
+  <div class="card-body">
+    <p class="card-text">{{ thread.text }}</p>
+
+    <div class="row">
+      <div
+        *ngFor="let imageUrl of thread.threadImageUrls"
+        class="col-auto thread-image-col"
+      >
+        <img
+          [src]="imageUrl"
+          [alt]="'Unable to load ' + imageUrl"
+          class="img-thumbnail thread-image"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button
+      class="btn btn-secondary"
+      (click)="downloadImagesEvent.emit()"
+    >
+      Download images
+    </button>
+  </div>
+</div>

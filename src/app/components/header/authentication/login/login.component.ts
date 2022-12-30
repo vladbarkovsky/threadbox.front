@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationClient, LoginFormDto } from 'api-client';
-import { getResponse } from 'src/app/http-error';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { passwordValidators, userNameValidators } from 'src/app/validator-functions';
@@ -14,7 +13,7 @@ import { passwordValidators, userNameValidators } from 'src/app/validator-functi
 })
 export class LoginComponent {
   loginForm = this.formBuilder.group({
-    userName: ['', userNameValidators],
+    userName: ['' /*userNameValidators*/],
     password: ['', passwordValidators],
   });
 
@@ -40,7 +39,7 @@ export class LoginComponent {
           this.router.navigate(['/app/home']);
         },
         error: x => {
-          this.toastService.show({ text: getResponse(x), type: 'danger' });
+          this.toastService.show({ text: 'Invalid email or password', type: 'danger' });
         },
       });
     }

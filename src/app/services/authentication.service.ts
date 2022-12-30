@@ -13,7 +13,6 @@ export class AuthenticationService {
     const token = jwtDecode(value) as AuthenticationToken;
     this.cookieService.set('authenticationToken', value, token.exp, undefined, undefined, true, undefined);
     this.isAuthenticated$.next(true);
-    console.log(token);
   }
 
   get authenticationToken(): string {
@@ -22,6 +21,11 @@ export class AuthenticationService {
 
   constructor(private cookieService: CookieService) {
     this.isAuthenticated$.next(this.authenticationToken !== '');
+  }
+
+  logout(): void {
+    this.cookieService.delete('authenticationToken');
+    this.isAuthenticated$.next(false);
   }
 }
 

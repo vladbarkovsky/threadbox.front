@@ -5,13 +5,17 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
 import { API_BASE_URL } from 'api-client';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastModule } from './components/toast/toast.module';
+import { AuthenticationInterceptor } from './authentication.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, AppRoutingModule, NgbModule, HttpClientModule, ToastModule],
-  providers: [{ provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl }],
+  providers: [
+    { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

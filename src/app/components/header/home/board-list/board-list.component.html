@@ -1,0 +1,10 @@
+<h3 class="mb-3">Boards</h3>
+<div class="boards-list list-group">
+  <a
+    *ngFor="let board of boards"
+    [routerLink]="['../board', board.id]"
+    class="list-group-item list-group-item-action"
+  >
+    {{ board.title }}
+  </a>
+</div>

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationClient, RegistrationFormDto } from 'api-client';
-import { getResponse } from 'src/app/http-error';
 import { ToastService } from 'src/app/services/toast.service';
 import { userNameValidators, passwordValidators, matchValidator } from 'src/app/validator-functions';
 
@@ -45,7 +44,7 @@ export class RegistrationComponent {
           this.router.navigate(['/app/authentication/login']);
         },
         error: x => {
-          this.toastService.show({ text: getResponse(x), type: 'danger' });
+          this.toastService.show({ text: 'Your registration token is already used or expired.', type: 'danger' });
         },
       });
     }

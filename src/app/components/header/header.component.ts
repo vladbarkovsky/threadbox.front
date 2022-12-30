@@ -9,7 +9,7 @@ import { HeaderService } from './header.service';
 })
 export class HeaderComponent implements OnInit {
   activePath!: string;
-  isMenuCollapsed: boolean = true;
+  isCollapsed: boolean = true;
 
   constructor(public headerService: HeaderService, private router: Router) {}
 
@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onLinkClick(linkPath: string): void {
-    this.isMenuCollapsed = true;
     this.activePath = linkPath;
+    this.isCollapsed = true;
   }
 }

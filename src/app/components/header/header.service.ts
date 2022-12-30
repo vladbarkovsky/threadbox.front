@@ -10,7 +10,7 @@ export class HeaderService {
 
   constructor(private authenticationService: AuthenticationService) {
     this.authenticationService.isAuthenticated$.subscribe(x => {
-      this.links = x ? linkForAuthenticatedUser : linkForUnauthenticatedUser;
+      this.links = x ? linksForAuthenticatedUser : linksForUnauthenticatedUser;
     });
   }
 }
@@ -20,9 +20,9 @@ interface HeaderLink {
   path: string;
 }
 
-const linkForUnauthenticatedUser: HeaderLink[] = [
+const linksForUnauthenticatedUser: HeaderLink[] = [
   { title: 'Home', path: 'home' },
   { title: 'Authentication', path: 'authentication' },
 ];
 
-const linkForAuthenticatedUser: HeaderLink[] = [{ title: 'Home', path: 'home' }];
+const linksForAuthenticatedUser: HeaderLink[] = [{ title: 'Home', path: 'home' }];
