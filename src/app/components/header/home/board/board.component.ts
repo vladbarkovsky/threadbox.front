@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PaginationParamsDto, ThreadsClient, ListThreadDto, ImagesClient, BoardsClient, BoardDto } from 'api-client';
+import { EventService } from 'src/app/services/event.service';
 import { FileService } from 'src/app/services/file.service';
 import { ToastService } from 'src/app/services/toast.service';
 
@@ -11,7 +12,7 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class BoardComponent implements OnInit {
   boardId: string = this.activatedRoute.snapshot.params.boardId;
-  board?: BoardDto = undefined;
+  board?: BoardDto;
   currentPageThreads: ListThreadDto[] = [];
 
   constructor(
@@ -20,7 +21,8 @@ export class BoardComponent implements OnInit {
     private toastService: ToastService,
     private imagesClient: ImagesClient,
     private fileService: FileService,
-    private boardsClient: BoardsClient
+    private boardsClient: BoardsClient,
+    private eventService: EventService
   ) {}
 
   ngOnInit(): void {
@@ -33,14 +35,21 @@ export class BoardComponent implements OnInit {
       next: x => (this.currentPageThreads = x.pageItems),
       error: () => this.toastService.show({ text: 'Unable to load threads for current page.', type: 'danger' }),
     });
+
+    this.eventService.downloadPostImages$.subscribe(x => this.downloadPostImages(x));
   }
 
   downloadThreadImages(threadId: string) {
     this.imagesClient.getThreadImages(threadId).subscribe({
-      next: x => {
-        this.fileService.downloadFile(x?.data!, `Thread_${threadId}_images`);
-      },
+      next: x => this.fileService.downloadFile(x?.data!, `Thread_${threadId}_images`),
       error: () => this.toastService.show({ text: 'Unable to load thread images.', type: 'danger' }),
+    });
+  }
+
+  downloadPostImages(postId: string) {
+    this.imagesClient.getPostImages(postId).subscribe({
+      next: x => this.fileService.downloadFile(x?.data!, `Post_${postId}_images`),
+      error: () => this.toastService.show({ text: 'Unable to download post images.', type: 'danger' }),
     });
   }
 }

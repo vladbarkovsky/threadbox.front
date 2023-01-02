@@ -21,7 +21,7 @@
 
     <div
       [ngbCollapse]="isCollapsed"
-      class="collapse navbar-collapse"
+      class="collapse navbar-collapse d-flex justify-content-between"
     >
       <ul class="navbar-nav">
         <li
@@ -37,6 +37,14 @@
           >
         </li>
       </ul>
+
+      <button
+        *ngIf="authenticationService.isAuthenticated$ | async"
+        class="btn btn-secondary"
+        (click)="authenticationService.logout()"
+      >
+        Logout
+      </button>
     </div>
   </div>
 </nav>

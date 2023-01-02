@@ -13,7 +13,7 @@ import { passwordValidators, userNameValidators } from 'src/app/validator-functi
 })
 export class LoginComponent {
   loginForm = this.formBuilder.group({
-    userName: ['' /*userNameValidators*/],
+    userName: ['', userNameValidators],
     password: ['', passwordValidators],
   });
 
@@ -28,8 +28,8 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       const loginFormDto = new LoginFormDto({
-        userName: this.loginForm.get('userName')?.value,
-        password: this.loginForm.get('password')?.value,
+        userName: this.loginForm.controls['userName'].value,
+        password: this.loginForm.controls['password'].value,
       });
 
       this.authenticationClient.login(loginFormDto).subscribe({
@@ -39,7 +39,7 @@ export class LoginComponent {
           this.router.navigate(['/app/home']);
         },
         error: x => {
-          this.toastService.show({ text: 'Invalid email or password', type: 'danger' });
+          this.toastService.show({ text: 'Invalid email or password.', type: 'danger' });
         },
       });
     }

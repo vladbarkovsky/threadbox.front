@@ -1,7 +1,10 @@
 <h5>{{ board?.title }}</h5>
 <p>{{ board?.description }}</p>
 
-<div *ngFor="let thread of currentPageThreads">
+<div
+  *ngFor="let thread of currentPageThreads"
+  class="my-2"
+>
   <app-thread
     [thread]="thread"
     (downloadImagesEvent)="downloadThreadImages(thread.id)"

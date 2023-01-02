@@ -18,10 +18,18 @@
         />
       </div>
     </div>
+
+    <div
+      *ngFor="let post of thread.posts"
+      class="my-2"
+    >
+      <app-post [post]="post"></app-post>
+    </div>
   </div>
 
   <div class="card-footer">
     <button
+      *ngIf="thread.threadImageUrls.length !== 0"
       class="btn btn-secondary"
       (click)="downloadImagesEvent.emit()"
     >

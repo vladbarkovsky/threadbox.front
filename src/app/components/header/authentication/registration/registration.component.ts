@@ -32,10 +32,10 @@ export class RegistrationComponent {
   onSubmit(): void {
     if (this.registrationForm.valid) {
       const registrationFormDto = new RegistrationFormDto({
-        userName: this.registrationForm.get('userName')?.value,
-        password: this.registrationForm.get('password')?.value,
-        confirmPassword: this.registrationForm.get('confirmPassword')?.value,
-        registrationToken: this.registrationForm.get('registrationToken')?.value,
+        userName: this.registrationForm.controls['userName'].value,
+        password: this.registrationForm.controls['password'].value,
+        confirmPassword: this.registrationForm.controls['confirmPassword'].value,
+        registrationToken: this.registrationForm.controls['registrationToken'].value,
       });
 
       this.authenticationClient.register(registrationFormDto).subscribe({

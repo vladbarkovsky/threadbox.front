@@ -7,5 +7,6 @@ export class FileService {
     a.download = fileName;
     a.href = window.URL.createObjectURL(blob);
     a.click();
+    a.remove();
   }
 }

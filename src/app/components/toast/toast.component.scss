@@ -8,7 +8,13 @@
   z-index: 1200;
 }
 
-.toast-text {
-  word-wrap: break-word;
-  max-width: 350px;
+ngb-toast {
+  &:hover {
+    cursor: pointer;
+  }
+
+  .toast-text {
+    word-wrap: break-word;
+    max-width: 350px;
+  }
 }

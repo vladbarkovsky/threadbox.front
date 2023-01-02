@@ -7,11 +7,11 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthenticationService {
-  isAuthenticated$ = new BehaviorSubject<boolean>(false);
+  isAuthenticated$ = new BehaviorSubject<boolean>(this.authenticationToken !== '');
 
   set authenticationToken(value: string) {
-    const token = jwtDecode(value) as AuthenticationToken;
-    this.cookieService.set('authenticationToken', value, token.exp, undefined, undefined, true, undefined);
+    const tokenClaims = jwtDecode(value) as AuthenticationTokenClaims;
+    this.cookieService.set('authenticationToken', value, tokenClaims.exp, undefined, undefined, true, undefined);
     this.isAuthenticated$.next(true);
   }
 
@@ -29,7 +29,7 @@ export class AuthenticationService {
   }
 }
 
-interface AuthenticationToken {
+interface AuthenticationTokenClaims {
   userId: string;
   exp: number;
 }

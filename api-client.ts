@@ -195,7 +195,10 @@ export class AuthenticationClient implements IAuthenticationClient {
 
 export interface IBoardsClient {
     getBoardsList(): Observable<ListBoardDto[]>;
-    getBoard(boardId: string | undefined): Observable<BoardDto>;
+    getBoard(boardId: string | undefined): Observable<ComponentBoardDto>;
+    createBoard(createBoardDto: BoardDto): Observable<ListBoardDto>;
+    editBoard(boardId: string | undefined, editBoardDto: BoardDto): Observable<ListBoardDto>;
+    deleteBoard(boardId: string | undefined): Observable<FileResponse | null>;
 }
 
 @Injectable({
@@ -266,7 +269,7 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    getBoard(boardId: string | undefined): Observable<BoardDto> {
+    getBoard(boardId: string | undefined): Observable<ComponentBoardDto> {
         let url_ = this.baseUrl + "/Boards/GetBoard?";
         if (boardId === null)
             throw new Error("The parameter 'boardId' cannot be null.");
@@ -289,14 +292,14 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processGetBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BoardDto>;
+                    return _observableThrow(e) as any as Observable<ComponentBoardDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BoardDto>;
+                return _observableThrow(response_) as any as Observable<ComponentBoardDto>;
         }));
     }
 
-    protected processGetBoard(response: HttpResponseBase): Observable<BoardDto> {
+    protected processGetBoard(response: HttpResponseBase): Observable<ComponentBoardDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -307,7 +310,7 @@ export class BoardsClient implements IBoardsClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BoardDto.fromJS(resultData200);
+            result200 = ComponentBoardDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -317,16 +320,180 @@ export class BoardsClient implements IBoardsClient {
         }
         return _observableOf(null as any);
     }
+
+    createBoard(createBoardDto: BoardDto): Observable<ListBoardDto> {
+        let url_ = this.baseUrl + "/Boards/CreateBoard";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(createBoardDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateBoard(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateBoard(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ListBoardDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ListBoardDto>;
+        }));
+    }
+
+    protected processCreateBoard(response: HttpResponseBase): Observable<ListBoardDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ListBoardDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    editBoard(boardId: string | undefined, editBoardDto: BoardDto): Observable<ListBoardDto> {
+        let url_ = this.baseUrl + "/Boards/EditBoard?";
+        if (boardId === null)
+            throw new Error("The parameter 'boardId' cannot be null.");
+        else if (boardId !== undefined)
+            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(editBoardDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditBoard(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditBoard(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ListBoardDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ListBoardDto>;
+        }));
+    }
+
+    protected processEditBoard(response: HttpResponseBase): Observable<ListBoardDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ListBoardDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    deleteBoard(boardId: string | undefined): Observable<FileResponse | null> {
+        let url_ = this.baseUrl + "/Boards/DeleteBoard?";
+        if (boardId === null)
+            throw new Error("The parameter 'boardId' cannot be null.");
+        else if (boardId !== undefined)
+            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteBoard(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteBoard(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+        }));
+    }
+
+    protected processDeleteBoard(response: HttpResponseBase): Observable<FileResponse | null> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
-export interface IConnectionClient {
+export interface ITestClient {
     check(): Observable<FileResponse | null>;
 }
 
 @Injectable({
     providedIn: 'root'
 })
-export class ConnectionClient implements IConnectionClient {
+export class TestClient implements ITestClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -337,7 +504,7 @@ export class ConnectionClient implements IConnectionClient {
     }
 
     check(): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/Connection/Check";
+        let url_ = this.baseUrl + "/Test/Check";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -634,6 +801,80 @@ export class ImagesClient implements IImagesClient {
     }
 }
 
+export interface IPostsClient {
+    createPost(threadId: string | undefined, postDto: PostDto): Observable<ListPostDto>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class PostsClient implements IPostsClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    createPost(threadId: string | undefined, postDto: PostDto): Observable<ListPostDto> {
+        let url_ = this.baseUrl + "/Posts/CreatePost?";
+        if (threadId === null)
+            throw new Error("The parameter 'threadId' cannot be null.");
+        else if (threadId !== undefined)
+            url_ += "threadId=" + encodeURIComponent("" + threadId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(postDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreatePost(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreatePost(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ListPostDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ListPostDto>;
+        }));
+    }
+
+    protected processCreatePost(response: HttpResponseBase): Observable<ListPostDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ListPostDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export interface IThreadsClient {
     getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedListDtoOfListThreadDto>;
 }
@@ -836,8 +1077,48 @@ export interface IListBoardDto {
     title: string;
 }
 
+export class ComponentBoardDto implements IComponentBoardDto {
+    title!: string;
+    description!: string;
+
+    constructor(data?: IComponentBoardDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.title = _data["title"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): ComponentBoardDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ComponentBoardDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["title"] = this.title;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface IComponentBoardDto {
+    title: string;
+    description: string;
+}
+
 export class BoardDto implements IBoardDto {
-    id!: string;
+    id?: string | undefined;
     title!: string;
     description!: string;
 
@@ -875,9 +1156,119 @@ export class BoardDto implements IBoardDto {
 }
 
 export interface IBoardDto {
-    id: string;
+    id?: string | undefined;
     title: string;
     description: string;
+}
+
+export class ListPostDto implements IListPostDto {
+    id!: string;
+    text!: string;
+    threadId!: string;
+    postImageUrls!: string[];
+
+    constructor(data?: IListPostDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.postImageUrls = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.threadId = _data["threadId"];
+            if (Array.isArray(_data["postImageUrls"])) {
+                this.postImageUrls = [] as any;
+                for (let item of _data["postImageUrls"])
+                    this.postImageUrls!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ListPostDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListPostDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["threadId"] = this.threadId;
+        if (Array.isArray(this.postImageUrls)) {
+            data["postImageUrls"] = [];
+            for (let item of this.postImageUrls)
+                data["postImageUrls"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IListPostDto {
+    id: string;
+    text: string;
+    threadId: string;
+    postImageUrls: string[];
+}
+
+export class PostDto implements IPostDto {
+    text!: string;
+    postImages!: any[];
+
+    constructor(data?: IPostDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.postImages = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.text = _data["text"];
+            if (Array.isArray(_data["postImages"])) {
+                this.postImages = [] as any;
+                for (let item of _data["postImages"])
+                    this.postImages!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): PostDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PostDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        if (Array.isArray(this.postImages)) {
+            data["postImages"] = [];
+            for (let item of this.postImages)
+                data["postImages"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IPostDto {
+    text: string;
+    postImages: any[];
 }
 
 export class PaginatedListDtoOfListThreadDto implements IPaginatedListDtoOfListThreadDto {
@@ -952,6 +1343,7 @@ export class ListThreadDto implements IListThreadDto {
     title!: string;
     text!: string;
     threadImageUrls!: string[];
+    posts!: ListPostDto[];
 
     constructor(data?: IListThreadDto) {
         if (data) {
@@ -962,6 +1354,7 @@ export class ListThreadDto implements IListThreadDto {
         }
         if (!data) {
             this.threadImageUrls = [];
+            this.posts = [];
         }
     }
 
@@ -974,6 +1367,11 @@ export class ListThreadDto implements IListThreadDto {
                 this.threadImageUrls = [] as any;
                 for (let item of _data["threadImageUrls"])
                     this.threadImageUrls!.push(item);
+            }
+            if (Array.isArray(_data["posts"])) {
+                this.posts = [] as any;
+                for (let item of _data["posts"])
+                    this.posts!.push(ListPostDto.fromJS(item));
             }
         }
     }
@@ -995,6 +1393,11 @@ export class ListThreadDto implements IListThreadDto {
             for (let item of this.threadImageUrls)
                 data["threadImageUrls"].push(item);
         }
+        if (Array.isArray(this.posts)) {
+            data["posts"] = [];
+            for (let item of this.posts)
+                data["posts"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -1004,6 +1407,7 @@ export interface IListThreadDto {
     title: string;
     text: string;
     threadImageUrls: string[];
+    posts: ListPostDto[];
 }
 
 export class PaginationParamsDto implements IPaginationParamsDto {
