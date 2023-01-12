@@ -4,6 +4,7 @@ import { ReplaySubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
-  downloadPostImages$ = new ReplaySubject<string>();
-  addBoard$ = new ReplaySubject<FormGroup>();
+  readonly downloadPostImages$ = new ReplaySubject<string>();
+  readonly addBoard$ = new ReplaySubject<FormGroup>();
+  readonly editBoard$ = new ReplaySubject<FormGroup>();
 }

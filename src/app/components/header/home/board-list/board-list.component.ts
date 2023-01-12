@@ -5,6 +5,7 @@ import { BoardDto, BoardsClient, ListBoardDto } from 'api-client';
 import { EventService } from 'src/app/services/event.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { AddBoardModalComponent } from './add-board-modal/add-board-modal.component';
+import { EditBoardModalComponent } from './edit-board-modal/edit-board-modal.component';
 
 @Component({
   selector: 'app-board-list',
@@ -29,8 +30,9 @@ export class BoardListComponent implements OnInit {
     this.modal.open(AddBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
   }
 
-  openEditBoardModal(): void {
-    this.modal.open(AddBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
+  openEditBoardModal(board: BoardDto): void {
+    const modalRef = this.modal.open(EditBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
+    modalRef.componentInstance.board = board;
   }
 
   private addBoard(boardForm: FormGroup): void {

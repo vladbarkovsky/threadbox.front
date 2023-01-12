@@ -15,16 +15,6 @@ TODO: Guide users through getting your code up and running on their own system. 
 
 TODO: Describe and show how to build your code and run the tests.
 
-# Contribute
-
-TODO: Explain how other users and developers can contribute to make your code better.
-
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
-
 # Threadbox
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.17.
@@ -49,10 +39,24 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
+## Help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 ## Compile project
 
-Threadbox - `npm start` CMS - `ng serve cms --port 4201`
+`npm start`
+
+## Icons
+
+Use icons in .svg format. Icons folder path is `src/app/assets/icons`.
+
+Example:
+
+```
+  <img
+   src="assets/icons/iconmonstr-pencil-square-filled.svg"
+   alt="iconmonstr-pencil-square-filled.svg" width="30"
+   width="30"
+  />
+```

@@ -21,7 +21,8 @@
 
     <div
       [ngbCollapse]="isCollapsed"
-      class="collapse navbar-collapse d-flex justify-content-between"
+      class="collapse navbar-collapse"
+      [ngClass]="{ 'd-flex justify-content-between': !isCollapsed }"
     >
       <ul class="navbar-nav">
         <li

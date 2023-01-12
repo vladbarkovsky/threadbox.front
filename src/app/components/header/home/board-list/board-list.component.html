@@ -1,12 +1,25 @@
 <h3 class="mb-3">Boards</h3>
-<div class="boards-list list-group">
-  <a
+<div class="boards-list list-group mb-4">
+  <div
     *ngFor="let board of boards"
-    [routerLink]="['../board', board.id]"
-    class="list-group-item list-group-item-action"
+    class="list-group-item list-group-item-action d-flex justify-content-between"
   >
-    {{ board.title }}
-  </a>
+    <a [routerLink]="['../board', board.id]">
+      {{ board.title }}
+    </a>
+    <div class="">
+      <img
+        src="assets/icons/iconmonstr-pencil-square-filled.svg"
+        alt="iconmonstr-pencil-square-filled.svg"
+        width="30"
+      />
+      <img
+        src="assets/icons/iconmonstr-x-mark-circle-lined.svg"
+        alt="iconmonstr-x-mark-circle-lined.svg"
+        width="30"
+      />
+    </div>
+  </div>
 </div>
 <button
   class="btn btn-secondary"
