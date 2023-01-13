@@ -195,9 +195,9 @@ export class AuthenticationClient implements IAuthenticationClient {
 
 export interface IBoardsClient {
     getBoardsList(): Observable<ListBoardDto[]>;
-    getBoard(boardId: string | undefined): Observable<ComponentBoardDto>;
+    getBoard(boardId: string | undefined): Observable<BoardDto>;
     createBoard(createBoardDto: BoardDto): Observable<ListBoardDto>;
-    editBoard(boardId: string | undefined, editBoardDto: BoardDto): Observable<ListBoardDto>;
+    editBoard(editBoardDto: BoardDto): Observable<ListBoardDto>;
     deleteBoard(boardId: string | undefined): Observable<FileResponse | null>;
 }
 
@@ -269,7 +269,7 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    getBoard(boardId: string | undefined): Observable<ComponentBoardDto> {
+    getBoard(boardId: string | undefined): Observable<BoardDto> {
         let url_ = this.baseUrl + "/Boards/GetBoard?";
         if (boardId === null)
             throw new Error("The parameter 'boardId' cannot be null.");
@@ -292,14 +292,14 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processGetBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ComponentBoardDto>;
+                    return _observableThrow(e) as any as Observable<BoardDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ComponentBoardDto>;
+                return _observableThrow(response_) as any as Observable<BoardDto>;
         }));
     }
 
-    protected processGetBoard(response: HttpResponseBase): Observable<ComponentBoardDto> {
+    protected processGetBoard(response: HttpResponseBase): Observable<BoardDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -310,7 +310,7 @@ export class BoardsClient implements IBoardsClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ComponentBoardDto.fromJS(resultData200);
+            result200 = BoardDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -373,12 +373,8 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    editBoard(boardId: string | undefined, editBoardDto: BoardDto): Observable<ListBoardDto> {
-        let url_ = this.baseUrl + "/Boards/EditBoard?";
-        if (boardId === null)
-            throw new Error("The parameter 'boardId' cannot be null.");
-        else if (boardId !== undefined)
-            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
+    editBoard(editBoardDto: BoardDto): Observable<ListBoardDto> {
+        let url_ = this.baseUrl + "/Boards/EditBoard";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(editBoardDto);
@@ -1075,46 +1071,6 @@ export class ListBoardDto implements IListBoardDto {
 export interface IListBoardDto {
     id: string;
     title: string;
-}
-
-export class ComponentBoardDto implements IComponentBoardDto {
-    title!: string;
-    description!: string;
-
-    constructor(data?: IComponentBoardDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.title = _data["title"];
-            this.description = _data["description"];
-        }
-    }
-
-    static fromJS(data: any): ComponentBoardDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ComponentBoardDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["title"] = this.title;
-        data["description"] = this.description;
-        return data;
-    }
-}
-
-export interface IComponentBoardDto {
-    title: string;
-    description: string;
 }
 
 export class BoardDto implements IBoardDto {

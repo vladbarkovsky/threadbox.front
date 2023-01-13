@@ -7,13 +7,16 @@
     <a [routerLink]="['../board', board.id]">
       {{ board.title }}
     </a>
-    <div class="">
+
+    <div>
       <img
+        (click)="openEditBoardModal(board.id)"
         src="assets/icons/iconmonstr-pencil-square-filled.svg"
         alt="iconmonstr-pencil-square-filled.svg"
         width="30"
       />
       <img
+        (click)="openDeleteBoardModal(board)"
         src="assets/icons/iconmonstr-x-mark-circle-lined.svg"
         alt="iconmonstr-x-mark-circle-lined.svg"
         width="30"

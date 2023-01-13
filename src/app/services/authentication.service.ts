@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,13 +20,14 @@ export class AuthenticationService {
     return this.cookieService.get('authenticationToken');
   }
 
-  constructor(private cookieService: CookieService) {
+  constructor(private cookieService: CookieService, private toastService: ToastService) {
     this.isAuthenticated$.next(this.authenticationToken !== '');
   }
 
   logout(): void {
     this.cookieService.delete('authenticationToken');
     this.isAuthenticated$.next(false);
+    this.toastService.show({ text: 'Logged out', type: 'danger' });
   }
 }
 

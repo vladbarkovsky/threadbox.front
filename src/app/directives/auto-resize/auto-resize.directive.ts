@@ -8,6 +8,7 @@ export class AutoResizeDirective {
 
   ngOnInit() {
     if (this.elementRef.nativeElement.scrollHeight) {
+      this.elementRef.nativeElement.style.overflow = 'hidden';
       setTimeout(() => this.resize());
     }
   }

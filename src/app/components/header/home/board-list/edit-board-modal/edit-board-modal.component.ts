@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BoardDto } from 'api-client';
 import { EventService } from 'src/app/services/event.service';
@@ -12,12 +12,15 @@ import { EventService } from 'src/app/services/event.service';
 export class EditBoardModalComponent implements OnInit {
   @Input() readonly board!: BoardDto;
 
-  boardForm = this.formBuilder.group({
-    title: [this.board.title, [Validators.required]],
-    description: [this.board.description],
-  });
+  boardForm!: FormGroup;
 
   constructor(public activeModal: NgbActiveModal, public eventService: EventService, private formBuilder: FormBuilder) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.boardForm = this.formBuilder.group({
+      id: [this.board.id],
+      title: [this.board.title, [Validators.required]],
+      description: [this.board.description],
+    });
+  }
 }
