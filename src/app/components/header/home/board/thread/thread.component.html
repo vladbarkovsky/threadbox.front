@@ -6,7 +6,7 @@
   <div class="card-body">
     <p class="card-text">{{ thread.text }}</p>
 
-    <div class="row">
+    <div class="row mb-2">
       <div
         *ngFor="let imageUrl of thread.threadImageUrls"
         class="col-auto thread-image-col"
@@ -19,6 +19,14 @@
       </div>
     </div>
 
+    <button
+      *ngIf="thread.threadImageUrls.length !== 0"
+      class="btn btn-secondary mb-2"
+      (click)="downloadImagesEvent.emit()"
+    >
+      Download images
+    </button>
+
     <div
       *ngFor="let post of thread.posts"
       class="my-2"
@@ -27,13 +35,5 @@
     </div>
   </div>
 
-  <div class="card-footer">
-    <button
-      *ngIf="thread.threadImageUrls.length !== 0"
-      class="btn btn-secondary"
-      (click)="downloadImagesEvent.emit()"
-    >
-      Download images
-    </button>
-  </div>
+  <!-- <div class="card-footer"></div> -->
 </div>

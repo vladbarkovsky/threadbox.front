@@ -1,0 +1,21 @@
+<form [formGroup]="imagesForm">
+  <div class="form-group">
+    <label for="file">File</label>
+    <input
+      formControlName="file"
+      id="file"
+      type="file"
+      class="form-control"
+      multiple=""
+      (change)="onFileChange($event)"
+    />
+  </div>
+
+  <img
+    *ngFor="let url of images"
+    [src]="url"
+    height="150"
+    width="200px"
+    style="margin: 3px;"
+  />
+</form>

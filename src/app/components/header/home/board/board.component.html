@@ -1,5 +1,12 @@
-<h5>{{ board?.title }}</h5>
+<h3>{{ board?.title }}</h3>
 <p>{{ board?.description }}</p>
+
+<button
+  class="btn btn-secondary mb-2"
+  (click)="openAddThreadModal()"
+>
+  Add thread
+</button>
 
 <div
   *ngFor="let thread of currentPageThreads"
