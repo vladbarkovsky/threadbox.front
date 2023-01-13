@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PaginationParamsDto, ThreadsClient, ListThreadDto, ImagesClient, BoardsClient, BoardDto, ThreadDto } from 'api-client';
+import { PaginationParamsDto, ThreadsClient, ListThreadDto, ImagesClient, BoardsClient, BoardDto, ThreadDto, ImageDto } from 'api-client';
 import { EventService } from 'src/app/services/event.service';
 import { FileService } from 'src/app/services/file.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { AddThreadModalComponent } from './add-thread-modal/add-thread-modal.component';
 
 @Component({
   selector: 'app-board',
@@ -43,16 +44,29 @@ export class BoardComponent implements OnInit {
     this.eventService.downloadPostImages$.subscribe(x => this.downloadPostImages(x));
   }
 
-  openAddThreadModal(): void {}
+  openAddThreadModal(): void {
+    this.modal.open(AddThreadModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'xl' });
+  }
 
   private addThread(threadForm: FormGroup): void {
+    const base64Urls: string[] = threadForm.get('images.fileSource')?.value;
+    console.log(base64Urls);
+
     const threadDto = new ThreadDto({
       title: threadForm.controls['title'].value,
       text: threadForm.controls['text'].value,
-      threadImages: threadForm.controls['images'].value,
+      threadImages: base64Urls.map(
+        x =>
+          new ImageDto({
+            base64: x.split(',')[1],
+            extension: x.split(';')[0].split('/')[1],
+          })
+      ),
     });
 
-    this.threadsClient.createThread(threadDto).subscribe({
+    console.log(threadDto);
+
+    this.threadsClient.createThread(this.boardId, threadDto).subscribe({
       next: x => {
         this.currentPageThreads.push(x);
         this.toastService.show({ text: 'Thread successfully added.', type: 'success' });

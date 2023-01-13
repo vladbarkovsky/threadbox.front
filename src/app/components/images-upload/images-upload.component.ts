@@ -10,17 +10,17 @@ export class ImagesUploadComponent implements OnInit {
   images: string[] = [];
 
   imagesForm = this.formBuilder.group({
-    file: ['', [Validators.required]],
-    fileSource: ['', [Validators.required]],
+    file: [''],
+    fileSource: [''],
   });
-
-  constructor(private formBuilder: FormBuilder) {}
-
-  ngOnInit(): void {}
 
   get controls() {
     return this.imagesForm.controls;
   }
+
+  constructor(private formBuilder: FormBuilder) {}
+
+  ngOnInit(): void {}
 
   onFileChange(event: any) {
     if (event.target.files && event.target.files[0]) {
@@ -30,7 +30,7 @@ export class ImagesUploadComponent implements OnInit {
         var reader = new FileReader();
 
         reader.onload = (event: any) => {
-          console.log(event.target.result);
+          console.log(event.target.result, 'thats IT', event.target.files);
           this.images.push(event.target.result);
 
           this.imagesForm.patchValue({

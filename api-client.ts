@@ -873,7 +873,7 @@ export class TestClient implements ITestClient {
 
 export interface IThreadsClient {
     getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedListDtoOfListThreadDto>;
-    createThread(threadDto: ThreadDto): Observable<ListThreadDto>;
+    createThread(boardId: string | undefined, threadDto: ThreadDto): Observable<ListThreadDto>;
 }
 
 @Injectable({
@@ -945,8 +945,12 @@ export class ThreadsClient implements IThreadsClient {
         return _observableOf(null as any);
     }
 
-    createThread(threadDto: ThreadDto): Observable<ListThreadDto> {
-        let url_ = this.baseUrl + "/Threads/CreateThread";
+    createThread(boardId: string | undefined, threadDto: ThreadDto): Observable<ListThreadDto> {
+        let url_ = this.baseUrl + "/Threads/CreateThread?";
+        if (boardId === null)
+            throw new Error("The parameter 'boardId' cannot be null.");
+        else if (boardId !== undefined)
+            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(threadDto);
@@ -1462,7 +1466,7 @@ export interface IPaginationParamsDto {
 export class ThreadDto implements IThreadDto {
     title!: string;
     text!: string;
-    threadImages!: any[];
+    threadImages!: ImageDto[];
 
     constructor(data?: IThreadDto) {
         if (data) {
@@ -1483,7 +1487,7 @@ export class ThreadDto implements IThreadDto {
             if (Array.isArray(_data["threadImages"])) {
                 this.threadImages = [] as any;
                 for (let item of _data["threadImages"])
-                    this.threadImages!.push(item);
+                    this.threadImages!.push(ImageDto.fromJS(item));
             }
         }
     }
@@ -1502,7 +1506,7 @@ export class ThreadDto implements IThreadDto {
         if (Array.isArray(this.threadImages)) {
             data["threadImages"] = [];
             for (let item of this.threadImages)
-                data["threadImages"].push(item);
+                data["threadImages"].push(item.toJSON());
         }
         return data;
     }
@@ -1511,7 +1515,47 @@ export class ThreadDto implements IThreadDto {
 export interface IThreadDto {
     title: string;
     text: string;
-    threadImages: any[];
+    threadImages: ImageDto[];
+}
+
+export class ImageDto implements IImageDto {
+    extension!: string;
+    base64!: string;
+
+    constructor(data?: IImageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.extension = _data["extension"];
+            this.base64 = _data["base64"];
+        }
+    }
+
+    static fromJS(data: any): ImageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ImageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["extension"] = this.extension;
+        data["base64"] = this.base64;
+        return data;
+    }
+}
+
+export interface IImageDto {
+    extension: string;
+    base64: string;
 }
 
 export interface FileResponse {
