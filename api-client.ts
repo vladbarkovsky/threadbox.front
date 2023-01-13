@@ -873,6 +873,7 @@ export class TestClient implements ITestClient {
 
 export interface IThreadsClient {
     getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedListDtoOfListThreadDto>;
+    createThread(threadDto: ThreadDto): Observable<ListThreadDto>;
 }
 
 @Injectable({
@@ -934,6 +935,58 @@ export class ThreadsClient implements IThreadsClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = PaginatedListDtoOfListThreadDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createThread(threadDto: ThreadDto): Observable<ListThreadDto> {
+        let url_ = this.baseUrl + "/Threads/CreateThread";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(threadDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateThread(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateThread(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ListThreadDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ListThreadDto>;
+        }));
+    }
+
+    protected processCreateThread(response: HttpResponseBase): Observable<ListThreadDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ListThreadDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1404,6 +1457,61 @@ export class PaginationParamsDto implements IPaginationParamsDto {
 export interface IPaginationParamsDto {
     pageIndex: number;
     pageSize: number;
+}
+
+export class ThreadDto implements IThreadDto {
+    title!: string;
+    text!: string;
+    threadImages!: any[];
+
+    constructor(data?: IThreadDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.threadImages = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.title = _data["title"];
+            this.text = _data["text"];
+            if (Array.isArray(_data["threadImages"])) {
+                this.threadImages = [] as any;
+                for (let item of _data["threadImages"])
+                    this.threadImages!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ThreadDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ThreadDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["title"] = this.title;
+        data["text"] = this.text;
+        if (Array.isArray(this.threadImages)) {
+            data["threadImages"] = [];
+            for (let item of this.threadImages)
+                data["threadImages"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IThreadDto {
+    title: string;
+    text: string;
+    threadImages: any[];
 }
 
 export interface FileResponse {
