@@ -11,11 +11,30 @@
     />
   </div>
 
-  <img
+  <!-- <img
     *ngFor="let url of images"
     [src]="url"
     height="150"
     width="200px"
     style="margin: 3px;"
-  />
+  /> -->
+
+  <div class="row">
+    <div
+      *ngFor="let url of images"
+      class="col-auto image-col img-wraps"
+    >
+      <img
+        class="closes"
+        src="assets/icons/iconmonstr-x-mark-circle-lined.svg"
+        width="40"
+        (click)="deleteImage(url)"
+      />
+      <img
+        [src]="url"
+        [alt]="'Unable to load ' + url"
+        class="img-thumbnail image img-responsive"
+      />
+    </div>
+  </div>
 </form>

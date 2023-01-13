@@ -1,0 +1,28 @@
+.image-col {
+  padding: 3px;
+
+  .image {
+    max-width: 250px;
+    max-height: 250px;
+  }
+}
+
+.img-wraps {
+  position: relative;
+  display: inline-block;
+  font-size: 0;
+  opacity: 1;
+
+  &:hover .closes {
+    opacity: 1;
+  }
+
+  .closes {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    z-index: 100;
+    padding: 4px 3px;
+    cursor: pointer;
+  }
+}

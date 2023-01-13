@@ -30,7 +30,6 @@ export class ImagesUploadComponent implements OnInit {
         var reader = new FileReader();
 
         reader.onload = (event: any) => {
-          console.log(event.target.result, 'thats IT', event.target.files);
           this.images.push(event.target.result);
 
           this.imagesForm.patchValue({
@@ -40,6 +39,16 @@ export class ImagesUploadComponent implements OnInit {
 
         reader.readAsDataURL(event.target.files[i]);
       }
+
+      this.imagesForm.controls['file'].reset();
     }
+  }
+
+  deleteImage(image: string) {
+    this.images = this.images.filter(x => x !== image);
+
+    this.imagesForm.patchValue({
+      fileSource: this.images,
+    });
   }
 }
