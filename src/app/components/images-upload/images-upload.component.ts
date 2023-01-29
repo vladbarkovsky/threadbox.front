@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FileParameter } from 'api-client';
 
 @Component({
   selector: 'app-images-upload',
@@ -7,48 +8,58 @@ import { FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./images-upload.component.scss'],
 })
 export class ImagesUploadComponent implements OnInit {
-  images: string[] = [];
+  /**
+   * Form with file input for images. Can be used for validating form that contains image upload
+   *
+   * @type {FormGroup}
+   * @memberof ImagesUploadComponent
+   */
+  imagesForm: FormGroup = this.formBuilder.group({ imagesInput: [''] });
 
-  imagesForm = this.formBuilder.group({
-    file: [''],
-    fileSource: [''],
-  });
+  /**
+   * Strings used as sources for displaying uploaded images in HTML
+   *
+   * @type {string[]}
+   * @memberof ImagesUploadComponent
+   */
+  base64Urls: string[] = [];
 
-  get controls() {
-    return this.imagesForm.controls;
+  imageFiles: File[] = [];
+
+  /**
+   * Returns image files mapped for sending to server
+   *
+   * @readonly
+   * @type {FileParameter[]}
+   * @memberof ImagesUploadComponent
+   */
+  get imageFileParameters(): FileParameter[] {
+    return this.imageFiles.map(x => ({ data: x, fileName: x.name }));
   }
 
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {}
 
-  onFileChange(event: any) {
-    if (event.target.files && event.target.files[0]) {
-      var filesAmount = event.target.files.length;
+  onFileChange(fileInput: HTMLInputElement) {
+    const imageFiles: File[] = Array.from(fileInput.files!);
+    this.imageFiles.push(...imageFiles.filter(image => !this.imageFiles.some(x => x.name === image.name)));
 
-      for (let i = 0; i < filesAmount; i++) {
+    if (this.imageFiles && this.imageFiles[0]) {
+      for (let i = 0; i < this.imageFiles.length; i++) {
         var reader = new FileReader();
 
-        reader.onload = (event: any) => {
-          this.images.push(event.target.result);
-
-          this.imagesForm.patchValue({
-            fileSource: this.images,
-          });
+        reader.onload = event => {
+          this.base64Urls.push(event.target?.result as string);
         };
 
-        reader.readAsDataURL(event.target.files[i]);
+        reader.readAsDataURL(this.imageFiles[i]);
       }
-
-      this.imagesForm.controls['file'].reset();
     }
   }
 
-  deleteImage(image: string) {
-    this.images = this.images.filter(x => x !== image);
-
-    this.imagesForm.patchValue({
-      fileSource: this.images,
-    });
+  deleteImage(index: number) {
+    this.imageFiles.slice(index, 1);
+    this.base64Urls.slice(index, 1);
   }
 }

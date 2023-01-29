@@ -870,7 +870,7 @@ export class TestClient implements ITestClient {
 
 export interface IThreadsClient {
     getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedListDtoOfListThreadDto>;
-    createThread(boardId: string | undefined, threadDto: ThreadDto): Observable<ListThreadDto>;
+    createThread(boardId: string | undefined, title: string | null | undefined, text: string | null | undefined, threadImages: FileParameter[] | null | undefined): Observable<ListThreadDto>;
 }
 
 @Injectable({
@@ -942,22 +942,27 @@ export class ThreadsClient implements IThreadsClient {
         return _observableOf(null as any);
     }
 
-    createThread(boardId: string | undefined, threadDto: ThreadDto): Observable<ListThreadDto> {
-        let url_ = this.baseUrl + "/Threads/CreateThread?";
-        if (boardId === null)
-            throw new Error("The parameter 'boardId' cannot be null.");
-        else if (boardId !== undefined)
-            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
+    createThread(boardId: string | undefined, title: string | null | undefined, text: string | null | undefined, threadImages: FileParameter[] | null | undefined): Observable<ListThreadDto> {
+        let url_ = this.baseUrl + "/Threads/CreateThread";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(threadDto);
+        const content_ = new FormData();
+        if (boardId === null || boardId === undefined)
+            throw new Error("The parameter 'boardId' cannot be null.");
+        else
+            content_.append("BoardId", boardId.toString());
+        if (title !== null && title !== undefined)
+            content_.append("Title", title.toString());
+        if (text !== null && text !== undefined)
+            content_.append("Text", text.toString());
+        if (threadImages !== null && threadImages !== undefined)
+            threadImages.forEach(item_ => content_.append("ThreadImages", item_.data, item_.fileName ? item_.fileName : "ThreadImages") );
 
         let options_ : any = {
             body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
@@ -1460,99 +1465,9 @@ export interface IPaginationParamsDto {
     pageSize: number;
 }
 
-export class ThreadDto implements IThreadDto {
-    title!: string;
-    text!: string;
-    threadImages!: ImageDto[];
-
-    constructor(data?: IThreadDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.threadImages = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.title = _data["title"];
-            this.text = _data["text"];
-            if (Array.isArray(_data["threadImages"])) {
-                this.threadImages = [] as any;
-                for (let item of _data["threadImages"])
-                    this.threadImages!.push(ImageDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ThreadDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ThreadDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["title"] = this.title;
-        data["text"] = this.text;
-        if (Array.isArray(this.threadImages)) {
-            data["threadImages"] = [];
-            for (let item of this.threadImages)
-                data["threadImages"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IThreadDto {
-    title: string;
-    text: string;
-    threadImages: ImageDto[];
-}
-
-export class ImageDto implements IImageDto {
-    extension!: string;
-    base64!: string;
-
-    constructor(data?: IImageDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.extension = _data["extension"];
-            this.base64 = _data["base64"];
-        }
-    }
-
-    static fromJS(data: any): ImageDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ImageDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["extension"] = this.extension;
-        data["base64"] = this.base64;
-        return data;
-    }
-}
-
-export interface IImageDto {
-    extension: string;
-    base64: string;
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export interface FileResponse {
