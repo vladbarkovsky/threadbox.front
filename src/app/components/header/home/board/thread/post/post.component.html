@@ -10,7 +10,7 @@
         class="col-auto post-image-col"
       >
         <img
-          [src]="imageUrl"
+          [src]="imageUrl | apiUrl"
           [alt]="'Unable to load ' + imageUrl"
           class="img-thumbnail post-image"
         />
