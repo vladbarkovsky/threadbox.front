@@ -50,7 +50,7 @@ export class ImagesUploadComponent extends BaseComponent implements OnInit {
 
     if (this.imageFiles && this.imageFiles[0]) {
       for (let i = 0; i < this.imageFiles.length; i++) {
-        var reader = new FileReader();
+        const reader = new FileReader();
 
         reader.onload = event => {
           this.base64Urls.push(event.target?.result as string);

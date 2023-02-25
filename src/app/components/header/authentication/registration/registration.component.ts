@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationClient, RegistrationFormDto } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base.component';
 import { ToastService } from 'src/app/services/toast.service';
-import { userNameValidators, passwordValidators, matchValidator } from 'src/app/validator-functions';
+import { RegistrationForm } from './registration-form';
 
 @Component({
   selector: 'app-registration',
@@ -13,37 +12,16 @@ import { userNameValidators, passwordValidators, matchValidator } from 'src/app/
   styleUrls: ['./registration.component.scss'],
 })
 export class RegistrationComponent extends BaseComponent {
-  registrationForm = this.formBuilder.group({
-    userName: ['', userNameValidators],
-    password: ['', passwordValidators],
-    confirmPassword: ['', matchValidator('password')],
-    registrationToken: ['', [Validators.required, Validators.pattern('^[\\w-]*\\.[\\w-]*\\.[\\w-]*$')]],
-  });
+  registrationForm = new RegistrationForm();
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private authenticationClient: AuthenticationClient,
-    private toastService: ToastService,
-    private router: Router
-  ) {
+  constructor(private authenticationClient: AuthenticationClient, private toastService: ToastService, private router: Router) {
     super();
-  }
-
-  validateConfirmPassword() {
-    this.registrationForm.get('confirmPassword')?.updateValueAndValidity();
   }
 
   onSubmit(): void {
     if (this.registrationForm.valid) {
-      const registrationFormDto = new RegistrationFormDto({
-        userName: this.registrationForm.controls['userName'].value,
-        password: this.registrationForm.controls['password'].value,
-        confirmPassword: this.registrationForm.controls['confirmPassword'].value,
-        registrationToken: this.registrationForm.controls['registrationToken'].value,
-      });
-
       this.authenticationClient
-        .register(registrationFormDto)
+        .register(this.registrationForm.Dto)
         .pipe(takeUntil(this.destruction$))
         .subscribe({
           next: () => {

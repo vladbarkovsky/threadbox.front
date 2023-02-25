@@ -57,7 +57,7 @@
         formControlName="password"
         type="password"
         class="form-control"
-        (input)="validateConfirmPassword()"
+        (input)="registrationForm.validateConfirmPassword()"
       />
 
       <ng-container *ngIf="registrationForm.controls['password'] as password">

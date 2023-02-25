@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationClient, LoginFormDto } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ToastService } from 'src/app/services/toast.service';
-import { passwordValidators, userNameValidators } from 'src/app/validator-functions';
+import { LoginForm } from './login-form';
 
 @Component({
   selector: 'app-login',
@@ -14,13 +13,9 @@ import { passwordValidators, userNameValidators } from 'src/app/validator-functi
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent extends BaseComponent {
-  loginForm = this.formBuilder.group({
-    userName: ['', userNameValidators],
-    password: ['', passwordValidators],
-  });
+  loginForm = new LoginForm();
 
   constructor(
-    private formBuilder: FormBuilder,
     private authenticationClient: AuthenticationClient,
     private authenticationService: AuthenticationService,
     private toastService: ToastService,
@@ -31,13 +26,8 @@ export class LoginComponent extends BaseComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const loginFormDto = new LoginFormDto({
-        userName: this.loginForm.controls['userName'].value,
-        password: this.loginForm.controls['password'].value,
-      });
-
       this.authenticationClient
-        .login(loginFormDto)
+        .login(this.loginForm.Dto)
         .pipe(takeUntil(this.destruction$))
         .subscribe({
           next: x => {
