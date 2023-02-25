@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationClient, RegistrationFormDto } from 'api-client';
+import { takeUntil } from 'rxjs/operators';
+import { BaseComponent } from 'src/app/components/base.component';
 import { ToastService } from 'src/app/services/toast.service';
 import { userNameValidators, passwordValidators, matchValidator } from 'src/app/validator-functions';
 
@@ -10,7 +12,7 @@ import { userNameValidators, passwordValidators, matchValidator } from 'src/app/
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
 })
-export class RegistrationComponent {
+export class RegistrationComponent extends BaseComponent {
   registrationForm = this.formBuilder.group({
     userName: ['', userNameValidators],
     password: ['', passwordValidators],
@@ -23,7 +25,9 @@ export class RegistrationComponent {
     private authenticationClient: AuthenticationClient,
     private toastService: ToastService,
     private router: Router
-  ) {}
+  ) {
+    super();
+  }
 
   validateConfirmPassword() {
     this.registrationForm.get('confirmPassword')?.updateValueAndValidity();
@@ -38,15 +42,18 @@ export class RegistrationComponent {
         registrationToken: this.registrationForm.controls['registrationToken'].value,
       });
 
-      this.authenticationClient.register(registrationFormDto).subscribe({
-        next: () => {
-          this.toastService.show({ text: 'Successfully registered.', type: 'success' });
-          this.router.navigate(['/app/authentication/login']);
-        },
-        error: x => {
-          this.toastService.show({ text: 'Your registration token is already used or expired.', type: 'danger' });
-        },
-      });
+      this.authenticationClient
+        .register(registrationFormDto)
+        .pipe(takeUntil(this.destruction$))
+        .subscribe({
+          next: () => {
+            this.toastService.show({ text: 'Successfully registered.', type: 'success' });
+            this.router.navigate(['/app/authentication/login']);
+          },
+          error: x => {
+            this.toastService.show({ text: 'Your registration token is already used or expired.', type: 'danger' });
+          },
+        });
     }
   }
 }

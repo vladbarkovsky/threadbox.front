@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { BaseComponent } from 'src/app/components/base.component';
 import { ImagesUploadComponent } from 'src/app/components/images-upload/images-upload.component';
 import { EventService } from 'src/app/services/event.service';
 
@@ -9,7 +10,7 @@ import { EventService } from 'src/app/services/event.service';
   templateUrl: './add-thread-modal.component.html',
   styleUrls: ['./add-thread-modal.component.scss'],
 })
-export class AddThreadModalComponent implements OnInit, AfterViewInit {
+export class AddThreadModalComponent extends BaseComponent implements OnInit, AfterViewInit {
   @ViewChild(ImagesUploadComponent) imagesUploadComponent!: ImagesUploadComponent;
 
   threadForm = this.formBuilder.group({
@@ -17,7 +18,9 @@ export class AddThreadModalComponent implements OnInit, AfterViewInit {
     text: [''],
   });
 
-  constructor(public activeModal: NgbActiveModal, public eventService: EventService, private formBuilder: FormBuilder) {}
+  constructor(public activeModal: NgbActiveModal, public eventService: EventService, private formBuilder: FormBuilder) {
+    super();
+  }
 
   ngOnInit(): void {}
 

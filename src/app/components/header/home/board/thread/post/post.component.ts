@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ListPostDto } from 'api-client';
+import { BaseComponent } from 'src/app/components/base.component';
 import { EventService } from 'src/app/services/event.service';
 
 @Component({
@@ -7,10 +8,12 @@ import { EventService } from 'src/app/services/event.service';
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.scss'],
 })
-export class PostComponent implements OnInit {
+export class PostComponent extends BaseComponent implements OnInit {
   @Input() post!: ListPostDto;
 
-  constructor(public eventService: EventService) {}
+  constructor(public eventService: EventService) {
+    super();
+  }
 
   ngOnInit(): void {}
 }

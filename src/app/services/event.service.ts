@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FileParameter } from 'api-client';
-import { ReplaySubject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
-  readonly addBoard$ = new ReplaySubject<FormGroup>();
-  readonly editBoard$ = new ReplaySubject<FormGroup>();
-  readonly deleteBoard$ = new ReplaySubject<string>();
+  readonly addBoard$ = new Subject<FormGroup>();
+  readonly editBoard$ = new Subject<FormGroup>();
+  readonly deleteBoard$ = new Subject<string>();
 
-  readonly addThread$ = new ReplaySubject<{ threadForm: FormGroup; imageFileParameters: FileParameter[] }>();
+  readonly addThread$ = new Subject<{ threadForm: FormGroup; imageFileParameters: FileParameter[] }>();
 
-  readonly downloadPostImages$ = new ReplaySubject<string>();
+  readonly downloadPostImages$ = new Subject<string>();
 }

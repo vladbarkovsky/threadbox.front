@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileParameter } from 'api-client';
+import { BaseComponent } from '../base.component';
 
 @Component({
   selector: 'app-images-upload',
   templateUrl: './images-upload.component.html',
   styleUrls: ['./images-upload.component.scss'],
 })
-export class ImagesUploadComponent implements OnInit {
+export class ImagesUploadComponent extends BaseComponent implements OnInit {
   /**
    * Form with file input for images. Can be used for validating form that contains image upload
    *
@@ -37,7 +38,9 @@ export class ImagesUploadComponent implements OnInit {
     return this.imageFiles.map(x => ({ data: x, fileName: x.name }));
   }
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder) {
+    super();
+  }
 
   ngOnInit(): void {}
 

@@ -869,7 +869,7 @@ export class TestClient implements ITestClient {
 }
 
 export interface IThreadsClient {
-    getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedListDtoOfListThreadDto>;
+    getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedResultOfListThreadDto>;
     createThread(boardId: string | undefined, title: string | null | undefined, text: string | null | undefined, threadImages: FileParameter[] | null | undefined): Observable<ListThreadDto>;
 }
 
@@ -886,7 +886,7 @@ export class ThreadsClient implements IThreadsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedListDtoOfListThreadDto> {
+    getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedResultOfListThreadDto> {
         let url_ = this.baseUrl + "/Threads/GetThreadsByBoard?";
         if (boardId === null)
             throw new Error("The parameter 'boardId' cannot be null.");
@@ -913,14 +913,14 @@ export class ThreadsClient implements IThreadsClient {
                 try {
                     return this.processGetThreadsByBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PaginatedListDtoOfListThreadDto>;
+                    return _observableThrow(e) as any as Observable<PaginatedResultOfListThreadDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PaginatedListDtoOfListThreadDto>;
+                return _observableThrow(response_) as any as Observable<PaginatedResultOfListThreadDto>;
         }));
     }
 
-    protected processGetThreadsByBoard(response: HttpResponseBase): Observable<PaginatedListDtoOfListThreadDto> {
+    protected processGetThreadsByBoard(response: HttpResponseBase): Observable<PaginatedResultOfListThreadDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -931,7 +931,7 @@ export class ThreadsClient implements IThreadsClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListDtoOfListThreadDto.fromJS(resultData200);
+            result200 = PaginatedResultOfListThreadDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1286,7 +1286,7 @@ export interface IPostDto {
     postImages: any[];
 }
 
-export class PaginatedListDtoOfListThreadDto implements IPaginatedListDtoOfListThreadDto {
+export class PaginatedResultOfListThreadDto implements IPaginatedResultOfListThreadDto {
     pageItems!: ListThreadDto[];
     pageIndex!: number;
     totalPages!: number;
@@ -1294,7 +1294,7 @@ export class PaginatedListDtoOfListThreadDto implements IPaginatedListDtoOfListT
     hasPreviousPage!: boolean;
     hasNextPage!: boolean;
 
-    constructor(data?: IPaginatedListDtoOfListThreadDto) {
+    constructor(data?: IPaginatedResultOfListThreadDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1321,9 +1321,9 @@ export class PaginatedListDtoOfListThreadDto implements IPaginatedListDtoOfListT
         }
     }
 
-    static fromJS(data: any): PaginatedListDtoOfListThreadDto {
+    static fromJS(data: any): PaginatedResultOfListThreadDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListDtoOfListThreadDto();
+        let result = new PaginatedResultOfListThreadDto();
         result.init(data);
         return result;
     }
@@ -1344,7 +1344,7 @@ export class PaginatedListDtoOfListThreadDto implements IPaginatedListDtoOfListT
     }
 }
 
-export interface IPaginatedListDtoOfListThreadDto {
+export interface IPaginatedResultOfListThreadDto {
     pageItems: ListThreadDto[];
     pageIndex: number;
     totalPages: number;
