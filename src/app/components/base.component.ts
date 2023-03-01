@@ -1,6 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
 @Component({ template: '' })
 export abstract class BaseComponent implements OnDestroy {

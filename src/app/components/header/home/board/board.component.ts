@@ -2,7 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PaginationParamsDto, ThreadsClient, ListThreadDto, BoardsClient, BoardDto, FileParameter, PostImagesClient, ThreadImagesClient } from 'api-client';
+import {
+  PaginationParamsDto,
+  ThreadsClient,
+  ListThreadDto,
+  BoardsClient,
+  BoardDto,
+  FileParameter,
+  PostImagesClient,
+  ThreadImagesClient,
+} from 'api-client';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base.component';
 import { EventService } from 'src/app/services/event.service';
@@ -51,8 +60,10 @@ export class BoardComponent extends BaseComponent implements OnInit {
         error: () => this.toastService.show({ text: 'Unable to load threads for current page.', type: 'danger' }),
       });
 
-    this.eventService.addThread$.subscribe(x => this.addThread(x.threadForm, x.imageFileParameters));
-    this.eventService.downloadPostImages$.subscribe(x => this.downloadPostImages(x));
+    this.eventService.addThread$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(x => this.addThread(x.threadForm, x.imageFileParameters));
+    this.eventService.downloadPostImages$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.downloadPostImages(x));
   }
 
   openAddThreadModal(): void {
