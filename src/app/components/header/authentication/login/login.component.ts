@@ -28,7 +28,7 @@ export class LoginComponent extends BaseComponent {
     if (this.loginForm.valid) {
       this.authenticationClient
         .login(this.loginForm.Dto)
-        .pipe(takeUntil(this.destruction$))
+        .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: x => {
             this.authenticationService.authenticationToken = x;

@@ -22,7 +22,7 @@ export class RegistrationComponent extends BaseComponent {
     if (this.registrationForm.valid) {
       this.authenticationClient
         .register(this.registrationForm.Dto)
-        .pipe(takeUntil(this.destruction$))
+        .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: () => {
             this.toastService.show({ text: 'Successfully registered.', type: 'success' });

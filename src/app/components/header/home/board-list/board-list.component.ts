@@ -25,15 +25,15 @@ export class BoardListComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.boardsClient
       .getBoardsList()
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => (this.boards = x),
         error: () => this.toastService.show({ text: 'Unable to load boards.', type: 'danger' }),
       });
 
-    this.eventService.addBoard$.pipe(takeUntil(this.destruction$)).subscribe(x => this.addBoard(x));
-    this.eventService.editBoard$.pipe(takeUntil(this.destruction$)).subscribe(x => this.editBoard(x));
-    this.eventService.deleteBoard$.pipe(takeUntil(this.destruction$)).subscribe(x => this.deleteBoard(x));
+    this.eventService.addBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.addBoard(x));
+    this.eventService.editBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.editBoard(x));
+    this.eventService.deleteBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.deleteBoard(x));
   }
 
   openAddBoardModal(): void {
@@ -48,7 +48,7 @@ export class BoardListComponent extends BaseComponent implements OnInit {
 
     this.boardsClient
       .createBoard(boardDto)
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => {
           this.boards.push(x);
@@ -64,7 +64,7 @@ export class BoardListComponent extends BaseComponent implements OnInit {
   openEditBoardModal(boardId: string): void {
     this.boardsClient
       .getBoard(boardId)
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => {
           const modalRef = this.modal.open(EditBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
@@ -85,7 +85,7 @@ export class BoardListComponent extends BaseComponent implements OnInit {
 
     this.boardsClient
       .editBoard(boardDto)
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => {
           const index = this.boards.findIndex(board => board.id === x.id);
@@ -113,7 +113,7 @@ export class BoardListComponent extends BaseComponent implements OnInit {
   private deleteBoard(boardId: string): void {
     this.boardsClient
       .deleteBoard(boardId)
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: () => {
           this.boards = this.boards.filter(x => x.id !== boardId);

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PaginationParamsDto, ThreadsClient, ListThreadDto, ImagesClient, BoardsClient, BoardDto, FileParameter } from 'api-client';
+import { PaginationParamsDto, ThreadsClient, ListThreadDto, BoardsClient, BoardDto, FileParameter, PostImagesClient, ThreadImagesClient } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base.component';
 import { EventService } from 'src/app/services/event.service';
@@ -24,7 +24,8 @@ export class BoardComponent extends BaseComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private threadsClient: ThreadsClient,
     private toastService: ToastService,
-    private imagesClient: ImagesClient,
+    private threadImagesClient: ThreadImagesClient,
+    private postImagesClient: PostImagesClient,
     private fileService: FileService,
     private boardsClient: BoardsClient,
     private eventService: EventService,
@@ -36,7 +37,7 @@ export class BoardComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.boardsClient
       .getBoard(this.boardId)
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => (this.board = x),
         error: () => this.toastService.show({ text: 'Unable to load board data.', type: 'danger' }),
@@ -44,7 +45,7 @@ export class BoardComponent extends BaseComponent implements OnInit {
 
     this.threadsClient
       .getThreadsByBoard(this.boardId, new PaginationParamsDto({ pageIndex: 0, pageSize: 10 }))
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => (this.currentPageThreads = x.pageItems),
         error: () => this.toastService.show({ text: 'Unable to load threads for current page.', type: 'danger' }),
@@ -61,7 +62,7 @@ export class BoardComponent extends BaseComponent implements OnInit {
   private addThread(threadForm: FormGroup, imageFileParameters: FileParameter[]): void {
     this.threadsClient
       .createThread(this.boardId, threadForm.controls['title'].value, threadForm.controls['text'].value, imageFileParameters)
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => {
           this.currentPageThreads.push(x);
@@ -75,9 +76,9 @@ export class BoardComponent extends BaseComponent implements OnInit {
   }
 
   downloadThreadImages(threadId: string): void {
-    this.imagesClient
+    this.threadImagesClient
       .getThreadImages(threadId)
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => this.fileService.downloadFile(x?.data!, `Thread_${threadId}_images`),
         error: () => this.toastService.show({ text: 'Unable to load thread images.', type: 'danger' }),
@@ -85,9 +86,9 @@ export class BoardComponent extends BaseComponent implements OnInit {
   }
 
   downloadPostImages(postId: string): void {
-    this.imagesClient
+    this.postImagesClient
       .getPostImages(postId)
-      .pipe(takeUntil(this.destruction$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => this.fileService.downloadFile(x?.data!, `Post_${postId}_images`),
         error: () => this.toastService.show({ text: 'Unable to download post images.', type: 'danger' }),
