@@ -2,8 +2,8 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { AuthenticationService } from './services/authentication.service';
-import { ToastService } from './services/toast.service';
+import { AuthenticationService } from '../services/authentication.service';
+import { ToastService } from '../services/toast.service';
 
 @Injectable()
 export class AuthenticationInterceptor implements HttpInterceptor {

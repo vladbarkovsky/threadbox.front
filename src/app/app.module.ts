@@ -7,7 +7,8 @@ import { environment } from 'src/environments/environment';
 import { API_BASE_URL } from 'api-client';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastModule } from './components/toast/toast.module';
-import { AuthenticationInterceptor } from './authentication.interceptor';
+import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
+import { XsrfInterceptor } from './interceptors/xsrf.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,6 +16,7 @@ import { AuthenticationInterceptor } from './authentication.interceptor';
   providers: [
     { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl },
     { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: XsrfInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })
