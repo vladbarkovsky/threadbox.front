@@ -27,7 +27,7 @@ export class AuthenticationService {
   logout(): void {
     this.cookieService.delete('authenticationToken');
     this.isAuthenticated$.next(false);
-    this.toastService.show({ text: 'Logged out', type: 'danger' });
+    this.toastService.success('Logged out.');
   }
 }
 

@@ -4,7 +4,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BoardDto, BoardsClient, ListBoardDto } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base.component';
-import { ConfirmationModalComponent, ConfirmationModalConfig } from 'src/app/components/confirmation-modal/confirmation-modal.component';
+import {
+  ConfirmationModalComponent,
+  ConfirmationModalConfig,
+} from 'src/app/components/confirmation-modal/confirmation-modal.component';
 import { EventService } from 'src/app/services/event.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { AddBoardModalComponent } from './add-board-modal/add-board-modal.component';
@@ -18,7 +21,12 @@ import { EditBoardModalComponent } from './edit-board-modal/edit-board-modal.com
 export class BoardListComponent extends BaseComponent implements OnInit {
   boards: ListBoardDto[] = [];
 
-  constructor(private boardsClient: BoardsClient, private toastService: ToastService, private modal: NgbModal, private eventService: EventService) {
+  constructor(
+    private boardsClient: BoardsClient,
+    private toastService: ToastService,
+    private modal: NgbModal,
+    private eventService: EventService
+  ) {
     super();
   }
 
@@ -28,7 +36,7 @@ export class BoardListComponent extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => (this.boards = x),
-        error: () => this.toastService.show({ text: 'Unable to load boards.', type: 'danger' }),
+        error: () => this.toastService.error('Unable to load boards.'),
       });
 
     this.eventService.addBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.addBoard(x));
@@ -52,11 +60,11 @@ export class BoardListComponent extends BaseComponent implements OnInit {
       .subscribe({
         next: x => {
           this.boards.push(x);
-          this.toastService.show({ text: 'Board successfully added.', type: 'success' });
+          this.toastService.success('Board successfully added.');
           this.modal.dismissAll();
         },
         error: () => {
-          this.toastService.show({ text: 'Unable to add board.', type: 'danger' });
+          this.toastService.error('Unable to add board.');
         },
       });
   }
@@ -67,11 +75,16 @@ export class BoardListComponent extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => {
-          const modalRef = this.modal.open(EditBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
+          const modalRef = this.modal.open(EditBoardModalComponent, {
+            backdrop: 'static',
+            keyboard: false,
+            scrollable: true,
+            size: 'lg',
+          });
           modalRef.componentInstance.board = x;
         },
         error: () => {
-          this.toastService.show({ text: 'Unable to load board for editing.', type: 'danger' });
+          this.toastService.error('Unable to load board for editing.');
         },
       });
   }
@@ -91,12 +104,10 @@ export class BoardListComponent extends BaseComponent implements OnInit {
           const index = this.boards.findIndex(board => board.id === x.id);
           this.boards[index] = x;
 
-          this.toastService.show({ text: 'Board successfully edited.', type: 'success' });
+          this.toastService.success('Board successfully edited.');
           this.modal.dismissAll();
         },
-        error: () => {
-          this.toastService.show({ text: 'Unable to edit board.', type: 'danger' });
-        },
+        error: () => this.toastService.error('Unable to edit board.'),
       });
   }
 
@@ -118,11 +129,9 @@ export class BoardListComponent extends BaseComponent implements OnInit {
         next: () => {
           this.boards = this.boards.filter(x => x.id !== boardId);
           this.modal.dismissAll();
-          this.toastService.show({ text: 'Board successfully deleted.', type: 'success' });
+          this.toastService.success('Board successfully deleted.');
         },
-        error: () => {
-          this.toastService.show({ text: 'Unable to delete board.', type: 'danger' });
-        },
+        error: () => this.toastService.error('Unable to delete board.'),
       });
   }
 }

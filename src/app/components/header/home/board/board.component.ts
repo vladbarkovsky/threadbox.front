@@ -49,7 +49,7 @@ export class BoardComponent extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => (this.board = x),
-        error: () => this.toastService.show({ text: 'Unable to load board data.', type: 'danger' }),
+        error: () => this.toastService.error('Unable to load board data.'),
       });
 
     this.threadsClient
@@ -57,7 +57,7 @@ export class BoardComponent extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => (this.currentPageThreads = x.pageItems),
-        error: () => this.toastService.show({ text: 'Unable to load threads for current page.', type: 'danger' }),
+        error: () => this.toastService.error('Unable to load threads for current page.'),
       });
 
     this.eventService.addThread$
@@ -75,14 +75,12 @@ export class BoardComponent extends BaseComponent implements OnInit {
       .createThread(this.boardId, threadForm.controls['title'].value, threadForm.controls['text'].value, imageFileParameters)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: x => {
-          this.currentPageThreads.push(x);
-          this.toastService.show({ text: 'Thread successfully added.', type: 'success' });
+        next: listThreadDto => {
+          this.currentPageThreads.push(listThreadDto);
+          this.toastService.success('Thread successfully added.');
           this.modal.dismissAll();
         },
-        error: () => {
-          this.toastService.show({ text: 'Unable to add thread.', type: 'danger' });
-        },
+        error: () => this.toastService.error('Unable to add thread.'),
       });
   }
 
@@ -92,7 +90,7 @@ export class BoardComponent extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => this.fileService.downloadFile(x?.data!, `Thread_${threadId}_images`),
-        error: () => this.toastService.show({ text: 'Unable to load thread images.', type: 'danger' }),
+        error: () => this.toastService.error('Unable to load thread images.'),
       });
   }
 
@@ -102,7 +100,7 @@ export class BoardComponent extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => this.fileService.downloadFile(x?.data!, `Post_${postId}_images`),
-        error: () => this.toastService.show({ text: 'Unable to download post images.', type: 'danger' }),
+        error: () => this.toastService.error('Unable to download post images.'),
       });
   }
 }

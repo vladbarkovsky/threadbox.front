@@ -27,16 +27,16 @@ export class LoginComponent extends BaseComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.authenticationClient
-        .login(this.loginForm.Dto)
+        .login(this.loginForm.dto)
         .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: x => {
             this.authenticationService.authenticationToken = x;
-            this.toastService.show({ text: 'Successfully logged in.', type: 'success' });
+            this.toastService.success('Successfully logged in.');
             this.router.navigate(['/app/home']);
           },
           error: x => {
-            this.toastService.show({ text: 'Invalid email or password.', type: 'danger' });
+            this.toastService.error('Invalid email or password.');
           },
         });
     }

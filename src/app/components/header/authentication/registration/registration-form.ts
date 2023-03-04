@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginFormDto, RegistrationFormDto } from 'api-client';
 import { matchValidator, passwordValidators, userNameValidators } from 'src/app/validator-functions';
 
@@ -12,32 +12,32 @@ export class RegistrationForm extends FormGroup {
     });
   }
 
-  get userName(): string {
-    return this.controls['userName'].value;
+  get userName(): AbstractControl {
+    return this.controls['userName'];
   }
 
-  get password(): string {
-    return this.controls['password'].value;
+  get password(): AbstractControl {
+    return this.controls['password'];
   }
 
-  get confirmPassword(): string {
-    return this.controls['confirmPassword'].value;
+  get confirmPassword(): AbstractControl {
+    return this.controls['confirmPassword'];
   }
 
-  get registrationToken(): string {
-    return this.controls['registrationToken'].value;
+  get registrationToken(): AbstractControl {
+    return this.controls['registrationToken'];
   }
 
-  get Dto(): RegistrationFormDto {
+  get dto(): RegistrationFormDto {
     return new RegistrationFormDto({
-      userName: this.userName,
-      password: this.password,
-      confirmPassword: this.password,
-      registrationToken: this.registrationToken,
+      userName: this.userName.value,
+      password: this.password.value,
+      confirmPassword: this.password.value,
+      registrationToken: this.registrationToken.value,
     });
   }
 
   validateConfirmPassword() {
-    this.controls['confirmPassword'].updateValueAndValidity();
+    this.confirmPassword.updateValueAndValidity();
   }
 }

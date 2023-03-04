@@ -21,15 +21,15 @@ export class RegistrationComponent extends BaseComponent {
   onSubmit(): void {
     if (this.registrationForm.valid) {
       this.authenticationClient
-        .register(this.registrationForm.Dto)
+        .register(this.registrationForm.dto)
         .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: () => {
-            this.toastService.show({ text: 'Successfully registered.', type: 'success' });
+            this.toastService.success('Successfully registered.');
             this.router.navigate(['/app/authentication/login']);
           },
           error: x => {
-            this.toastService.show({ text: 'Your registration token is already used or expired.', type: 'danger' });
+            this.toastService.error('Your registration token is already used or expired.');
           },
         });
     }

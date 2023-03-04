@@ -1,4 +1,4 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { LoginFormDto } from 'api-client';
 import { passwordValidators, userNameValidators } from 'src/app/validator-functions';
 
@@ -10,18 +10,18 @@ export class LoginForm extends FormGroup {
     });
   }
 
-  get userName(): string {
-    return this.controls['userName'].value;
+  get userName(): AbstractControl {
+    return this.controls['userName'];
   }
 
-  get password(): string {
-    return this.controls['password'].value;
+  get password(): AbstractControl {
+    return this.controls['password'];
   }
 
-  get Dto(): LoginFormDto {
+  get dto(): LoginFormDto {
     return new LoginFormDto({
-      userName: this.userName,
-      password: this.password,
+      userName: this.userName.value,
+      password: this.password.value,
     });
   }
 }

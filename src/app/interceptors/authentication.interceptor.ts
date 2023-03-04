@@ -23,10 +23,10 @@ export class AuthenticationInterceptor implements HttpInterceptor {
             switch (error.status) {
               case 401:
                 this.authenticationService.logout();
-                this.toastService.show({ text: 'You were logged out because of invalid authentication data.', type: 'danger' });
+                this.toastService.error('You were logged out because of invalid authentication data.');
                 break;
               case 403:
-                this.toastService.show({ text: "You don't have permissions for this operation.", type: 'danger' });
+                this.toastService.error("You don't have permissions for this operation.");
                 break;
             }
           },
