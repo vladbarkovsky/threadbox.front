@@ -21,7 +21,7 @@ export class RegistrationComponent extends BaseComponent {
   onSubmit(): void {
     if (this.registrationForm.valid) {
       this.authenticationClient
-        .register(this.registrationForm.dto)
+        .register(this.registrationForm.registrationFormDto)
         .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: () => {

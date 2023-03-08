@@ -25,7 +25,7 @@
         type="text"
       />
 
-      <ng-container *ngIf="boardForm.controls['title'] as title">
+      <ng-container *ngIf="boardForm.title as title">
         <ng-container *ngIf="(title.dirty || title.touched) && title.errors as errors">
           <small
             class="text-danger"
@@ -58,7 +58,7 @@
     class="btn btn-outline-dark"
     type="button"
     [disabled]="boardForm.invalid"
-    (click)="eventService.addBoard$.next(boardForm)"
+    (click)="eventService.addBoard$.next(boardForm.boardDto)"
   >
     Submit
   </button>

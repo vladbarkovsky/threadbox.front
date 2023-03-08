@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BoardDto, BoardsClient, ListBoardDto } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
@@ -39,21 +38,16 @@ export class BoardListComponent extends BaseComponent implements OnInit {
         error: () => this.toastService.error('Unable to load boards.'),
       });
 
-    this.eventService.addBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.addBoard(x));
-    this.eventService.editBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.editBoard(x));
-    this.eventService.deleteBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.deleteBoard(x));
+    this.eventService.addBoard$.pipe(takeUntil(this.destroyed$)).subscribe(boardDto => this.addBoard(boardDto));
+    this.eventService.editBoard$.pipe(takeUntil(this.destroyed$)).subscribe(boardDto => this.editBoard(boardDto));
+    this.eventService.deleteBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.deleteBoard(x.boardId));
   }
 
   openAddBoardModal(): void {
     this.modal.open(AddBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
   }
 
-  private addBoard(boardForm: FormGroup): void {
-    const boardDto = new BoardDto({
-      title: boardForm.controls['title'].value,
-      description: boardForm.controls['description'].value,
-    });
-
+  private addBoard(boardDto: BoardDto): void {
     this.boardsClient
       .createBoard(boardDto)
       .pipe(takeUntil(this.destroyed$))
@@ -81,7 +75,7 @@ export class BoardListComponent extends BaseComponent implements OnInit {
             scrollable: true,
             size: 'lg',
           });
-          modalRef.componentInstance.board = x;
+          modalRef.componentInstance.boardDto = x;
         },
         error: () => {
           this.toastService.error('Unable to load board for editing.');
@@ -89,13 +83,7 @@ export class BoardListComponent extends BaseComponent implements OnInit {
       });
   }
 
-  private editBoard(boardForm: FormGroup): void {
-    const boardDto = new BoardDto({
-      id: boardForm.controls['id'].value,
-      title: boardForm.controls['title'].value,
-      description: boardForm.controls['description'].value,
-    });
-
+  private editBoard(boardDto: BoardDto): void {
     this.boardsClient
       .editBoard(boardDto)
       .pipe(takeUntil(this.destroyed$))
@@ -116,7 +104,7 @@ export class BoardListComponent extends BaseComponent implements OnInit {
     modalRef.componentInstance.config = {
       title: `Delete board ${listBoardDto.title}?`,
       text: 'Delete board?',
-      data: listBoardDto.id,
+      data: { boardId: listBoardDto.id },
       action$: this.eventService.deleteBoard$,
     } as ConfirmationModalConfig;
   }

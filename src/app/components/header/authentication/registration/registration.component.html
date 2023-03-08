@@ -19,7 +19,7 @@
         type="text"
       />
 
-      <ng-container *ngIf="registrationForm.controls['userName'] as userName">
+      <ng-container *ngIf="registrationForm.userName as userName">
         <ng-container *ngIf="(userName.dirty || userName.touched) && userName.errors as errors">
           <small
             class="text-danger"
@@ -60,7 +60,7 @@
         (input)="registrationForm.validateConfirmPassword()"
       />
 
-      <ng-container *ngIf="registrationForm.controls['password'] as password">
+      <ng-container *ngIf="registrationForm.password as password">
         <ng-container *ngIf="(password.dirty || password.touched) && password.errors as errors">
           <small
             class="text-danger"
@@ -99,7 +99,7 @@
         class="form-control"
       />
 
-      <ng-container *ngIf="registrationForm.controls['confirmPassword'] as confirmPassword">
+      <ng-container *ngIf="registrationForm.confirmPassword as confirmPassword">
         <ng-container *ngIf="(confirmPassword.dirty || confirmPassword.touched) && confirmPassword.errors as errors">
           <small
             class="text-danger"
@@ -126,7 +126,7 @@
         class="form-control"
       />
 
-      <ng-container *ngIf="registrationForm.controls['registrationToken'] as registrationToken">
+      <ng-container *ngIf="registrationForm.registrationToken as registrationToken">
         <ng-container *ngIf="(registrationToken.dirty || registrationToken.touched) && registrationToken.errors as errors">
           <small
             class="text-danger"

@@ -196,8 +196,8 @@ export class AuthenticationClient implements IAuthenticationClient {
 export interface IBoardsClient {
     getBoardsList(): Observable<ListBoardDto[]>;
     getBoard(boardId: string | undefined): Observable<BoardDto>;
-    createBoard(createBoardDto: BoardDto): Observable<ListBoardDto>;
-    editBoard(editBoardDto: BoardDto): Observable<ListBoardDto>;
+    createBoard(boardDto: BoardDto): Observable<ListBoardDto>;
+    editBoard(boardDto: BoardDto): Observable<ListBoardDto>;
     deleteBoard(boardId: string | undefined): Observable<FileResponse | null>;
 }
 
@@ -321,11 +321,11 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    createBoard(createBoardDto: BoardDto): Observable<ListBoardDto> {
+    createBoard(boardDto: BoardDto): Observable<ListBoardDto> {
         let url_ = this.baseUrl + "/Boards/CreateBoard";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(createBoardDto);
+        const content_ = JSON.stringify(boardDto);
 
         let options_ : any = {
             body: content_,
@@ -373,11 +373,11 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    editBoard(editBoardDto: BoardDto): Observable<ListBoardDto> {
+    editBoard(boardDto: BoardDto): Observable<ListBoardDto> {
         let url_ = this.baseUrl + "/Boards/EditBoard";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(editBoardDto);
+        const content_ = JSON.stringify(boardDto);
 
         let options_ : any = {
             body: content_,

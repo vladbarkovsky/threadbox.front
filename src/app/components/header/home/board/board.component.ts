@@ -63,7 +63,7 @@ export class BoardComponent extends BaseComponent implements OnInit {
     this.eventService.addThread$
       .pipe(takeUntil(this.destroyed$))
       .subscribe(x => this.addThread(x.threadForm, x.imageFileParameters));
-    this.eventService.downloadPostImages$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.downloadPostImages(x));
+    this.eventService.downloadPostImages$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.downloadPostImages(x.postId));
   }
 
   openAddThreadModal(): void {

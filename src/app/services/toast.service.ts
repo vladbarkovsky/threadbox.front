@@ -16,7 +16,7 @@ export class ToastService {
   success(text: string, delayMs: number = this.defaultDelayMs) {
     this.toasts.push({
       text: text,
-      type: 'error',
+      type: 'success',
       delayMs: delayMs,
     });
   }
@@ -24,7 +24,7 @@ export class ToastService {
   error(text: string, delayMs: number = this.defaultDelayMs) {
     this.toasts.push({
       text: text,
-      type: 'success',
+      type: 'error',
       delayMs: delayMs,
     });
   }

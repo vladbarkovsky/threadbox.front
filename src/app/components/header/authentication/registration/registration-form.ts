@@ -28,7 +28,7 @@ export class RegistrationForm extends FormGroup {
     return this.controls['registrationToken'];
   }
 
-  get dto(): RegistrationFormDto {
+  get registrationFormDto(): RegistrationFormDto {
     return new RegistrationFormDto({
       userName: this.userName.value,
       password: this.password.value,

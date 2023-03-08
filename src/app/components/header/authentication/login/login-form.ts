@@ -18,7 +18,7 @@ export class LoginForm extends FormGroup {
     return this.controls['password'];
   }
 
-  get dto(): LoginFormDto {
+  get loginFormDto(): LoginFormDto {
     return new LoginFormDto({
       userName: this.userName.value,
       password: this.password.value,

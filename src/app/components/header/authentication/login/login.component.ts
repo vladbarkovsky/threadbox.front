@@ -27,7 +27,7 @@ export class LoginComponent extends BaseComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.authenticationClient
-        .login(this.loginForm.dto)
+        .login(this.loginForm.loginFormDto)
         .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: x => {

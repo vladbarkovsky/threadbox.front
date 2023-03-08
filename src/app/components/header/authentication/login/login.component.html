@@ -19,7 +19,7 @@
         type="text"
       />
 
-      <ng-container *ngIf="loginForm.controls['userName'] as userName">
+      <ng-container *ngIf="loginForm.userName as userName">
         <ng-container *ngIf="(userName.dirty || userName.touched) && userName.errors as errors">
           <small
             class="text-danger"
@@ -59,7 +59,7 @@
         class="form-control"
       />
 
-      <ng-container *ngIf="loginForm.controls['password'] as password">
+      <ng-container *ngIf="loginForm.password as password">
         <ng-container *ngIf="(password.dirty || password.touched) && password.errors as errors">
           <small
             class="text-danger"
