@@ -20,7 +20,7 @@
     </div>
 
     <button
-      *ngIf="thread.threadImageUrls.length !== 0"
+      *ngIf="thread.threadImageUrls!.length !== 0"
       class="btn btn-secondary mb-2"
       (click)="downloadImagesEvent.emit()"
     >

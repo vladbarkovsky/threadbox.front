@@ -20,7 +20,7 @@
 
   <div class="card-footer">
     <button
-      *ngIf="post.postImageUrls.length !== 0"
+      *ngIf="post.postImageUrls!.length !== 0"
       class="btn btn-secondary"
       (click)="eventService.downloadPostImages$.next({ postId: post.id})"
     >

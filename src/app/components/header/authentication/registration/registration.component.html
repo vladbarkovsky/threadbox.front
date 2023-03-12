@@ -111,39 +111,6 @@
       </ng-container>
     </div>
 
-    <div class="mb-3">
-      <div class="mb-2 w-100">
-        <label
-          class="text-muted"
-          for="registration-token"
-          >Registration token</label
-        >
-      </div>
-      <input
-        id="registration-token"
-        formControlName="registrationToken"
-        type="text"
-        class="form-control"
-      />
-
-      <ng-container *ngIf="registrationForm.registrationToken as registrationToken">
-        <ng-container *ngIf="(registrationToken.dirty || registrationToken.touched) && registrationToken.errors as errors">
-          <small
-            class="text-danger"
-            *ngIf="errors.required"
-          >
-            Registration token required.
-          </small>
-          <small
-            class="text-danger"
-            *ngIf="errors.pattern"
-          >
-            Invalid registration token.
-          </small>
-        </ng-container>
-      </ng-container>
-    </div>
-
     <div class="d-flex align-items-center">
       <button
         type="submit"

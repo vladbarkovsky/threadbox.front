@@ -17,8 +17,11 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IAuthenticationClient {
     login(loginFormDto: LoginFormDto): Observable<string>;
+    refreshAccessToken(): Observable<string>;
+    createRegistrationUrl(): Observable<string>;
+    validateRegistrationKey(registrationKeyId: string | undefined): Observable<FileResponse | null>;
     register(registrationFormDto: RegistrationFormDto): Observable<FileResponse | null>;
-    getRegistrationToken(): Observable<string>;
+    createRegistrationKey(): Observable<string>;
 }
 
 @Injectable({
@@ -87,6 +90,160 @@ export class AuthenticationClient implements IAuthenticationClient {
         return _observableOf(null as any);
     }
 
+    refreshAccessToken(): Observable<string> {
+        let url_ = this.baseUrl + "/Authentication/RefreshAccessToken";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRefreshAccessToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRefreshAccessToken(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processRefreshAccessToken(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createRegistrationUrl(): Observable<string> {
+        let url_ = this.baseUrl + "/Authentication/CreateRegistrationUrl";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateRegistrationUrl(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateRegistrationUrl(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processCreateRegistrationUrl(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    validateRegistrationKey(registrationKeyId: string | undefined): Observable<FileResponse | null> {
+        let url_ = this.baseUrl + "/Authentication/ValidateRegistrationKey?";
+        if (registrationKeyId === null)
+            throw new Error("The parameter 'registrationKeyId' cannot be null.");
+        else if (registrationKeyId !== undefined)
+            url_ += "registrationKeyId=" + encodeURIComponent("" + registrationKeyId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processValidateRegistrationKey(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processValidateRegistrationKey(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+        }));
+    }
+
+    protected processValidateRegistrationKey(response: HttpResponseBase): Observable<FileResponse | null> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     register(registrationFormDto: RegistrationFormDto): Observable<FileResponse | null> {
         let url_ = this.baseUrl + "/Authentication/Register";
         url_ = url_.replace(/[?&]$/, "");
@@ -143,8 +300,8 @@ export class AuthenticationClient implements IAuthenticationClient {
         return _observableOf(null as any);
     }
 
-    getRegistrationToken(): Observable<string> {
-        let url_ = this.baseUrl + "/Authentication/GetRegistrationToken";
+    createRegistrationKey(): Observable<string> {
+        let url_ = this.baseUrl + "/Authentication/CreateRegistrationKey";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -156,11 +313,11 @@ export class AuthenticationClient implements IAuthenticationClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetRegistrationToken(response_);
+            return this.processCreateRegistrationKey(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetRegistrationToken(response_ as any);
+                    return this.processCreateRegistrationKey(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<string>;
                 }
@@ -169,7 +326,7 @@ export class AuthenticationClient implements IAuthenticationClient {
         }));
     }
 
-    protected processGetRegistrationToken(response: HttpResponseBase): Observable<string> {
+    protected processCreateRegistrationKey(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -614,7 +771,7 @@ export class PostImagesClient implements IPostImagesClient {
 }
 
 export interface IPostsClient {
-    createPost(threadId: string | undefined, postDto: PostDto): Observable<ListPostDto>;
+    createPost(postDto: PostDto): Observable<ListPostDto>;
 }
 
 @Injectable({
@@ -630,12 +787,8 @@ export class PostsClient implements IPostsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createPost(threadId: string | undefined, postDto: PostDto): Observable<ListPostDto> {
-        let url_ = this.baseUrl + "/Posts/CreatePost?";
-        if (threadId === null)
-            throw new Error("The parameter 'threadId' cannot be null.");
-        else if (threadId !== undefined)
-            url_ += "threadId=" + encodeURIComponent("" + threadId) + "&";
+    createPost(postDto: PostDto): Observable<ListPostDto> {
+        let url_ = this.baseUrl + "/Posts/CreatePost";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(postDto);
@@ -688,7 +841,7 @@ export class PostsClient implements IPostsClient {
 }
 
 export interface ITestClient {
-    check(): Observable<string>;
+    check(): Observable<FileResponse | null>;
 }
 
 @Injectable({
@@ -704,7 +857,7 @@ export class TestClient implements ITestClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    check(): Observable<string> {
+    check(): Observable<FileResponse | null> {
         let url_ = this.baseUrl + "/Test/Check";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -712,7 +865,7 @@ export class TestClient implements ITestClient {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "application/json"
+                "Accept": "application/octet-stream"
             })
         };
 
@@ -723,28 +876,31 @@ export class TestClient implements ITestClient {
                 try {
                     return this.processCheck(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
+                    return _observableThrow(e) as any as Observable<FileResponse | null>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<string>;
+                return _observableThrow(response_) as any as Observable<FileResponse | null>;
         }));
     }
 
-    protected processCheck(response: HttpResponseBase): Observable<string> {
+    protected processCheck(response: HttpResponseBase): Observable<FileResponse | null> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return _observableOf(result200);
-            }));
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1022,8 +1178,8 @@ export class ThreadsClient implements IThreadsClient {
 }
 
 export class LoginFormDto implements ILoginFormDto {
-    userName!: string;
-    password!: string;
+    userName?: string | undefined;
+    password?: string | undefined;
 
     constructor(data?: ILoginFormDto) {
         if (data) {
@@ -1057,15 +1213,15 @@ export class LoginFormDto implements ILoginFormDto {
 }
 
 export interface ILoginFormDto {
-    userName: string;
-    password: string;
+    userName?: string | undefined;
+    password?: string | undefined;
 }
 
 export class RegistrationFormDto implements IRegistrationFormDto {
-    userName!: string;
-    password!: string;
-    confirmPassword!: string;
-    registrationToken!: string;
+    userName?: string | undefined;
+    password?: string | undefined;
+    confirmPassword?: string | undefined;
+    registrationKeyId!: string;
 
     constructor(data?: IRegistrationFormDto) {
         if (data) {
@@ -1081,7 +1237,7 @@ export class RegistrationFormDto implements IRegistrationFormDto {
             this.userName = _data["userName"];
             this.password = _data["password"];
             this.confirmPassword = _data["confirmPassword"];
-            this.registrationToken = _data["registrationToken"];
+            this.registrationKeyId = _data["registrationKeyId"];
         }
     }
 
@@ -1097,21 +1253,21 @@ export class RegistrationFormDto implements IRegistrationFormDto {
         data["userName"] = this.userName;
         data["password"] = this.password;
         data["confirmPassword"] = this.confirmPassword;
-        data["registrationToken"] = this.registrationToken;
+        data["registrationKeyId"] = this.registrationKeyId;
         return data;
     }
 }
 
 export interface IRegistrationFormDto {
-    userName: string;
-    password: string;
-    confirmPassword: string;
-    registrationToken: string;
+    userName?: string | undefined;
+    password?: string | undefined;
+    confirmPassword?: string | undefined;
+    registrationKeyId: string;
 }
 
 export class ListBoardDto implements IListBoardDto {
     id!: string;
-    title!: string;
+    title?: string | undefined;
 
     constructor(data?: IListBoardDto) {
         if (data) {
@@ -1146,13 +1302,13 @@ export class ListBoardDto implements IListBoardDto {
 
 export interface IListBoardDto {
     id: string;
-    title: string;
+    title?: string | undefined;
 }
 
 export class BoardDto implements IBoardDto {
     id?: string | undefined;
-    title!: string;
-    description!: string;
+    title?: string | undefined;
+    description?: string | undefined;
 
     constructor(data?: IBoardDto) {
         if (data) {
@@ -1189,15 +1345,15 @@ export class BoardDto implements IBoardDto {
 
 export interface IBoardDto {
     id?: string | undefined;
-    title: string;
-    description: string;
+    title?: string | undefined;
+    description?: string | undefined;
 }
 
 export class ListPostDto implements IListPostDto {
     id!: string;
-    text!: string;
+    text?: string | undefined;
     threadId!: string;
-    postImageUrls!: string[];
+    postImageUrls?: string[] | undefined;
 
     constructor(data?: IListPostDto) {
         if (data) {
@@ -1205,9 +1361,6 @@ export class ListPostDto implements IListPostDto {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
-        }
-        if (!data) {
-            this.postImageUrls = [];
         }
     }
 
@@ -1247,14 +1400,14 @@ export class ListPostDto implements IListPostDto {
 
 export interface IListPostDto {
     id: string;
-    text: string;
+    text?: string | undefined;
     threadId: string;
-    postImageUrls: string[];
+    postImageUrls?: string[] | undefined;
 }
 
 export class PostDto implements IPostDto {
-    text!: string;
-    postImages!: any[];
+    text?: string | undefined;
+    postImages?: any[] | undefined;
 
     constructor(data?: IPostDto) {
         if (data) {
@@ -1262,9 +1415,6 @@ export class PostDto implements IPostDto {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
-        }
-        if (!data) {
-            this.postImages = [];
         }
     }
 
@@ -1299,12 +1449,12 @@ export class PostDto implements IPostDto {
 }
 
 export interface IPostDto {
-    text: string;
-    postImages: any[];
+    text?: string | undefined;
+    postImages?: any[] | undefined;
 }
 
 export class PaginatedResultOfListThreadDto implements IPaginatedResultOfListThreadDto {
-    pageItems!: ListThreadDto[];
+    pageItems?: ListThreadDto[] | undefined;
     pageIndex!: number;
     totalPages!: number;
     totalCount!: number;
@@ -1317,9 +1467,6 @@ export class PaginatedResultOfListThreadDto implements IPaginatedResultOfListThr
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
-        }
-        if (!data) {
-            this.pageItems = [];
         }
     }
 
@@ -1362,7 +1509,7 @@ export class PaginatedResultOfListThreadDto implements IPaginatedResultOfListThr
 }
 
 export interface IPaginatedResultOfListThreadDto {
-    pageItems: ListThreadDto[];
+    pageItems?: ListThreadDto[] | undefined;
     pageIndex: number;
     totalPages: number;
     totalCount: number;
@@ -1372,10 +1519,10 @@ export interface IPaginatedResultOfListThreadDto {
 
 export class ListThreadDto implements IListThreadDto {
     id!: string;
-    title!: string;
-    text!: string;
-    threadImageUrls!: string[];
-    posts!: ListPostDto[];
+    title?: string | undefined;
+    text?: string | undefined;
+    threadImageUrls?: string[] | undefined;
+    posts?: ListPostDto[] | undefined;
 
     constructor(data?: IListThreadDto) {
         if (data) {
@@ -1383,10 +1530,6 @@ export class ListThreadDto implements IListThreadDto {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
-        }
-        if (!data) {
-            this.threadImageUrls = [];
-            this.posts = [];
         }
     }
 
@@ -1436,10 +1579,10 @@ export class ListThreadDto implements IListThreadDto {
 
 export interface IListThreadDto {
     id: string;
-    title: string;
-    text: string;
-    threadImageUrls: string[];
-    posts: ListPostDto[];
+    title?: string | undefined;
+    text?: string | undefined;
+    threadImageUrls?: string[] | undefined;
+    posts?: ListPostDto[] | undefined;
 }
 
 export class PaginationParamsDto implements IPaginationParamsDto {

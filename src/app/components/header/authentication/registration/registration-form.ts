@@ -1,5 +1,5 @@
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { LoginFormDto, RegistrationFormDto } from 'api-client';
+import { RegistrationFormDto } from 'api-client';
 import { matchValidator, passwordValidators, userNameValidators } from 'src/app/validator-functions';
 
 export class RegistrationForm extends FormGroup {
@@ -8,7 +8,7 @@ export class RegistrationForm extends FormGroup {
       userName: new FormControl('', userNameValidators),
       password: new FormControl('', passwordValidators),
       confirmPassword: new FormControl('', matchValidator('password')),
-      registrationToken: new FormControl('', [Validators.required, Validators.pattern('^[\\w-]*\\.[\\w-]*\\.[\\w-]*$')]),
+      registrationToken: new FormControl(''),
     });
   }
 
@@ -24,8 +24,8 @@ export class RegistrationForm extends FormGroup {
     return this.controls['confirmPassword'];
   }
 
-  get registrationToken(): AbstractControl {
-    return this.controls['registrationToken'];
+  get registrationKeyId(): AbstractControl {
+    return this.controls['registrationKeyId'];
   }
 
   get registrationFormDto(): RegistrationFormDto {
@@ -33,7 +33,7 @@ export class RegistrationForm extends FormGroup {
       userName: this.userName.value,
       password: this.password.value,
       confirmPassword: this.password.value,
-      registrationToken: this.registrationToken.value,
+      registrationKeyId: this.registrationKeyId.value,
     });
   }
 

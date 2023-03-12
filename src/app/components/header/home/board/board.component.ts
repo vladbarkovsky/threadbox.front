@@ -56,7 +56,7 @@ export class BoardComponent extends MemoryLeaksProtectedComponent implements OnI
       .getThreadsByBoard(this.boardId, new PaginationParamsDto({ pageIndex: 0, pageSize: 10 }))
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: x => (this.currentPageThreads = x.pageItems),
+        next: x => (this.currentPageThreads = x.pageItems!),
         error: () => this.toastService.error('Unable to load threads for current page.'),
       });
 
@@ -76,7 +76,7 @@ export class BoardComponent extends MemoryLeaksProtectedComponent implements OnI
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: listThreadDto => {
-          this.currentPageThreads.push(listThreadDto);
+          this.currentPageThreads!.push(listThreadDto);
           this.toastService.success('Thread successfully added.');
           this.modal.dismissAll();
         },
