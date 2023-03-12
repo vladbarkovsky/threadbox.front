@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BoardDto } from 'api-client';
-import { BaseComponent } from 'src/app/components/base.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
 import { EventService } from 'src/app/services/event.service';
 import { BoardForm } from '../board-form';
 
@@ -11,7 +11,7 @@ import { BoardForm } from '../board-form';
   templateUrl: './edit-board-modal.component.html',
   styleUrls: ['./edit-board-modal.component.scss'],
 })
-export class EditBoardModalComponent extends BaseComponent implements OnInit {
+export class EditBoardModalComponent extends MemoryLeaksProtectedComponent implements OnInit {
   @Input() readonly boardDto!: BoardDto;
 
   boardForm!: BoardForm;

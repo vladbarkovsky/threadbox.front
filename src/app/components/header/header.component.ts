@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { BaseComponent } from '../base.component';
+import { MemoryLeaksProtectedComponent } from '../memory-leaks-protected.component';
 import { HeaderService } from './header.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { HeaderService } from './header.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent extends BaseComponent implements OnInit {
+export class HeaderComponent extends MemoryLeaksProtectedComponent implements OnInit {
   activePath!: string;
   isCollapsed: boolean = true;
 

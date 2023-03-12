@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from '../../base.component';
+import { MemoryLeaksProtectedComponent } from '../../memory-leaks-protected.component';
 
 @Component({
   selector: 'app-authentication',
   templateUrl: './authentication.component.html',
   styleUrls: ['./authentication.component.scss'],
 })
-export class AuthenticationComponent extends BaseComponent implements OnInit {
+export class AuthenticationComponent extends MemoryLeaksProtectedComponent implements OnInit {
   constructor() {
     super();
   }

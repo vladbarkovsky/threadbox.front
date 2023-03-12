@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationClient, LoginFormDto } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from 'src/app/components/base.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { LoginForm } from './login-form';
@@ -12,7 +12,7 @@ import { LoginForm } from './login-form';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent extends BaseComponent {
+export class LoginComponent extends MemoryLeaksProtectedComponent {
   loginForm = new LoginForm();
 
   constructor(

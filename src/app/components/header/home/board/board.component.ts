@@ -13,7 +13,7 @@ import {
   ThreadImagesClient,
 } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from 'src/app/components/base.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
 import { EventService } from 'src/app/services/event.service';
 import { FileService } from 'src/app/services/file.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -24,7 +24,7 @@ import { AddThreadModalComponent } from './add-thread-modal/add-thread-modal.com
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent extends BaseComponent implements OnInit {
+export class BoardComponent extends MemoryLeaksProtectedComponent implements OnInit {
   boardId: string = this.activatedRoute.snapshot.params.boardId;
   board?: BoardDto;
   currentPageThreads: ListThreadDto[] = [];

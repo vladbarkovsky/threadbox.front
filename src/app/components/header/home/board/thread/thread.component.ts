@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ListThreadDto } from 'api-client';
-import { BaseComponent } from 'src/app/components/base.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
 
 @Component({
   selector: 'app-thread',
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss'],
 })
-export class ThreadComponent extends BaseComponent implements OnInit {
+export class ThreadComponent extends MemoryLeaksProtectedComponent implements OnInit {
   @Input() thread!: ListThreadDto;
 
   @Output() downloadImagesEvent: EventEmitter<string> = new EventEmitter();

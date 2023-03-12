@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileParameter } from 'api-client';
-import { BaseComponent } from '../base.component';
+import { MemoryLeaksProtectedComponent } from '../memory-leaks-protected.component';
 
 @Component({
   selector: 'app-images-upload',
   templateUrl: './images-upload.component.html',
   styleUrls: ['./images-upload.component.scss'],
 })
-export class ImagesUploadComponent extends BaseComponent implements OnInit {
+export class ImagesUploadComponent extends MemoryLeaksProtectedComponent implements OnInit {
   /**
    * Form with file input for images. Can be used for validating form that contains image upload
    *

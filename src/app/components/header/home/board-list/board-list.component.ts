@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BoardDto, BoardsClient, ListBoardDto } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from 'src/app/components/base.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
 import {
   ConfirmationModalComponent,
   ConfirmationModalConfig,
@@ -17,7 +17,7 @@ import { EditBoardModalComponent } from './edit-board-modal/edit-board-modal.com
   templateUrl: './board-list.component.html',
   styleUrls: ['./board-list.component.scss'],
 })
-export class BoardListComponent extends BaseComponent implements OnInit {
+export class BoardListComponent extends MemoryLeaksProtectedComponent implements OnInit {
   boards: ListBoardDto[] = [];
 
   constructor(

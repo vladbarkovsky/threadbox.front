@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationClient, RegistrationFormDto } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
-import { BaseComponent } from 'src/app/components/base.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
 import { ToastService } from 'src/app/services/toast.service';
 import { RegistrationForm } from './registration-form';
 
@@ -11,7 +11,7 @@ import { RegistrationForm } from './registration-form';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
 })
-export class RegistrationComponent extends BaseComponent {
+export class RegistrationComponent extends MemoryLeaksProtectedComponent {
   registrationForm = new RegistrationForm();
 
   constructor(private authenticationClient: AuthenticationClient, private toastService: ToastService, private router: Router) {
