@@ -31,7 +31,7 @@ export class LoginComponent extends MemoryLeaksProtectedComponent {
         .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: x => {
-            this.authenticationService.authenticationToken = x;
+            this.authenticationService.accessToken = x;
             this.toastService.success('Successfully logged in.');
             this.router.navigate(['/app/home']);
           },

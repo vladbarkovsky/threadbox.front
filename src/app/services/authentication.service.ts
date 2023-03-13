@@ -8,30 +8,37 @@ import { ToastService } from './toast.service';
   providedIn: 'root',
 })
 export class AuthenticationService {
-  isAuthenticated$ = new BehaviorSubject<boolean>(this.authenticationToken !== '');
+  isAuthenticated$ = new BehaviorSubject<boolean>(this.accessToken !== '');
 
-  set authenticationToken(value: string) {
-    const tokenClaims = jwtDecode(value) as AuthenticationTokenClaims;
-    this.cookieService.set('authenticationToken', value, tokenClaims.exp, undefined, undefined, true, undefined);
+  set accessToken(value: string) {
+    const tokenClaims = jwtDecode(value) as AccessTokenClaims;
+
+    this.cookieService.set(this.accessTokenCookieName, value, tokenClaims.exp, undefined, undefined, true, undefined);
+
     this.isAuthenticated$.next(true);
   }
 
-  get authenticationToken(): string {
-    return this.cookieService.get('authenticationToken');
+  get accessTokenClaims(): AccessTokenClaims {
+    return jwtDecode(this.accessToken) as AccessTokenClaims;
   }
 
+  get accessToken(): string {
+    return this.cookieService.get(this.accessTokenCookieName);
+  }
+
+  private readonly accessTokenCookieName = 'access';
+
   constructor(private cookieService: CookieService, private toastService: ToastService) {
-    this.isAuthenticated$.next(this.authenticationToken !== '');
+    this.isAuthenticated$.next(this.accessToken !== '');
   }
 
   logout(): void {
-    this.cookieService.delete('authenticationToken');
+    this.cookieService.delete(this.accessTokenCookieName);
     this.isAuthenticated$.next(false);
     this.toastService.success('Logged out.');
   }
 }
 
-interface AuthenticationTokenClaims {
-  userId: string;
+interface AccessTokenClaims {
   exp: number;
 }

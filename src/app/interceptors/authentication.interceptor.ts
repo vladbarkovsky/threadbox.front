@@ -1,4 +1,12 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpHeaders,
+  HttpInterceptor,
+  HttpRequest,
+  HttpStatusCode,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -14,18 +22,18 @@ export class AuthenticationInterceptor implements HttpInterceptor {
 
     if (isAuthenticated) {
       const clonedRequest = request.clone({
-        headers: request.headers.set('Authorization', 'Bearer ' + this.authenticationService.authenticationToken),
+        headers: request.headers.set('Authorization', 'Bearer ' + this.authenticationService.accessToken),
       });
 
       return next.handle(clonedRequest).pipe(
         tap({
           error: (error: HttpErrorResponse) => {
             switch (error.status) {
-              case 401:
+              case HttpStatusCode.Unauthorized:
                 this.authenticationService.logout();
                 this.toastService.error('You were logged out because of invalid authentication data.');
                 break;
-              case 403:
+              case HttpStatusCode.Forbidden:
                 this.toastService.error("You don't have permissions for this operation.");
                 break;
             }
