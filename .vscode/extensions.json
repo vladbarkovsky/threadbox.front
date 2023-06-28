@@ -1,10 +1,11 @@
 {
   "recommendations": [
-    "esbenp.prettier-vscode",
-    "christian-kohler.npm-intellisense",
-    "eamodio.gitlens",
     "angular.ng-template",
     "streetsidesoftware.code-spell-checker",
-    "oouo-diogo-perdigao.docthis"
+    "oouo-diogo-perdigao.docthis",
+    "eamodio.gitlens",
+    "christian-kohler.npm-intellisense",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vs-keybindings"
   ]
 }
