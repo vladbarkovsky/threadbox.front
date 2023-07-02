@@ -1,7 +1,16 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '/src/assets/icons/icomoon/icons.scss';
+
 .boards-list {
   max-width: 500px;
 }
 
-.action-icon:hover {
-  cursor: pointer;
+.action-icon {
+  font-size: x-large;
+
+  &:hover {
+    cursor: pointer;
+    color: $primary;
+  }
 }

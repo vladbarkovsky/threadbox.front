@@ -1,4 +1,5 @@
 <h3 class="mb-3">Boards</h3>
+
 <div class="boards-list list-group mb-4">
   <div
     *ngFor="let board of boards"
@@ -9,23 +10,19 @@
     </a>
 
     <div>
-      <img
-        class="action-icon"
+      <i
+        class="icomoon-icon edit action-icon"
         (click)="openEditBoardModal(board.id)"
-        src="assets/icons/iconmonstr-pencil-square-filled.svg"
-        alt="iconmonstr-pencil-square-filled.svg"
-        width="30"
-      />
-      <img
-        class="action-icon"
+      ></i>
+
+      <i
+        class="icomoon-icon trash action-icon"
         (click)="openDeleteBoardModal(board)"
-        src="assets/icons/iconmonstr-x-mark-circle-lined.svg"
-        alt="iconmonstr-x-mark-circle-lined.svg"
-        width="30"
-      />
+      ></i>
     </div>
   </div>
 </div>
+
 <button
   class="btn btn-secondary"
   (click)="openAddBoardModal()"

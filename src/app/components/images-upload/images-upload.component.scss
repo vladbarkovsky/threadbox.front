@@ -1,3 +1,7 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '/src/assets/icons/icomoon/icons.scss';
+
 .image-col {
   padding: 3px;
 
@@ -13,13 +17,15 @@
   font-size: 0;
   opacity: 1;
 
-  &:hover .closes {
+  &:hover .trash-icon {
     opacity: 1;
+    color: $danger;
+    font-size: x-large;
   }
 
-  .closes {
+  .trash-icon {
     position: absolute;
-    top: 5px;
+    top: 8px;
     right: 8px;
     z-index: 100;
     padding: 4px 3px;

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileParameter } from 'api-client';
 import { MemoryLeaksProtectedComponent } from '../memory-leaks-protected.component';
+import { ImageFile } from './image-file';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-images-upload',
@@ -10,22 +12,14 @@ import { MemoryLeaksProtectedComponent } from '../memory-leaks-protected.compone
 })
 export class ImagesUploadComponent extends MemoryLeaksProtectedComponent implements OnInit {
   /**
-   * Form with file input for images. Can be used for validating form that contains image upload
+   * Form with file input for images.
    *
    * @type {FormGroup}
    * @memberof ImagesUploadComponent
    */
   imagesForm: FormGroup = this.formBuilder.group({ imagesInput: [''] });
 
-  /**
-   * Strings used as sources for displaying uploaded images in HTML
-   *
-   * @type {string[]}
-   * @memberof ImagesUploadComponent
-   */
-  base64Urls: string[] = [];
-
-  imageFiles: File[] = [];
+  imageFiles: ImageFile[] = [];
 
   /**
    * Returns image files mapped for sending to server
@@ -35,34 +29,47 @@ export class ImagesUploadComponent extends MemoryLeaksProtectedComponent impleme
    * @memberof ImagesUploadComponent
    */
   get imageFileParameters(): FileParameter[] {
-    return this.imageFiles.map(x => ({ data: x, fileName: x.name }));
+    return this.imageFiles.map(x => ({ data: x.file, fileName: x.file.name }));
   }
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private toastService: ToastService) {
     super();
   }
 
   ngOnInit(): void {}
 
   onFileChange(fileInput: HTMLInputElement) {
-    const imageFiles: File[] = Array.from(fileInput.files!);
-    this.imageFiles.push(...imageFiles.filter(image => !this.imageFiles.some(x => x.name === image.name)));
+    // Getting images uploaded to file input
+    const files: File[] = Array.from(fileInput.files!);
 
-    if (this.imageFiles && this.imageFiles[0]) {
-      for (let i = 0; i < this.imageFiles.length; i++) {
+    if (files && files[0]) {
+      files.forEach(file => {
+        if (!file.type.startsWith('image/')) {
+          this.toastService.error(`File ${file.name} is not an image.`);
+          return;
+        }
+
+        // We create reader for each uploaded image to get it's Base64 representation,
+        // because we want to show uploaded images in HTML
         const reader = new FileReader();
 
         reader.onload = event => {
-          this.base64Urls.push(event.target?.result as string);
+          const base64 = event.target?.result as string;
+          const fileIsAlreadyAdded = this.imageFiles.some(x => x.base64 === base64);
+
+          if (fileIsAlreadyAdded) {
+            return;
+          }
+
+          this.imageFiles.push({ file, base64 });
         };
 
-        reader.readAsDataURL(this.imageFiles[i]);
-      }
+        reader.readAsDataURL(file);
+      });
     }
   }
 
-  deleteImage(index: number) {
-    this.imageFiles.slice(index, 1);
-    this.base64Urls.slice(index, 1);
+  deleteImage(imageFile: ImageFile) {
+    this.imageFiles = this.imageFiles.filter(x => x !== imageFile);
   }
 }
