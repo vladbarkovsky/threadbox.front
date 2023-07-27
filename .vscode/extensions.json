@@ -1,10 +1,15 @@
 {
   "recommendations": [
     "angular.ng-template",
+    "johnpapa.angular2",
+    "infinity1207.angular2-switcher",
+    "formulahendry.auto-rename-tag",
     "streetsidesoftware.code-spell-checker",
     "oouo-diogo-perdigao.docthis",
     "eamodio.gitlens",
     "christian-kohler.npm-intellisense",
+    "kohler.path-intellisense",
+    "gruntfuggly.todo-tree",
     "esbenp.prettier-vscode",
     "ms-vscode.vs-keybindings"
   ]
