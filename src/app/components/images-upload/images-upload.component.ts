@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FileParameter } from 'api-client';
 import { MemoryLeaksProtectedComponent } from '../memory-leaks-protected.component';
 import { ImageFile } from './image-file';
 import { ToastService } from 'src/app/services/toast.service';
@@ -20,17 +19,6 @@ export class ImagesUploadComponent extends MemoryLeaksProtectedComponent impleme
   imagesForm: FormGroup = this.formBuilder.group({ imagesInput: [''] });
 
   imageFiles: ImageFile[] = [];
-
-  /**
-   * Returns image files mapped for sending to server
-   *
-   * @readonly
-   * @type {FileParameter[]}
-   * @memberof ImagesUploadComponent
-   */
-  get imageFileParameters(): FileParameter[] {
-    return this.imageFiles.map(x => ({ data: x.file, fileName: x.file.name }));
-  }
 
   constructor(private formBuilder: FormBuilder, private toastService: ToastService) {
     super();

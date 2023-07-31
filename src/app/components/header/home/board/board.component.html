@@ -7,13 +7,3 @@
 >
   Add thread
 </button>
-
-<div
-  *ngFor="let thread of currentPageThreads"
-  class="my-2"
->
-  <app-thread
-    [thread]="thread"
-    (downloadImagesEvent)="downloadThreadImages(thread.id)"
-  ></app-thread>
-</div>

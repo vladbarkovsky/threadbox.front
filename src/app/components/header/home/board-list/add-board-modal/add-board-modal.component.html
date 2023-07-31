@@ -58,7 +58,6 @@
     class="btn btn-outline-dark"
     type="button"
     [disabled]="boardForm.invalid"
-    (click)="eventService.addBoard$.next(boardForm.boardDto)"
   >
     Submit
   </button>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BoardDto, BoardsClient, ListBoardDto } from 'api-client';
+import { BoardsClient } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
 import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
 import {
@@ -18,8 +18,6 @@ import { EditBoardModalComponent } from './edit-board-modal/edit-board-modal.com
   styleUrls: ['./board-list.component.scss'],
 })
 export class BoardListComponent extends MemoryLeaksProtectedComponent implements OnInit {
-  boards: ListBoardDto[] = [];
-
   constructor(
     private boardsClient: BoardsClient,
     private toastService: ToastService,
@@ -29,38 +27,10 @@ export class BoardListComponent extends MemoryLeaksProtectedComponent implements
     super();
   }
 
-  ngOnInit(): void {
-    this.boardsClient
-      .getBoardsList()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: x => (this.boards = x),
-        error: () => this.toastService.error('Unable to load boards.'),
-      });
-
-    this.eventService.addBoard$.pipe(takeUntil(this.destroyed$)).subscribe(boardDto => this.addBoard(boardDto));
-    this.eventService.editBoard$.pipe(takeUntil(this.destroyed$)).subscribe(boardDto => this.editBoard(boardDto));
-    this.eventService.deleteBoard$.pipe(takeUntil(this.destroyed$)).subscribe(x => this.deleteBoard(x.boardId));
-  }
+  ngOnInit(): void {}
 
   openAddBoardModal(): void {
     this.modal.open(AddBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
-  }
-
-  private addBoard(boardDto: BoardDto): void {
-    this.boardsClient
-      .createBoard(boardDto)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: x => {
-          this.boards.push(x);
-          this.toastService.success('Board successfully added.');
-          this.modal.dismissAll();
-        },
-        error: () => {
-          this.toastService.error('Unable to add board.');
-        },
-      });
   }
 
   openEditBoardModal(boardId: string): void {
@@ -80,46 +50,6 @@ export class BoardListComponent extends MemoryLeaksProtectedComponent implements
         error: () => {
           this.toastService.error('Unable to load board for editing.');
         },
-      });
-  }
-
-  private editBoard(boardDto: BoardDto): void {
-    this.boardsClient
-      .editBoard(boardDto)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: x => {
-          const index = this.boards.findIndex(board => board.id === x.id);
-          this.boards[index] = x;
-
-          this.toastService.success('Board successfully edited.');
-          this.modal.dismissAll();
-        },
-        error: () => this.toastService.error('Unable to edit board.'),
-      });
-  }
-
-  openDeleteBoardModal(listBoardDto: ListBoardDto): void {
-    const modalRef = this.modal.open(ConfirmationModalComponent, { backdrop: 'static', keyboard: false, scrollable: true });
-    modalRef.componentInstance.config = {
-      title: `Delete board ${listBoardDto.title}?`,
-      text: 'Delete board?',
-      data: { boardId: listBoardDto.id },
-      action$: this.eventService.deleteBoard$,
-    } as ConfirmationModalConfig;
-  }
-
-  private deleteBoard(boardId: string): void {
-    this.boardsClient
-      .deleteBoard(boardId)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: () => {
-          this.boards = this.boards.filter(x => x.id !== boardId);
-          this.modal.dismissAll();
-          this.toastService.success('Board successfully deleted.');
-        },
-        error: () => this.toastService.error('Unable to delete board.'),
       });
   }
 }

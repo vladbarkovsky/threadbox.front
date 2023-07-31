@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ListThreadDto } from 'api-client';
 import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
 
 @Component({
@@ -8,8 +7,6 @@ import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-p
   styleUrls: ['./thread.component.scss'],
 })
 export class ThreadComponent extends MemoryLeaksProtectedComponent implements OnInit {
-  @Input() thread!: ListThreadDto;
-
   @Output() downloadImagesEvent: EventEmitter<string> = new EventEmitter();
 
   constructor() {

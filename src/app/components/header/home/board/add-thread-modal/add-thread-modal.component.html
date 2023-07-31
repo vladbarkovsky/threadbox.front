@@ -62,7 +62,6 @@
     class="btn btn-outline-dark"
     type="button"
     [disabled]="threadForm.invalid"
-    (click)="eventService.addThread$.next({ threadForm: threadForm, imageFileParameters: imagesUploadComponent.imageFileParameters })"
   >
     Submit
   </button>
