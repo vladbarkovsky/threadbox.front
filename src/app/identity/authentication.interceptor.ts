@@ -10,19 +10,19 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { AuthenticationService } from '../services/authentication.service';
+import { IdentityService } from './identity.service';
 import { ToastService } from '../services/toast.service';
 
 @Injectable()
 export class AuthenticationInterceptor implements HttpInterceptor {
-  constructor(private authenticationService: AuthenticationService, private toastService: ToastService) {}
+  constructor(private authenticationService: IdentityService, private toastService: ToastService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const isAuthenticated = this.authenticationService.isAuthenticated$.getValue();
 
     if (isAuthenticated) {
       const clonedRequest = request.clone({
-        headers: request.headers.set('Authorization', 'Bearer ' + this.authenticationService.accessToken),
+        headers: request.headers.set('Authorization', 'Bearer ' + this.authenticationService.getAccessTokenFromCookie()),
       });
 
       return next.handle(clonedRequest).pipe(

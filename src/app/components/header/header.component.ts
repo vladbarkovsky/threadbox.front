@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/services/authentication.service';
+import { IdentityService } from 'src/app/identity/identity.service';
 import { MemoryLeaksProtectedComponent } from '../memory-leaks-protected.component';
 import { HeaderService } from './header.service';
 
@@ -13,7 +13,7 @@ export class HeaderComponent extends MemoryLeaksProtectedComponent implements On
   activePath!: string;
   isCollapsed: boolean = true;
 
-  constructor(public headerService: HeaderService, public authenticationService: AuthenticationService, private router: Router) {
+  constructor(public headerService: HeaderService, public authenticationService: IdentityService, private router: Router) {
     super();
   }
 

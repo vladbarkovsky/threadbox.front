@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { AuthenticationService } from 'src/app/services/authentication.service';
+import { IdentityService } from 'src/app/identity/identity.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +8,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 export class HeaderService {
   links: HeaderLink[] = [];
 
-  constructor(private authenticationService: AuthenticationService) {
+  constructor(private authenticationService: IdentityService) {
     this.authenticationService.isAuthenticated$.subscribe(x => {
       this.links = x ? linksForAuthenticatedUser : linksForUnauthenticatedUser;
     });

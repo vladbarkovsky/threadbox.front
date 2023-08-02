@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MemoryLeaksProtectedComponent } from 'src/app/components/memory-leaks-protected.component';
-import { AuthenticationService } from 'src/app/services/authentication.service';
+import { IdentityService } from 'src/app/identity/identity.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { LoginForm } from './login-form';
 
@@ -13,7 +13,7 @@ import { LoginForm } from './login-form';
 export class LoginComponent extends MemoryLeaksProtectedComponent {
   loginForm = new LoginForm();
 
-  constructor(private authenticationService: AuthenticationService, private toastService: ToastService, private router: Router) {
+  constructor(private authenticationService: IdentityService, private toastService: ToastService, private router: Router) {
     super();
   }
 }

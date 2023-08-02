@@ -22,7 +22,7 @@ export class HttpSourceDirective extends MemoryLeaksProtectedDirective implement
     this.elementRef.nativeElement.style.setProperty('display', 'none', 'important');
 
     this.http
-      .get(environment.apiBaseUrl + this.httpSource, { responseType: 'blob' })
+      .get(this.httpSource, { responseType: 'blob' })
       .pipe(
         takeUntil(this.destroyed$),
         // Show image

@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 import { API_BASE_URL } from 'api-client';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastModule } from './components/toast/toast.module';
-import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
+import { AuthenticationInterceptor } from './identity/authentication.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
