@@ -18,9 +18,9 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export interface IBoardsClient {
     getBoardsList(): Observable<BoardListDto[]>;
     getBoard(boardId: string | undefined): Observable<BoardDto>;
-    createBoard(command: Command): Observable<FileResponse | null>;
-    updateBoard(command: Command2): Observable<FileResponse | null>;
-    deleteBoard(boardId: string | undefined): Observable<FileResponse | null>;
+    createBoard(command: CreateBoardCommand): Observable<FileResponse>;
+    updateBoard(command: UpdateBoardCommand): Observable<FileResponse>;
+    deleteBoard(boardId: string | undefined): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -143,7 +143,7 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    createBoard(command: Command): Observable<FileResponse | null> {
+    createBoard(command: CreateBoardCommand): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Boards/CreateBoard";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -166,14 +166,14 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processCreateBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processCreateBoard(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processCreateBoard(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -199,7 +199,7 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    updateBoard(command: Command2): Observable<FileResponse | null> {
+    updateBoard(command: UpdateBoardCommand): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Boards/UpdateBoard";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -222,14 +222,14 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processUpdateBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processUpdateBoard(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processUpdateBoard(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -255,7 +255,7 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    deleteBoard(boardId: string | undefined): Observable<FileResponse | null> {
+    deleteBoard(boardId: string | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Boards/DeleteBoard?";
         if (boardId === null)
             throw new Error("The parameter 'boardId' cannot be null.");
@@ -278,14 +278,14 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processDeleteBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processDeleteBoard(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processDeleteBoard(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -313,7 +313,7 @@ export class BoardsClient implements IBoardsClient {
 }
 
 export interface IConnectionClient {
-    checkConnection(): Observable<FileResponse | null>;
+    checkConnection(): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -329,7 +329,7 @@ export class ConnectionClient implements IConnectionClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    checkConnection(): Observable<FileResponse | null> {
+    checkConnection(): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Connection/CheckConnection";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -348,14 +348,14 @@ export class ConnectionClient implements IConnectionClient {
                 try {
                     return this.processCheckConnection(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processCheckConnection(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processCheckConnection(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -383,9 +383,9 @@ export class ConnectionClient implements IConnectionClient {
 }
 
 export interface IFilesClient {
-    getFile(fileInfoId: string | undefined): Observable<FileResponse | null>;
-    getThreadImagesZip(threadId: string | undefined): Observable<FileResponse | null>;
-    getPostImagesZip(postId: string | undefined): Observable<FileResponse | null>;
+    getFile(fileInfoId: string | undefined): Observable<FileResponse>;
+    getThreadImagesZip(threadId: string | undefined): Observable<FileResponse>;
+    getPostImagesZip(postId: string | undefined): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -401,7 +401,7 @@ export class FilesClient implements IFilesClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getFile(fileInfoId: string | undefined): Observable<FileResponse | null> {
+    getFile(fileInfoId: string | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Files/GetFile?";
         if (fileInfoId === null)
             throw new Error("The parameter 'fileInfoId' cannot be null.");
@@ -424,14 +424,14 @@ export class FilesClient implements IFilesClient {
                 try {
                     return this.processGetFile(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processGetFile(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processGetFile(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -457,7 +457,7 @@ export class FilesClient implements IFilesClient {
         return _observableOf(null as any);
     }
 
-    getThreadImagesZip(threadId: string | undefined): Observable<FileResponse | null> {
+    getThreadImagesZip(threadId: string | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Files/GetThreadImagesZip?";
         if (threadId === null)
             throw new Error("The parameter 'threadId' cannot be null.");
@@ -480,14 +480,14 @@ export class FilesClient implements IFilesClient {
                 try {
                     return this.processGetThreadImagesZip(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processGetThreadImagesZip(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processGetThreadImagesZip(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -513,7 +513,7 @@ export class FilesClient implements IFilesClient {
         return _observableOf(null as any);
     }
 
-    getPostImagesZip(postId: string | undefined): Observable<FileResponse | null> {
+    getPostImagesZip(postId: string | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Files/GetPostImagesZip?";
         if (postId === null)
             throw new Error("The parameter 'postId' cannot be null.");
@@ -536,14 +536,14 @@ export class FilesClient implements IFilesClient {
                 try {
                     return this.processGetPostImagesZip(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processGetPostImagesZip(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processGetPostImagesZip(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -571,8 +571,8 @@ export class FilesClient implements IFilesClient {
 }
 
 export interface IIdentityClient {
-    signIn(command: Command3): Observable<string>;
-    signUp(command: Command4): Observable<FileResponse | null>;
+    signIn(command: SignInCommand): Observable<string>;
+    signUp(command: SignUpCommand): Observable<FileResponse>;
     createRegistrationKey(): Observable<string>;
     refreshAccessToken(): Observable<string>;
 }
@@ -590,7 +590,7 @@ export class IdentityClient implements IIdentityClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    signIn(command: Command3): Observable<string> {
+    signIn(command: SignInCommand): Observable<string> {
         let url_ = this.baseUrl + "/api/Identity/SignIn";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -643,7 +643,7 @@ export class IdentityClient implements IIdentityClient {
         return _observableOf(null as any);
     }
 
-    signUp(command: Command4): Observable<FileResponse | null> {
+    signUp(command: SignUpCommand): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Identity/SignUp";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -666,14 +666,14 @@ export class IdentityClient implements IIdentityClient {
                 try {
                     return this.processSignUp(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processSignUp(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processSignUp(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -800,7 +800,7 @@ export class IdentityClient implements IIdentityClient {
 
 export interface IPostsClient {
     getPostsByThread(threadId: string | undefined): Observable<PostDto[]>;
-    createPost(command: Command5): Observable<FileResponse | null>;
+    createPost(command: CreatePostCommand): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -875,7 +875,7 @@ export class PostsClient implements IPostsClient {
         return _observableOf(null as any);
     }
 
-    createPost(command: Command5): Observable<FileResponse | null> {
+    createPost(command: CreatePostCommand): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Posts/CreatePost";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -898,14 +898,14 @@ export class PostsClient implements IPostsClient {
                 try {
                     return this.processCreatePost(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processCreatePost(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processCreatePost(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -933,8 +933,8 @@ export class PostsClient implements IPostsClient {
 }
 
 export interface IThreadsClient {
-    getThreadsByBoard(query: Query): Observable<PaginatedResultOfThreadDto>;
-    createThread(command: Command6): Observable<FileResponse | null>;
+    getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto>;
+    createThread(command: CreateThreadCommand): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -950,7 +950,7 @@ export class ThreadsClient implements IThreadsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getThreadsByBoard(query: Query): Observable<PaginatedResultOfThreadDto> {
+    getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto> {
         let url_ = this.baseUrl + "/api/Threads/GetThreadsByBoard";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1002,7 +1002,7 @@ export class ThreadsClient implements IThreadsClient {
         return _observableOf(null as any);
     }
 
-    createThread(command: Command6): Observable<FileResponse | null> {
+    createThread(command: CreateThreadCommand): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Threads/CreateThread";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1025,14 +1025,14 @@ export class ThreadsClient implements IThreadsClient {
                 try {
                     return this.processCreateThread(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processCreateThread(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processCreateThread(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1060,7 +1060,7 @@ export class ThreadsClient implements IThreadsClient {
 }
 
 export class BoardListDto implements IBoardListDto {
-    id!: string;
+    id?: string;
     title?: string | undefined;
 
     constructor(data?: IBoardListDto) {
@@ -1095,12 +1095,12 @@ export class BoardListDto implements IBoardListDto {
 }
 
 export interface IBoardListDto {
-    id: string;
+    id?: string;
     title?: string | undefined;
 }
 
 export class BoardDto implements IBoardDto {
-    id!: string;
+    id?: string;
     title?: string | undefined;
     description?: string | undefined;
 
@@ -1138,16 +1138,16 @@ export class BoardDto implements IBoardDto {
 }
 
 export interface IBoardDto {
-    id: string;
+    id?: string;
     title?: string | undefined;
     description?: string | undefined;
 }
 
-export class Command implements ICommand {
+export class CreateBoardCommand implements ICreateBoardCommand {
     title?: string | undefined;
     description?: string | undefined;
 
-    constructor(data?: ICommand) {
+    constructor(data?: ICreateBoardCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1163,9 +1163,9 @@ export class Command implements ICommand {
         }
     }
 
-    static fromJS(data: any): Command {
+    static fromJS(data: any): CreateBoardCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new Command();
+        let result = new CreateBoardCommand();
         result.init(data);
         return result;
     }
@@ -1178,17 +1178,17 @@ export class Command implements ICommand {
     }
 }
 
-export interface ICommand {
+export interface ICreateBoardCommand {
     title?: string | undefined;
     description?: string | undefined;
 }
 
-export class Command2 implements ICommand2 {
-    id!: string;
+export class UpdateBoardCommand implements IUpdateBoardCommand {
+    id?: string;
     title?: string | undefined;
     description?: string | undefined;
 
-    constructor(data?: ICommand2) {
+    constructor(data?: IUpdateBoardCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1205,9 +1205,9 @@ export class Command2 implements ICommand2 {
         }
     }
 
-    static fromJS(data: any): Command2 {
+    static fromJS(data: any): UpdateBoardCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new Command2();
+        let result = new UpdateBoardCommand();
         result.init(data);
         return result;
     }
@@ -1221,17 +1221,17 @@ export class Command2 implements ICommand2 {
     }
 }
 
-export interface ICommand2 {
-    id: string;
+export interface IUpdateBoardCommand {
+    id?: string;
     title?: string | undefined;
     description?: string | undefined;
 }
 
-export class Command3 implements ICommand3 {
+export class SignInCommand implements ISignInCommand {
     userName?: string | undefined;
     password?: string | undefined;
 
-    constructor(data?: ICommand3) {
+    constructor(data?: ISignInCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1247,9 +1247,9 @@ export class Command3 implements ICommand3 {
         }
     }
 
-    static fromJS(data: any): Command3 {
+    static fromJS(data: any): SignInCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new Command3();
+        let result = new SignInCommand();
         result.init(data);
         return result;
     }
@@ -1262,18 +1262,18 @@ export class Command3 implements ICommand3 {
     }
 }
 
-export interface ICommand3 {
+export interface ISignInCommand {
     userName?: string | undefined;
     password?: string | undefined;
 }
 
-export class Command4 implements ICommand4 {
+export class SignUpCommand implements ISignUpCommand {
     userName?: string | undefined;
     password?: string | undefined;
     repeatPassword?: string | undefined;
-    registrationKeyId!: string;
+    registrationKeyId?: string;
 
-    constructor(data?: ICommand4) {
+    constructor(data?: ISignUpCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1291,9 +1291,9 @@ export class Command4 implements ICommand4 {
         }
     }
 
-    static fromJS(data: any): Command4 {
+    static fromJS(data: any): SignUpCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new Command4();
+        let result = new SignUpCommand();
         result.init(data);
         return result;
     }
@@ -1308,17 +1308,17 @@ export class Command4 implements ICommand4 {
     }
 }
 
-export interface ICommand4 {
+export interface ISignUpCommand {
     userName?: string | undefined;
     password?: string | undefined;
     repeatPassword?: string | undefined;
-    registrationKeyId: string;
+    registrationKeyId?: string;
 }
 
 export class PostDto implements IPostDto {
-    id!: string;
+    id?: string;
     text?: string | undefined;
-    threadId!: string;
+    threadId?: string;
     postImageUrls?: string[] | undefined;
 
     constructor(data?: IPostDto) {
@@ -1365,18 +1365,18 @@ export class PostDto implements IPostDto {
 }
 
 export interface IPostDto {
-    id: string;
+    id?: string;
     text?: string | undefined;
-    threadId: string;
+    threadId?: string;
     postImageUrls?: string[] | undefined;
 }
 
-export class Command5 implements ICommand5 {
+export class CreatePostCommand implements ICreatePostCommand {
     text?: string | undefined;
-    postImages?: any[] | undefined;
-    threadId!: string;
+    postImages?: string[] | undefined;
+    threadId?: string;
 
-    constructor(data?: ICommand5) {
+    constructor(data?: ICreatePostCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1397,9 +1397,9 @@ export class Command5 implements ICommand5 {
         }
     }
 
-    static fromJS(data: any): Command5 {
+    static fromJS(data: any): CreatePostCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new Command5();
+        let result = new CreatePostCommand();
         result.init(data);
         return result;
     }
@@ -1417,19 +1417,19 @@ export class Command5 implements ICommand5 {
     }
 }
 
-export interface ICommand5 {
+export interface ICreatePostCommand {
     text?: string | undefined;
-    postImages?: any[] | undefined;
-    threadId: string;
+    postImages?: string[] | undefined;
+    threadId?: string;
 }
 
 export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {
     pageItems?: ThreadDto[] | undefined;
-    pageIndex!: number;
-    totalPages!: number;
-    totalCount!: number;
-    hasPreviousPage!: boolean;
-    hasNextPage!: boolean;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 
     constructor(data?: IPaginatedResultOfThreadDto) {
         if (data) {
@@ -1480,15 +1480,15 @@ export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {
 
 export interface IPaginatedResultOfThreadDto {
     pageItems?: ThreadDto[] | undefined;
-    pageIndex: number;
-    totalPages: number;
-    totalCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class ThreadDto implements IThreadDto {
-    id!: string;
+    id?: string;
     title?: string | undefined;
     text?: string | undefined;
     threadImageUrls?: string[] | undefined;
@@ -1548,7 +1548,7 @@ export class ThreadDto implements IThreadDto {
 }
 
 export interface IThreadDto {
-    id: string;
+    id?: string;
     title?: string | undefined;
     text?: string | undefined;
     threadImageUrls?: string[] | undefined;
@@ -1556,8 +1556,8 @@ export interface IThreadDto {
 }
 
 export class PaginatedQuery implements IPaginatedQuery {
-    pageIndex!: number;
-    pageSize!: number;
+    pageIndex?: number;
+    pageSize?: number;
 
     constructor(data?: IPaginatedQuery) {
         if (data) {
@@ -1591,14 +1591,14 @@ export class PaginatedQuery implements IPaginatedQuery {
 }
 
 export interface IPaginatedQuery {
-    pageIndex: number;
-    pageSize: number;
+    pageIndex?: number;
+    pageSize?: number;
 }
 
-export class Query extends PaginatedQuery implements IQuery {
-    boardId!: string;
+export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThreadsByBoardQuery {
+    boardId?: string;
 
-    constructor(data?: IQuery) {
+    constructor(data?: IGetThreadsByBoardQuery) {
         super(data);
     }
 
@@ -1609,9 +1609,9 @@ export class Query extends PaginatedQuery implements IQuery {
         }
     }
 
-    static override fromJS(data: any): Query {
+    static override fromJS(data: any): GetThreadsByBoardQuery {
         data = typeof data === 'object' ? data : {};
-        let result = new Query();
+        let result = new GetThreadsByBoardQuery();
         result.init(data);
         return result;
     }
@@ -1624,17 +1624,17 @@ export class Query extends PaginatedQuery implements IQuery {
     }
 }
 
-export interface IQuery extends IPaginatedQuery {
-    boardId: string;
+export interface IGetThreadsByBoardQuery extends IPaginatedQuery {
+    boardId?: string;
 }
 
-export class Command6 implements ICommand6 {
+export class CreateThreadCommand implements ICreateThreadCommand {
     title?: string | undefined;
     text?: string | undefined;
-    boardId!: string;
-    threadImages?: any[] | undefined;
+    boardId?: string;
+    threadImages?: string[] | undefined;
 
-    constructor(data?: ICommand6) {
+    constructor(data?: ICreateThreadCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1656,9 +1656,9 @@ export class Command6 implements ICommand6 {
         }
     }
 
-    static fromJS(data: any): Command6 {
+    static fromJS(data: any): CreateThreadCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new Command6();
+        let result = new CreateThreadCommand();
         result.init(data);
         return result;
     }
@@ -1677,11 +1677,11 @@ export class Command6 implements ICommand6 {
     }
 }
 
-export interface ICommand6 {
+export interface ICreateThreadCommand {
     title?: string | undefined;
     text?: string | undefined;
-    boardId: string;
-    threadImages?: any[] | undefined;
+    boardId?: string;
+    threadImages?: string[] | undefined;
 }
 
 export interface FileResponse {
