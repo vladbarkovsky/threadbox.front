@@ -9,7 +9,7 @@ export class HeaderService {
   links: HeaderLink[] = [];
 
   constructor(private authenticationService: IdentityService) {
-    this.authenticationService.isAuthenticated$.subscribe(x => {
+    this.authenticationService.authorized$.subscribe(x => {
       this.links = x ? linksForAuthenticatedUser : linksForUnauthenticatedUser;
     });
   }

@@ -570,9 +570,237 @@ export class FilesClient implements IFilesClient {
     }
 }
 
+export interface IIdentityClient {
+    signIn(command: Command3): Observable<string>;
+    signUp(command: Command4): Observable<FileResponse | null>;
+    createRegistrationKey(): Observable<string>;
+    refreshAccessToken(): Observable<string>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class IdentityClient implements IIdentityClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    signIn(command: Command3): Observable<string> {
+        let url_ = this.baseUrl + "/api/Identity/SignIn";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSignIn(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSignIn(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processSignIn(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    signUp(command: Command4): Observable<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/Identity/SignUp";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSignUp(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSignUp(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+        }));
+    }
+
+    protected processSignUp(response: HttpResponseBase): Observable<FileResponse | null> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createRegistrationKey(): Observable<string> {
+        let url_ = this.baseUrl + "/api/Identity/CreateRegistrationKey";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateRegistrationKey(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateRegistrationKey(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processCreateRegistrationKey(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    refreshAccessToken(): Observable<string> {
+        let url_ = this.baseUrl + "/api/Identity/RefreshAccessToken";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRefreshAccessToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRefreshAccessToken(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processRefreshAccessToken(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export interface IPostsClient {
     getPostsByThread(threadId: string | undefined): Observable<PostDto[]>;
-    createPost(command: Command3): Observable<FileResponse | null>;
+    createPost(command: Command5): Observable<FileResponse | null>;
 }
 
 @Injectable({
@@ -647,7 +875,7 @@ export class PostsClient implements IPostsClient {
         return _observableOf(null as any);
     }
 
-    createPost(command: Command3): Observable<FileResponse | null> {
+    createPost(command: Command5): Observable<FileResponse | null> {
         let url_ = this.baseUrl + "/api/Posts/CreatePost";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -706,7 +934,7 @@ export class PostsClient implements IPostsClient {
 
 export interface IThreadsClient {
     getThreadsByBoard(query: Query): Observable<PaginatedResultOfThreadDto>;
-    createThread(command: Command4): Observable<FileResponse | null>;
+    createThread(command: Command6): Observable<FileResponse | null>;
 }
 
 @Injectable({
@@ -774,7 +1002,7 @@ export class ThreadsClient implements IThreadsClient {
         return _observableOf(null as any);
     }
 
-    createThread(command: Command4): Observable<FileResponse | null> {
+    createThread(command: Command6): Observable<FileResponse | null> {
         let url_ = this.baseUrl + "/api/Threads/CreateThread";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -999,6 +1227,94 @@ export interface ICommand2 {
     description?: string | undefined;
 }
 
+export class Command3 implements ICommand3 {
+    userName?: string | undefined;
+    password?: string | undefined;
+
+    constructor(data?: ICommand3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): Command3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Command3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface ICommand3 {
+    userName?: string | undefined;
+    password?: string | undefined;
+}
+
+export class Command4 implements ICommand4 {
+    userName?: string | undefined;
+    password?: string | undefined;
+    repeatPassword?: string | undefined;
+    registrationKeyId!: string;
+
+    constructor(data?: ICommand4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"];
+            this.password = _data["password"];
+            this.repeatPassword = _data["repeatPassword"];
+            this.registrationKeyId = _data["registrationKeyId"];
+        }
+    }
+
+    static fromJS(data: any): Command4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Command4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["password"] = this.password;
+        data["repeatPassword"] = this.repeatPassword;
+        data["registrationKeyId"] = this.registrationKeyId;
+        return data;
+    }
+}
+
+export interface ICommand4 {
+    userName?: string | undefined;
+    password?: string | undefined;
+    repeatPassword?: string | undefined;
+    registrationKeyId: string;
+}
+
 export class PostDto implements IPostDto {
     id!: string;
     text?: string | undefined;
@@ -1055,12 +1371,12 @@ export interface IPostDto {
     postImageUrls?: string[] | undefined;
 }
 
-export class Command3 implements ICommand3 {
+export class Command5 implements ICommand5 {
     text?: string | undefined;
     postImages?: any[] | undefined;
     threadId!: string;
 
-    constructor(data?: ICommand3) {
+    constructor(data?: ICommand5) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1081,9 +1397,9 @@ export class Command3 implements ICommand3 {
         }
     }
 
-    static fromJS(data: any): Command3 {
+    static fromJS(data: any): Command5 {
         data = typeof data === 'object' ? data : {};
-        let result = new Command3();
+        let result = new Command5();
         result.init(data);
         return result;
     }
@@ -1101,7 +1417,7 @@ export class Command3 implements ICommand3 {
     }
 }
 
-export interface ICommand3 {
+export interface ICommand5 {
     text?: string | undefined;
     postImages?: any[] | undefined;
     threadId: string;
@@ -1312,13 +1628,13 @@ export interface IQuery extends IPaginatedQuery {
     boardId: string;
 }
 
-export class Command4 implements ICommand4 {
+export class Command6 implements ICommand6 {
     title?: string | undefined;
     text?: string | undefined;
     boardId!: string;
     threadImages?: any[] | undefined;
 
-    constructor(data?: ICommand4) {
+    constructor(data?: ICommand6) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1340,9 +1656,9 @@ export class Command4 implements ICommand4 {
         }
     }
 
-    static fromJS(data: any): Command4 {
+    static fromJS(data: any): Command6 {
         data = typeof data === 'object' ? data : {};
-        let result = new Command4();
+        let result = new Command6();
         result.init(data);
         return result;
     }
@@ -1361,7 +1677,7 @@ export class Command4 implements ICommand4 {
     }
 }
 
-export interface ICommand4 {
+export interface ICommand6 {
     title?: string | undefined;
     text?: string | undefined;
     boardId: string;
