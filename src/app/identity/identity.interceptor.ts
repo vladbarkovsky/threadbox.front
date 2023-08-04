@@ -8,9 +8,7 @@ import { IdentityClient } from 'api-client';
 import { JwtService } from './jwt.service';
 
 @Injectable()
-export class AuthenticationInterceptor implements HttpInterceptor {
-  private recursionLock = false;
-
+export class AuthorizationInterceptor implements HttpInterceptor {
   constructor(
     private identityService: IdentityService,
     private jwtService: JwtService,
@@ -22,13 +20,11 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     const authorized = this.identityService.authorized$.getValue();
 
     if (authorized) {
-      if (this.jwtService.accessTokenExpiresSoon && !this.recursionLock) {
-        this.recursionLock = true;
+      if (this.jwtService.accessTokenExpiresSoon) {
         return this.identityClient.refreshAccessToken().pipe(
           first(),
           switchMap(accessToken => {
             this.identityService.authorize(accessToken);
-            this.recursionLock = false;
             return this.sendAuthorizedRequest(request, next);
           })
         );
