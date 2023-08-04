@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/components/memory-leaks-protected.component';
-import { ToastService } from 'src/app/services/toast.service';
+import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
+import { ToastService } from 'src/app/common/toast/toast.service';
 import { RegistrationForm } from './registration-form';
 
 @Component({

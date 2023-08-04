@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { first, switchMap, tap } from 'rxjs/operators';
 import { IdentityService } from './identity.service';
-import { ToastService } from '../services/toast.service';
+import { ToastService } from '../common/toast/toast.service';
 import { IdentityClient } from 'api-client';
 import { JwtService } from './jwt.service';
 
@@ -49,7 +49,7 @@ export class AuthorizationInterceptor implements HttpInterceptor {
               this.identityService.signOut();
               break;
             case HttpStatusCode.Forbidden:
-              this.toastService.error("You don't have permissions for this operation.");
+              this.toastService.showErrorToast("You don't have permissions for this operation.");
               break;
           }
         },

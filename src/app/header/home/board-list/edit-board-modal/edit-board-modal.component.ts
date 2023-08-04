@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BoardDto } from 'api-client';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/components/memory-leaks-protected.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
 import { EventService } from 'src/app/services/event.service';
 import { BoardForm } from '../board-form';
 

@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/components/memory-leaks-protected.component';
-import { ImagesUploadComponent } from 'src/app/common/components/images-upload/images-upload.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
+import { ImagesUploadComponent } from 'src/app/common/images-upload/images-upload.component';
 import { EventService } from 'src/app/services/event.service';
 
 @Component({

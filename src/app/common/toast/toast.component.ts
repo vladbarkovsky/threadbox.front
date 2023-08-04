@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Toast, ToastService } from 'src/app/services/toast.service';
+import { Toast, ToastService } from 'src/app/common/toast/toast.service';
 
 @Component({
   selector: 'app-toast',
@@ -13,6 +13,6 @@ export class ToastComponent {
   }
 
   removeToast(toast: Toast) {
-    this.toastService.remove(toast);
+    this.toastService.removeToast(toast);
   }
 }

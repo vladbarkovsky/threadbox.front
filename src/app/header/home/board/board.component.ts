@@ -4,10 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ThreadsClient, BoardsClient, BoardDto } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/components/memory-leaks-protected.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
 import { EventService } from 'src/app/services/event.service';
-import { FileService } from 'src/app/services/file.service';
-import { ToastService } from 'src/app/services/toast.service';
+import { FileService } from 'src/app/common/file.service';
+import { ToastService } from 'src/app/common/toast/toast.service';
 import { AddThreadModalComponent } from './add-thread-modal/add-thread-modal.component';
 
 @Component({
@@ -34,7 +34,7 @@ export class BoardComponent extends MemoryLeaksProtectedComponent implements OnI
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: x => (this.board = x),
-        error: () => this.toastService.error('Unable to load board data.'),
+        error: () => this.toastService.showErrorToast('Unable to load board data.'),
       });
   }
 

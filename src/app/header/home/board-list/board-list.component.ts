@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BoardsClient } from 'api-client';
 import { takeUntil } from 'rxjs/operators';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/components/memory-leaks-protected.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
 import {
   ConfirmationModalComponent,
   ConfirmationModalConfig,
-} from 'src/app/common/components/confirmation-modal/confirmation-modal.component';
+} from 'src/app/common/confirmation-modal/confirmation-modal.component';
 import { EventService } from 'src/app/services/event.service';
-import { ToastService } from 'src/app/services/toast.service';
+import { ToastService } from 'src/app/common/toast/toast.service';
 import { AddBoardModalComponent } from './add-board-modal/add-board-modal.component';
 import { EditBoardModalComponent } from './edit-board-modal/edit-board-modal.component';
 
@@ -48,7 +48,7 @@ export class BoardListComponent extends MemoryLeaksProtectedComponent implements
           modalRef.componentInstance.boardDto = x;
         },
         error: () => {
-          this.toastService.error('Unable to load board for editing.');
+          this.toastService.showErrorToast('Unable to load board for editing.');
         },
       });
   }

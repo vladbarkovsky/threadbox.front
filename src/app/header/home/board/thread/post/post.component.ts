@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/components/memory-leaks-protected.component';
+import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
 import { EventService } from 'src/app/services/event.service';
 
 @Component({

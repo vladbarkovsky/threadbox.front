@@ -6,8 +6,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
 import { API_BASE_URL } from 'api-client';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ToastModule } from './common/components/toast/toast.module';
-import { AuthorizationInterceptor } from './identity/identity.interceptor';
+import { ToastModule } from './common/toast/toast.module';
+import { AuthorizationInterceptor } from './identity/authorization.interceptor';
 
 @NgModule({
   declarations: [AppComponent],

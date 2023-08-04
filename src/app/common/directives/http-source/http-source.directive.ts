@@ -1,18 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
-import { finalize, takeUntil } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
-import { MemoryLeaksProtectedDirective } from '../memory-leaks-protected.directive';
+import { finalize, first } from 'rxjs/operators';
 
 @Directive({
   selector: 'img[httpSource]',
 })
-export class HttpSourceDirective extends MemoryLeaksProtectedDirective implements OnInit {
+export class HttpSourceDirective implements OnInit {
   @Input() httpSource!: string;
 
-  constructor(private http: HttpClient, private renderer2: Renderer2, private elementRef: ElementRef) {
-    super();
-  }
+  constructor(private http: HttpClient, private renderer2: Renderer2, private elementRef: ElementRef) {}
 
   ngOnInit(): void {
     // TODO: Replace image hiding by CSS display property with ng-lazyload-image
@@ -24,7 +20,7 @@ export class HttpSourceDirective extends MemoryLeaksProtectedDirective implement
     this.http
       .get(this.httpSource, { responseType: 'blob' })
       .pipe(
-        takeUntil(this.destroyed$),
+        first(),
         // Show image
         finalize(() => (this.elementRef.nativeElement.style.display = null))
       )
