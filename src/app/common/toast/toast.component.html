@@ -3,9 +3,9 @@
 <ngb-toast
   *ngFor="let toast of toasts"
   class="text-light"
-  [ngClass]="{ 'bg-success': toast.type === 'success', 'bg-danger': toast.type === 'error'}"
+  [ngClass]="toast.class"
   [autohide]="true"
-  [delay]="toast.delayMs"
+  [delay]="toast.delayMilliseconds"
   (hidden)="removeToast(toast)"
   (click)="removeToast(toast)"
 >

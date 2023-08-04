@@ -13,7 +13,9 @@ import { AuthorizationInterceptor } from './identity/authorization.interceptor';
   declarations: [AppComponent],
   imports: [BrowserModule, AppRoutingModule, NgbModule, HttpClientModule, ToastModule],
   providers: [
+    // Required for API client
     { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl },
+
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],

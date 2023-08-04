@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastType } from './toast-type';
-
-export interface Toast {
-  text: string;
-  type: ToastType;
-  delayMilliseconds: number;
-}
+import { Toast } from './toast';
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
@@ -15,7 +9,7 @@ export class ToastService {
   showSuccessToast(text: string, delayMilliseconds: number = this.defaultDelayMilliseconds) {
     this.toasts.push({
       text: text,
-      type: 'success',
+      class: 'bg-success',
       delayMilliseconds: delayMilliseconds,
     });
   }
@@ -23,7 +17,7 @@ export class ToastService {
   showErrorToast(text: string, delayMilliseconds: number = this.defaultDelayMilliseconds) {
     this.toasts.push({
       text: text,
-      type: 'error',
+      class: 'bg-danger',
       delayMilliseconds: delayMilliseconds,
     });
   }

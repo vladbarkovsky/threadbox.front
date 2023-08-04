@@ -4,6 +4,7 @@
   <div class="container-fluid">
     <div class="navbar-brand d-flex">
       <div class="mr-2">Threadbox</div>
+
       <img
         src="assets/logo.png"
         alt="Threadbox logo image"
@@ -16,6 +17,7 @@
       type="button"
       (click)="isCollapsed = !isCollapsed"
     >
+      <!-- TODO: Replace with icomoon icon -->
       &#9776;
     </button>
 
@@ -25,12 +27,12 @@
     >
       <ul class="navbar-nav">
         <li
-          *ngFor="let link of headerService.links"
+          *ngFor="let link of links"
           class="nav-item"
         >
           <a
             class="nav-link"
-            [ngClass]="{ 'active': link.path === activePath }"
+            [class.active]="link.path === activePath"
             [routerLink]="link.path"
             (click)="onLinkClick(link.path)"
             >{{ link.title }}</a
@@ -39,11 +41,11 @@
       </ul>
 
       <button
-        *ngIf="authenticationService.isAuthenticated$ | async"
+        *ngIf="authorized$ | async"
         class="btn btn-secondary"
-        (click)="authenticationService.logout()"
+        (click)="signOut()"
       >
-        Logout
+        Sign out
       </button>
     </div>
   </div>

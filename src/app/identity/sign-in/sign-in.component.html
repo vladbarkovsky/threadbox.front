@@ -1,0 +1,126 @@
+<!-- https://github.com/nauvalazhar/bootstrap-5-login-page -->
+
+<div class="card-body p-5">
+  <h3 class="mb-4">Sign in</h3>
+
+  <form
+    [formGroup]="signInForm"
+    (submit)="onSubmit()"
+  >
+    <div class="mb-3">
+      <label
+        class="mb-2 text-muted"
+        for="user-name"
+        >User name</label
+      >
+
+      <input
+        id="user-name"
+        class="form-control"
+        formControlName="userName"
+        type="text"
+      />
+
+      <ng-container *ngIf="signInForm.userName | errorsOnDirtyOrTouched as errors">
+        <small
+          class="text-danger"
+          *ngIf="errors.required"
+        >
+          User name required.
+        </small>
+
+        <small
+          class="text-danger"
+          *ngIf="errors.minlength"
+        >
+          Minimal length is {{ errors.minlength.requiredLength }}.
+        </small>
+
+        <small
+          class="text-danger"
+          *ngIf="errors.maxlength"
+        >
+          Maximal length is {{ errors.maxlength.requiredLength }}.
+        </small>
+      </ng-container>
+    </div>
+
+    <div class="mb-3">
+      <div class="mb-2 w-100">
+        <label
+          class="text-muted"
+          for="password"
+          >Password</label
+        >
+
+        <!-- May be required later -->
+        <!-- <a class="float-end"> Forgot password? </a> -->
+      </div>
+
+      <input
+        id="password"
+        formControlName="password"
+        type="password"
+        class="form-control"
+      />
+
+      <ng-container *ngIf="signInForm.password | errorsOnDirtyOrTouched as errors">
+        <small
+          class="text-danger"
+          *ngIf="errors.required"
+        >
+          Password required.
+        </small>
+
+        <small
+          class="text-danger"
+          *ngIf="errors.minlength"
+        >
+          Minimal length is {{ errors.minlength.requiredLength }}.
+        </small>
+
+        <small
+          class="text-danger"
+          *ngIf="errors.maxlength"
+        >
+          Maximal length is {{ errors.maxlength.requiredLength }}.
+        </small>
+      </ng-container>
+    </div>
+
+    <div class="d-flex align-items-center">
+      <!-- May be required later -->
+      <!-- <div class="form-check">
+        <input
+          type="checkbox"
+          name="remember"
+          id="remember"
+          class="form-check-input"
+        />
+        <label
+          for="remember"
+          class="form-check-label"
+          >Remember Me</label
+        >
+      </div> -->
+
+      <button
+        type="submit"
+        class="btn btn-primary ms-auto"
+        [disabled]="signInForm.invalid"
+      >
+        Sign in
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card-footer py-3 border-0">
+  <div class="text-center">
+    <a
+      routerLink="/app/identity/sign-up"
+      class="text-dark"
+      >Sign up</a
+    >
+  </div>
+</div>
