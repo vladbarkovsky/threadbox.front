@@ -30,8 +30,8 @@ export class JwtService {
 
     this.cookieService.set(this.accessTokenCookieName, accessToken, {
       expires: tokenClaims.exp,
-      path: '/app',
-      domain: document.location.origin,
+      //path: '/app',
+      //domain: document.location.host,
       secure: true,
       sameSite: 'Strict',
     });
@@ -42,7 +42,7 @@ export class JwtService {
     return token === '' ? undefined : token;
   }
 
-  deleteAccessTokenFromCookies(): void {
+  deleteAccessTokenFromCookies() {
     this.cookieService.delete(this.accessTokenCookieName);
   }
 

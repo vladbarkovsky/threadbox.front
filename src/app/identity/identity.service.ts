@@ -7,9 +7,11 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class IdentityService {
-  authorized$ = new BehaviorSubject<boolean>(this.jwtService.accessTokenCookieExists);
+  authorized$ = new BehaviorSubject<boolean>(false);
 
-  constructor(private jwtService: JwtService, private router: Router) {}
+  constructor(private jwtService: JwtService, private router: Router) {
+    this.authorized$.next(this.jwtService.accessTokenCookieExists);
+  }
 
   authorize(accessToken: string) {
     this.jwtService.createAccessTokenCookie(accessToken);

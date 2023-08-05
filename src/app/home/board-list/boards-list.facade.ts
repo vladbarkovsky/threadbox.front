@@ -3,7 +3,6 @@ import { BoardDto, BoardsClient, CreateBoardCommand, UpdateBoardCommand } from '
 import { first } from 'rxjs/operators';
 import { ToastService } from 'src/app/common/toast/toast.service';
 import { BoardsListState } from './boards-list.state';
-import { error } from 'console';
 
 @Injectable({ providedIn: 'root' })
 export class BoardsListFacade {

@@ -12,7 +12,7 @@ import { BoardDto } from 'api-client';
 export class UpdateBoardModalComponent {
   @Input() readonly boardDto!: BoardDto;
 
-  updateBoardForm: UpdateBoardForm | undefined;
+  updateBoardForm = new UpdateBoardForm(this.boardDto);
 
   constructor(private activeModal: NgbActiveModal, private boardsListFacade: BoardsListFacade) {}
 
