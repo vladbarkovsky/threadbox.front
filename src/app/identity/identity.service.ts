@@ -16,11 +16,13 @@ export class IdentityService {
   authorize(accessToken: string) {
     this.jwtService.createAccessTokenCookie(accessToken);
     this.authorized$.next(true);
+
+    // TODO: May be removed after authorization guard implementation
     this.router.navigate(['/app/home']);
   }
 
   signOut(): void {
-    this.jwtService.deleteAccessTokenFromCookies();
+    this.jwtService.deleteAccessToken();
     this.authorized$.next(false);
   }
 }
