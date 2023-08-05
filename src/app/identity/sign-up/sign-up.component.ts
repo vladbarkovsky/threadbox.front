@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
 import { SignUpForm } from './sign-up.form';
-import { SignUpFacade } from './sign-up.facade';
+import { IdentityFacade } from '../identity.facade';
 
 @Component({
   selector: 'app-sign-up',
@@ -11,9 +10,9 @@ import { SignUpFacade } from './sign-up.facade';
 export class SignUpComponent {
   signUpForm = new SignUpForm();
 
-  constructor(private signUpFacade: SignUpFacade) {}
+  constructor(private identityFacade: IdentityFacade) {}
 
   onSubmit() {
-    this.signUpFacade.signUp(this.signUpForm.data);
+    this.identityFacade.signUp(this.signUpForm.data);
   }
 }

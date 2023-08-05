@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SignInForm } from './sign-in.form';
-import { SignInFacade } from './sign-in.facade';
+import { IdentityFacade } from '../identity.facade';
 
 @Component({
   selector: 'app-login',
@@ -10,9 +10,9 @@ import { SignInFacade } from './sign-in.facade';
 export class SignInComponent {
   signInForm = new SignInForm();
 
-  constructor(private signInFacade: SignInFacade) {}
+  constructor(private identityFacade: IdentityFacade) {}
 
   onSubmit() {
-    this.signInFacade.signIn(this.signInForm.data);
+    this.identityFacade.signIn(this.signInForm.data);
   }
 }

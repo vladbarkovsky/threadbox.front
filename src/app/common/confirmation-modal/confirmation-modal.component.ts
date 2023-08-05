@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { MemoryLeaksProtectedComponent } from '../memory-leaks-protected.component';
 import { ConfirmationModalConfig } from './confirmation-modal-config';
 
 @Component({
@@ -8,15 +7,13 @@ import { ConfirmationModalConfig } from './confirmation-modal-config';
   templateUrl: './confirmation-modal.component.html',
   styleUrls: ['./confirmation-modal.component.scss'],
 })
-export class ConfirmationModalComponent extends MemoryLeaksProtectedComponent {
+export class ConfirmationModalComponent {
   @Input() readonly config!: ConfirmationModalConfig;
 
-  constructor(private activeModal: NgbActiveModal) {
-    super();
-  }
+  constructor(private activeModal: NgbActiveModal) {}
 
   accept() {
-    this.config.action$.next(this.config.data);
+    this.activeModal.close();
   }
 
   decline() {

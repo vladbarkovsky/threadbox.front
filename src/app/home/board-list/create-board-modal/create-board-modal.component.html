@@ -1,0 +1,92 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create board</h4>
+
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="cancel()"
+  >
+    <!-- TODO: Add icomoon icon -->
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form
+    [formGroup]="createBoardForm"
+    (submit)="onSubmit()"
+  >
+    <div class="mb-3">
+      <label
+        class="mb-2 text-muted"
+        for="title"
+        >Title</label
+      >
+
+      <input
+        id="title"
+        class="form-control"
+        formControlName="title"
+        type="text"
+      />
+
+      <ng-container *ngIf="createBoardForm.title | errorsOnDirtyOrTouched as errors">
+        <small
+          class="text-danger"
+          *ngIf="errors.required"
+        >
+          Title required.
+        </small>
+
+        <small
+          class="text-danger"
+          *ngIf="errors.maxlength"
+        >
+          Maximal length is {{ errors.maxlength.requiredLength }}.
+        </small>
+      </ng-container>
+    </div>
+
+    <div class="mb-3">
+      <label
+        class="mb-2 text-muted"
+        for="description"
+        >Description</label
+      >
+
+      <textarea
+        id="description"
+        class="form-control"
+        autoResize
+        formControlName="description"
+      ></textarea>
+
+      <ng-container *ngIf="createBoardForm.description | errorsOnDirtyOrTouched as errors">
+        <small
+          class="text-danger"
+          *ngIf="errors.required"
+        >
+          Description required.
+        </small>
+
+        <small
+          class="text-danger"
+          *ngIf="errors.maxlength"
+        >
+          Maximal length is {{ errors.maxlength.requiredLength }}.
+        </small>
+      </ng-container>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    class="btn btn-outline-dark"
+    type="submit"
+    [disabled]="createBoardForm.invalid"
+  >
+    Create board
+  </button>
+</div>

@@ -1,55 +1,51 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BoardsClient } from 'api-client';
-import { takeUntil } from 'rxjs/operators';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
-import {
-  ConfirmationModalComponent,
-  ConfirmationModalConfig,
-} from 'src/app/common/confirmation-modal/confirmation-modal.component';
-import { EventService } from 'src/app/services/event.service';
+import { CreateBoardModalComponent } from './create-board-modal/create-board-modal.component';
+import { UpdateBoardModalComponent } from './update-board-modal/update-board-modal.component';
+import { BoardsListFacade } from './boards-list.facade';
+import { BoardsListState } from './boards-list.state';
 import { ToastService } from 'src/app/common/toast/toast.service';
-import { AddBoardModalComponent } from './add-board-modal/add-board-modal.component';
-import { EditBoardModalComponent } from './edit-board-modal/edit-board-modal.component';
+import { ConfirmationModalComponent } from 'src/app/common/confirmation-modal/confirmation-modal.component';
+import { first } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-board-list',
-  templateUrl: './board-list.component.html',
-  styleUrls: ['./board-list.component.scss'],
+  selector: 'app-boards-list',
+  templateUrl: './boards-list.component.html',
+  styleUrls: ['./boards-list.component.scss'],
 })
-export class BoardListComponent extends MemoryLeaksProtectedComponent implements OnInit {
+export class BoardListComponent {
+  boards$ = this.boardListState.getBoards();
+
   constructor(
-    private boardsClient: BoardsClient,
-    private toastService: ToastService,
+    private boardsListFacade: BoardsListFacade,
+    private boardListState: BoardsListState,
     private modal: NgbModal,
-    private eventService: EventService
-  ) {
-    super();
+    private toastService: ToastService
+  ) {}
+
+  ngOnInit() {
+    this.boardsListFacade.getBoards();
   }
 
-  ngOnInit(): void {}
-
-  openAddBoardModal(): void {
-    this.modal.open(AddBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
+  openCreateBoardModal(): void {
+    this.modal.open(CreateBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
   }
 
-  openEditBoardModal(boardId: string): void {
-    this.boardsClient
-      .getBoard(boardId)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: x => {
-          const modalRef = this.modal.open(EditBoardModalComponent, {
-            backdrop: 'static',
-            keyboard: false,
-            scrollable: true,
-            size: 'lg',
-          });
-          modalRef.componentInstance.boardDto = x;
-        },
-        error: () => {
-          this.toastService.showErrorToast('Unable to load board for editing.');
-        },
+  openUpdateBoardModal(boardId: string) {
+    this.boardsListFacade.getBoard(boardId, boardDto => {
+      const modal = this.modal.open(UpdateBoardModalComponent, {
+        backdrop: 'static',
+        keyboard: false,
+        scrollable: true,
+        size: 'lg',
       });
+
+      modal.componentInstance.boardDto = boardDto;
+    });
+  }
+
+  openDeleteConfirmationModule(boardId: string) {
+    const modal = this.modal.open(ConfirmationModalComponent, { backdrop: 'static', keyboard: false, scrollable: true });
+    modal.closed.pipe(first()).subscribe(() => this.boardsListFacade.deleteBoard(boardId));
   }
 }

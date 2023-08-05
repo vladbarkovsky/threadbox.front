@@ -9,10 +9,10 @@ const routes: Routes = [
     path: '',
     component: HomeComponent,
     children: [
-      { path: 'board-list', component: BoardListComponent },
+      { path: 'boards-list', component: BoardListComponent },
       { path: 'board/:boardId', component: BoardComponent },
-      { path: '', redirectTo: 'board-list', pathMatch: 'full' },
-      { path: '**', redirectTo: 'board-list' },
+      { path: '', redirectTo: 'boards-list', pathMatch: 'full' },
+      { path: '**', redirectTo: 'boards-list' },
     ],
   },
   { path: '**', redirectTo: '' },

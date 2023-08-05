@@ -3,27 +3,31 @@ import { Router } from '@angular/router';
 import { IdentityService } from 'src/app/identity/identity.service';
 import { HeaderLink } from './header-link';
 import { linksForUnauthorizedUsers, linksForAuthorizedUsers } from './header-links';
+import { MemoryLeaksProtectedComponent } from '../common/memory-leaks-protected.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent extends MemoryLeaksProtectedComponent implements OnInit {
   links: HeaderLink[] = [];
   activePath!: string;
   isCollapsed: boolean = true;
 
   authorized$ = this.identityService.authorized$;
 
-  constructor(private identityService: IdentityService, private router: Router) {}
+  constructor(private identityService: IdentityService, private router: Router) {
+    super();
+  }
 
   ngOnInit() {
-    this.authorized$.subscribe(x => {
-      this.links = x ? linksForUnauthorizedUsers : linksForAuthorizedUsers;
-    });
+    this.authorized$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(x => (this.links = x ? linksForUnauthorizedUsers : linksForAuthorizedUsers));
 
-    // TODO: Describe
+    // TODO: Describe / refactor
     this.activePath = this.router.url.split('/')[2];
   }
 
