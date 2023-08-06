@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SignInForm } from './sign-in.form';
 import { IdentityFacade } from '../identity.facade';
+import { IS4 } from '../IS4';
 
 @Component({
   selector: 'app-login',
@@ -8,11 +8,9 @@ import { IdentityFacade } from '../identity.facade';
   styleUrls: ['./sign-in.component.scss'],
 })
 export class SignInComponent {
-  signInForm = new SignInForm();
+  constructor(private is4: IS4) {}
 
-  constructor(private identityFacade: IdentityFacade) {}
-
-  onSubmit() {
-    this.identityFacade.signIn(this.signInForm.data);
+  signIn() {
+    this.is4.signIn();
   }
 }
