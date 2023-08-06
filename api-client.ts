@@ -15,347 +15,12 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
-export interface IAuthenticationClient {
-    login(loginFormDto: LoginFormDto): Observable<string>;
-    refreshAccessToken(): Observable<string>;
-    createRegistrationUrl(): Observable<string>;
-    validateRegistrationKey(registrationKeyId: string | undefined): Observable<FileResponse | null>;
-    register(registrationFormDto: RegistrationFormDto): Observable<FileResponse | null>;
-    createRegistrationKey(): Observable<string>;
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class AuthenticationClient implements IAuthenticationClient {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    login(loginFormDto: LoginFormDto): Observable<string> {
-        let url_ = this.baseUrl + "/Authentication/Login";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(loginFormDto);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processLogin(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processLogin(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<string>;
-        }));
-    }
-
-    protected processLogin(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    refreshAccessToken(): Observable<string> {
-        let url_ = this.baseUrl + "/Authentication/RefreshAccessToken";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processRefreshAccessToken(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processRefreshAccessToken(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<string>;
-        }));
-    }
-
-    protected processRefreshAccessToken(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    createRegistrationUrl(): Observable<string> {
-        let url_ = this.baseUrl + "/Authentication/CreateRegistrationUrl";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreateRegistrationUrl(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCreateRegistrationUrl(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<string>;
-        }));
-    }
-
-    protected processCreateRegistrationUrl(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    validateRegistrationKey(registrationKeyId: string | undefined): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/Authentication/ValidateRegistrationKey?";
-        if (registrationKeyId === null)
-            throw new Error("The parameter 'registrationKeyId' cannot be null.");
-        else if (registrationKeyId !== undefined)
-            url_ += "registrationKeyId=" + encodeURIComponent("" + registrationKeyId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/octet-stream"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processValidateRegistrationKey(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processValidateRegistrationKey(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
-        }));
-    }
-
-    protected processValidateRegistrationKey(response: HttpResponseBase): Observable<FileResponse | null> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    register(registrationFormDto: RegistrationFormDto): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/Authentication/Register";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(registrationFormDto);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processRegister(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processRegister(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
-        }));
-    }
-
-    protected processRegister(response: HttpResponseBase): Observable<FileResponse | null> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    createRegistrationKey(): Observable<string> {
-        let url_ = this.baseUrl + "/Authentication/CreateRegistrationKey";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreateRegistrationKey(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCreateRegistrationKey(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<string>;
-        }));
-    }
-
-    protected processCreateRegistrationKey(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-}
-
 export interface IBoardsClient {
-    getBoardsList(): Observable<ListBoardDto[]>;
+    getBoardsList(): Observable<BoardListDto[]>;
     getBoard(boardId: string | undefined): Observable<BoardDto>;
-    createBoard(boardDto: BoardDto): Observable<ListBoardDto>;
-    editBoard(boardDto: BoardDto): Observable<ListBoardDto>;
-    deleteBoard(boardId: string | undefined): Observable<FileResponse | null>;
+    createBoard(command: CreateBoardCommand): Observable<FileResponse>;
+    updateBoard(command: UpdateBoardCommand): Observable<FileResponse>;
+    deleteBoard(boardId: string | undefined): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -371,8 +36,8 @@ export class BoardsClient implements IBoardsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getBoardsList(): Observable<ListBoardDto[]> {
-        let url_ = this.baseUrl + "/Boards/GetBoardsList";
+    getBoardsList(): Observable<BoardListDto[]> {
+        let url_ = this.baseUrl + "/api/Boards/GetBoardsList";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -390,14 +55,14 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processGetBoardsList(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ListBoardDto[]>;
+                    return _observableThrow(e) as any as Observable<BoardListDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ListBoardDto[]>;
+                return _observableThrow(response_) as any as Observable<BoardListDto[]>;
         }));
     }
 
-    protected processGetBoardsList(response: HttpResponseBase): Observable<ListBoardDto[]> {
+    protected processGetBoardsList(response: HttpResponseBase): Observable<BoardListDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -411,7 +76,7 @@ export class BoardsClient implements IBoardsClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(ListBoardDto.fromJS(item));
+                    result200!.push(BoardListDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -427,11 +92,11 @@ export class BoardsClient implements IBoardsClient {
     }
 
     getBoard(boardId: string | undefined): Observable<BoardDto> {
-        let url_ = this.baseUrl + "/Boards/GetBoard?";
+        let url_ = this.baseUrl + "/api/Boards/GetBoard?";
         if (boardId === null)
             throw new Error("The parameter 'boardId' cannot be null.");
         else if (boardId !== undefined)
-            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
+            url_ += "BoardId=" + encodeURIComponent("" + boardId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -478,11 +143,11 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    createBoard(boardDto: BoardDto): Observable<ListBoardDto> {
-        let url_ = this.baseUrl + "/Boards/CreateBoard";
+    createBoard(command: CreateBoardCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Boards/CreateBoard";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(boardDto);
+        const content_ = JSON.stringify(command);
 
         let options_ : any = {
             body: content_,
@@ -490,7 +155,7 @@ export class BoardsClient implements IBoardsClient {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "application/octet-stream"
             })
         };
 
@@ -501,27 +166,31 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processCreateBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ListBoardDto>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ListBoardDto>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processCreateBoard(response: HttpResponseBase): Observable<ListBoardDto> {
+    protected processCreateBoard(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListBoardDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -530,11 +199,11 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    editBoard(boardDto: BoardDto): Observable<ListBoardDto> {
-        let url_ = this.baseUrl + "/Boards/EditBoard";
+    updateBoard(command: UpdateBoardCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Boards/UpdateBoard";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(boardDto);
+        const content_ = JSON.stringify(command);
 
         let options_ : any = {
             body: content_,
@@ -542,38 +211,42 @@ export class BoardsClient implements IBoardsClient {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "application/octet-stream"
             })
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditBoard(response_);
+            return this.processUpdateBoard(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processEditBoard(response_ as any);
+                    return this.processUpdateBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ListBoardDto>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ListBoardDto>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processEditBoard(response: HttpResponseBase): Observable<ListBoardDto> {
+    protected processUpdateBoard(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListBoardDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -582,12 +255,12 @@ export class BoardsClient implements IBoardsClient {
         return _observableOf(null as any);
     }
 
-    deleteBoard(boardId: string | undefined): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/Boards/DeleteBoard?";
+    deleteBoard(boardId: string | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Boards/DeleteBoard?";
         if (boardId === null)
             throw new Error("The parameter 'boardId' cannot be null.");
         else if (boardId !== undefined)
-            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
+            url_ += "BoardId=" + encodeURIComponent("" + boardId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -605,14 +278,14 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processDeleteBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processDeleteBoard(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processDeleteBoard(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -639,15 +312,14 @@ export class BoardsClient implements IBoardsClient {
     }
 }
 
-export interface IPostImagesClient {
-    getPostImage(imageId: string | undefined): Observable<FileResponse | null>;
-    getPostImages(postId: string | undefined): Observable<FileResponse | null>;
+export interface IConnectionClient {
+    checkConnection(): Observable<FileResponse>;
 }
 
 @Injectable({
     providedIn: 'root'
 })
-export class PostImagesClient implements IPostImagesClient {
+export class ConnectionClient implements IConnectionClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -657,12 +329,8 @@ export class PostImagesClient implements IPostImagesClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getPostImage(imageId: string | undefined): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/PostImages/GetPostImage?";
-        if (imageId === null)
-            throw new Error("The parameter 'imageId' cannot be null.");
-        else if (imageId !== undefined)
-            url_ += "imageId=" + encodeURIComponent("" + imageId) + "&";
+    checkConnection(): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Connection/CheckConnection";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -674,20 +342,96 @@ export class PostImagesClient implements IPostImagesClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPostImage(response_);
+            return this.processCheckConnection(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPostImage(response_ as any);
+                    return this.processCheckConnection(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processGetPostImage(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processCheckConnection(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+export interface IFilesClient {
+    getFile(fileInfoId: string | undefined): Observable<FileResponse>;
+    getThreadImagesZip(threadId: string | undefined): Observable<FileResponse>;
+    getPostImagesZip(postId: string | undefined): Observable<FileResponse>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class FilesClient implements IFilesClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getFile(fileInfoId: string | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Files/GetFile?";
+        if (fileInfoId === null)
+            throw new Error("The parameter 'fileInfoId' cannot be null.");
+        else if (fileInfoId !== undefined)
+            url_ += "FileInfoId=" + encodeURIComponent("" + fileInfoId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetFile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetFile(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processGetFile(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -713,12 +457,12 @@ export class PostImagesClient implements IPostImagesClient {
         return _observableOf(null as any);
     }
 
-    getPostImages(postId: string | undefined): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/PostImages/GetPostImages?";
-        if (postId === null)
-            throw new Error("The parameter 'postId' cannot be null.");
-        else if (postId !== undefined)
-            url_ += "postId=" + encodeURIComponent("" + postId) + "&";
+    getThreadImagesZip(threadId: string | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Files/GetThreadImagesZip?";
+        if (threadId === null)
+            throw new Error("The parameter 'threadId' cannot be null.");
+        else if (threadId !== undefined)
+            url_ += "ThreadId=" + encodeURIComponent("" + threadId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -730,20 +474,20 @@ export class PostImagesClient implements IPostImagesClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPostImages(response_);
+            return this.processGetThreadImagesZip(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPostImages(response_ as any);
+                    return this.processGetThreadImagesZip(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processGetPostImages(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processGetThreadImagesZip(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -761,6 +505,290 @@ export class PostImagesClient implements IPostImagesClient {
                 fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
             }
             return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getPostImagesZip(postId: string | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Files/GetPostImagesZip?";
+        if (postId === null)
+            throw new Error("The parameter 'postId' cannot be null.");
+        else if (postId !== undefined)
+            url_ += "PostId=" + encodeURIComponent("" + postId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPostImagesZip(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPostImagesZip(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processGetPostImagesZip(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+export interface IIdentityClient {
+    signIn(command: SignInCommand): Observable<string>;
+    signUp(command: SignUpCommand): Observable<FileResponse>;
+    createRegistrationKey(): Observable<string>;
+    refreshAccessToken(): Observable<string>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class IdentityClient implements IIdentityClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    signIn(command: SignInCommand): Observable<string> {
+        let url_ = this.baseUrl + "/api/Identity/SignIn";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSignIn(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSignIn(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processSignIn(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    signUp(command: SignUpCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Identity/SignUp";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSignUp(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSignUp(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processSignUp(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createRegistrationKey(): Observable<string> {
+        let url_ = this.baseUrl + "/api/Identity/CreateRegistrationKey";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateRegistrationKey(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateRegistrationKey(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processCreateRegistrationKey(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    refreshAccessToken(): Observable<string> {
+        let url_ = this.baseUrl + "/api/Identity/RefreshAccessToken";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRefreshAccessToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRefreshAccessToken(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processRefreshAccessToken(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -771,7 +799,8 @@ export class PostImagesClient implements IPostImagesClient {
 }
 
 export interface IPostsClient {
-    createPost(postDto: PostDto): Observable<ListPostDto>;
+    getPostsByThread(threadId: string | undefined): Observable<PostDto[]>;
+    createPost(command: CreatePostCommand): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -787,37 +816,37 @@ export class PostsClient implements IPostsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createPost(postDto: PostDto): Observable<ListPostDto> {
-        let url_ = this.baseUrl + "/Posts/CreatePost";
+    getPostsByThread(threadId: string | undefined): Observable<PostDto[]> {
+        let url_ = this.baseUrl + "/api/Posts/GetPostsByThread?";
+        if (threadId === null)
+            throw new Error("The parameter 'threadId' cannot be null.");
+        else if (threadId !== undefined)
+            url_ += "ThreadId=" + encodeURIComponent("" + threadId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(postDto);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreatePost(response_);
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPostsByThread(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreatePost(response_ as any);
+                    return this.processGetPostsByThread(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ListPostDto>;
+                    return _observableThrow(e) as any as Observable<PostDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ListPostDto>;
+                return _observableThrow(response_) as any as Observable<PostDto[]>;
         }));
     }
 
-    protected processCreatePost(response: HttpResponseBase): Observable<ListPostDto> {
+    protected processGetPostsByThread(response: HttpResponseBase): Observable<PostDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -828,7 +857,14 @@ export class PostsClient implements IPostsClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListPostDto.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PostDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -838,183 +874,38 @@ export class PostsClient implements IPostsClient {
         }
         return _observableOf(null as any);
     }
-}
 
-export interface ITestClient {
-    check(): Observable<FileResponse | null>;
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class TestClient implements ITestClient {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    check(): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/Test/Check";
+    createPost(command: CreatePostCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Posts/CreatePost";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCheck(response_);
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreatePost(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCheck(response_ as any);
+                    return this.processCreatePost(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processCheck(response: HttpResponseBase): Observable<FileResponse | null> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-}
-
-export interface IThreadImagesClient {
-    getThreadImage(imageId: string | undefined): Observable<FileResponse | null>;
-    getThreadImages(threadId: string | undefined): Observable<FileResponse | null>;
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class ThreadImagesClient implements IThreadImagesClient {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    getThreadImage(imageId: string | undefined): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/ThreadImages/GetThreadImage?";
-        if (imageId === null)
-            throw new Error("The parameter 'imageId' cannot be null.");
-        else if (imageId !== undefined)
-            url_ += "imageId=" + encodeURIComponent("" + imageId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/octet-stream"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetThreadImage(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetThreadImage(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
-        }));
-    }
-
-    protected processGetThreadImage(response: HttpResponseBase): Observable<FileResponse | null> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    getThreadImages(threadId: string | undefined): Observable<FileResponse | null> {
-        let url_ = this.baseUrl + "/ThreadImages/GetThreadImages?";
-        if (threadId === null)
-            throw new Error("The parameter 'threadId' cannot be null.");
-        else if (threadId !== undefined)
-            url_ += "threadId=" + encodeURIComponent("" + threadId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/octet-stream"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetThreadImages(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetThreadImages(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse | null>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<FileResponse | null>;
-        }));
-    }
-
-    protected processGetThreadImages(response: HttpResponseBase): Observable<FileResponse | null> {
+    protected processCreatePost(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1042,8 +933,8 @@ export class ThreadImagesClient implements IThreadImagesClient {
 }
 
 export interface IThreadsClient {
-    getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedResultOfListThreadDto>;
-    createThread(boardId: string | undefined, title: string | null | undefined, text: string | null | undefined, threadImages: FileParameter[] | null | undefined): Observable<ListThreadDto>;
+    getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto>;
+    createThread(command: CreateThreadCommand): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -1059,15 +950,11 @@ export class ThreadsClient implements IThreadsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getThreadsByBoard(boardId: string | undefined, paginationParamsDto: PaginationParamsDto): Observable<PaginatedResultOfListThreadDto> {
-        let url_ = this.baseUrl + "/Threads/GetThreadsByBoard?";
-        if (boardId === null)
-            throw new Error("The parameter 'boardId' cannot be null.");
-        else if (boardId !== undefined)
-            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
+    getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto> {
+        let url_ = this.baseUrl + "/api/Threads/GetThreadsByBoard";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(paginationParamsDto);
+        const content_ = JSON.stringify(query);
 
         let options_ : any = {
             body: content_,
@@ -1086,14 +973,14 @@ export class ThreadsClient implements IThreadsClient {
                 try {
                     return this.processGetThreadsByBoard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PaginatedResultOfListThreadDto>;
+                    return _observableThrow(e) as any as Observable<PaginatedResultOfThreadDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PaginatedResultOfListThreadDto>;
+                return _observableThrow(response_) as any as Observable<PaginatedResultOfThreadDto>;
         }));
     }
 
-    protected processGetThreadsByBoard(response: HttpResponseBase): Observable<PaginatedResultOfListThreadDto> {
+    protected processGetThreadsByBoard(response: HttpResponseBase): Observable<PaginatedResultOfThreadDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1104,7 +991,7 @@ export class ThreadsClient implements IThreadsClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedResultOfListThreadDto.fromJS(resultData200);
+            result200 = PaginatedResultOfThreadDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1115,28 +1002,19 @@ export class ThreadsClient implements IThreadsClient {
         return _observableOf(null as any);
     }
 
-    createThread(boardId: string | undefined, title: string | null | undefined, text: string | null | undefined, threadImages: FileParameter[] | null | undefined): Observable<ListThreadDto> {
-        let url_ = this.baseUrl + "/Threads/CreateThread";
+    createThread(command: CreateThreadCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Threads/CreateThread";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = new FormData();
-        if (boardId === null || boardId === undefined)
-            throw new Error("The parameter 'boardId' cannot be null.");
-        else
-            content_.append("BoardId", boardId.toString());
-        if (title !== null && title !== undefined)
-            content_.append("Title", title.toString());
-        if (text !== null && text !== undefined)
-            content_.append("Text", text.toString());
-        if (threadImages !== null && threadImages !== undefined)
-            threadImages.forEach(item_ => content_.append("ThreadImages", item_.data, item_.fileName ? item_.fileName : "ThreadImages") );
+        const content_ = JSON.stringify(command);
 
         let options_ : any = {
             body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
             })
         };
 
@@ -1147,27 +1025,31 @@ export class ThreadsClient implements IThreadsClient {
                 try {
                     return this.processCreateThread(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ListThreadDto>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ListThreadDto>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processCreateThread(response: HttpResponseBase): Observable<ListThreadDto> {
+    protected processCreateThread(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListThreadDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1177,99 +1059,11 @@ export class ThreadsClient implements IThreadsClient {
     }
 }
 
-export class LoginFormDto implements ILoginFormDto {
-    userName?: string | undefined;
-    password?: string | undefined;
-
-    constructor(data?: ILoginFormDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.userName = _data["userName"];
-            this.password = _data["password"];
-        }
-    }
-
-    static fromJS(data: any): LoginFormDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoginFormDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userName"] = this.userName;
-        data["password"] = this.password;
-        return data;
-    }
-}
-
-export interface ILoginFormDto {
-    userName?: string | undefined;
-    password?: string | undefined;
-}
-
-export class RegistrationFormDto implements IRegistrationFormDto {
-    userName?: string | undefined;
-    password?: string | undefined;
-    confirmPassword?: string | undefined;
-    registrationKeyId!: string;
-
-    constructor(data?: IRegistrationFormDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.userName = _data["userName"];
-            this.password = _data["password"];
-            this.confirmPassword = _data["confirmPassword"];
-            this.registrationKeyId = _data["registrationKeyId"];
-        }
-    }
-
-    static fromJS(data: any): RegistrationFormDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RegistrationFormDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userName"] = this.userName;
-        data["password"] = this.password;
-        data["confirmPassword"] = this.confirmPassword;
-        data["registrationKeyId"] = this.registrationKeyId;
-        return data;
-    }
-}
-
-export interface IRegistrationFormDto {
-    userName?: string | undefined;
-    password?: string | undefined;
-    confirmPassword?: string | undefined;
-    registrationKeyId: string;
-}
-
-export class ListBoardDto implements IListBoardDto {
-    id!: string;
+export class BoardListDto implements IBoardListDto {
+    id?: string;
     title?: string | undefined;
 
-    constructor(data?: IListBoardDto) {
+    constructor(data?: IBoardListDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1285,9 +1079,9 @@ export class ListBoardDto implements IListBoardDto {
         }
     }
 
-    static fromJS(data: any): ListBoardDto {
+    static fromJS(data: any): BoardListDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ListBoardDto();
+        let result = new BoardListDto();
         result.init(data);
         return result;
     }
@@ -1300,13 +1094,13 @@ export class ListBoardDto implements IListBoardDto {
     }
 }
 
-export interface IListBoardDto {
-    id: string;
+export interface IBoardListDto {
+    id?: string;
     title?: string | undefined;
 }
 
 export class BoardDto implements IBoardDto {
-    id?: string | undefined;
+    id?: string;
     title?: string | undefined;
     description?: string | undefined;
 
@@ -1344,18 +1138,190 @@ export class BoardDto implements IBoardDto {
 }
 
 export interface IBoardDto {
-    id?: string | undefined;
+    id?: string;
     title?: string | undefined;
     description?: string | undefined;
 }
 
-export class ListPostDto implements IListPostDto {
-    id!: string;
+export class CreateBoardCommand implements ICreateBoardCommand {
+    title?: string | undefined;
+    description?: string | undefined;
+
+    constructor(data?: ICreateBoardCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.title = _data["title"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): CreateBoardCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateBoardCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["title"] = this.title;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface ICreateBoardCommand {
+    title?: string | undefined;
+    description?: string | undefined;
+}
+
+export class UpdateBoardCommand implements IUpdateBoardCommand {
+    id?: string;
+    title?: string | undefined;
+    description?: string | undefined;
+
+    constructor(data?: IUpdateBoardCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): UpdateBoardCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateBoardCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface IUpdateBoardCommand {
+    id?: string;
+    title?: string | undefined;
+    description?: string | undefined;
+}
+
+export class SignInCommand implements ISignInCommand {
+    userName?: string | undefined;
+    password?: string | undefined;
+
+    constructor(data?: ISignInCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): SignInCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new SignInCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface ISignInCommand {
+    userName?: string | undefined;
+    password?: string | undefined;
+}
+
+export class SignUpCommand implements ISignUpCommand {
+    userName?: string | undefined;
+    password?: string | undefined;
+    repeatPassword?: string | undefined;
+    registrationKeyId?: string;
+
+    constructor(data?: ISignUpCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"];
+            this.password = _data["password"];
+            this.repeatPassword = _data["repeatPassword"];
+            this.registrationKeyId = _data["registrationKeyId"];
+        }
+    }
+
+    static fromJS(data: any): SignUpCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new SignUpCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["password"] = this.password;
+        data["repeatPassword"] = this.repeatPassword;
+        data["registrationKeyId"] = this.registrationKeyId;
+        return data;
+    }
+}
+
+export interface ISignUpCommand {
+    userName?: string | undefined;
+    password?: string | undefined;
+    repeatPassword?: string | undefined;
+    registrationKeyId?: string;
+}
+
+export class PostDto implements IPostDto {
+    id?: string;
     text?: string | undefined;
-    threadId!: string;
+    threadId?: string;
     postImageUrls?: string[] | undefined;
 
-    constructor(data?: IListPostDto) {
+    constructor(data?: IPostDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1377,9 +1343,9 @@ export class ListPostDto implements IListPostDto {
         }
     }
 
-    static fromJS(data: any): ListPostDto {
+    static fromJS(data: any): PostDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ListPostDto();
+        let result = new PostDto();
         result.init(data);
         return result;
     }
@@ -1398,18 +1364,19 @@ export class ListPostDto implements IListPostDto {
     }
 }
 
-export interface IListPostDto {
-    id: string;
+export interface IPostDto {
+    id?: string;
     text?: string | undefined;
-    threadId: string;
+    threadId?: string;
     postImageUrls?: string[] | undefined;
 }
 
-export class PostDto implements IPostDto {
+export class CreatePostCommand implements ICreatePostCommand {
     text?: string | undefined;
-    postImages?: any[] | undefined;
+    postImages?: string[] | undefined;
+    threadId?: string;
 
-    constructor(data?: IPostDto) {
+    constructor(data?: ICreatePostCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1426,12 +1393,13 @@ export class PostDto implements IPostDto {
                 for (let item of _data["postImages"])
                     this.postImages!.push(item);
             }
+            this.threadId = _data["threadId"];
         }
     }
 
-    static fromJS(data: any): PostDto {
+    static fromJS(data: any): CreatePostCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new PostDto();
+        let result = new CreatePostCommand();
         result.init(data);
         return result;
     }
@@ -1444,24 +1412,26 @@ export class PostDto implements IPostDto {
             for (let item of this.postImages)
                 data["postImages"].push(item);
         }
+        data["threadId"] = this.threadId;
         return data;
     }
 }
 
-export interface IPostDto {
+export interface ICreatePostCommand {
     text?: string | undefined;
-    postImages?: any[] | undefined;
+    postImages?: string[] | undefined;
+    threadId?: string;
 }
 
-export class PaginatedResultOfListThreadDto implements IPaginatedResultOfListThreadDto {
-    pageItems?: ListThreadDto[] | undefined;
-    pageIndex!: number;
-    totalPages!: number;
-    totalCount!: number;
-    hasPreviousPage!: boolean;
-    hasNextPage!: boolean;
+export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {
+    pageItems?: ThreadDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 
-    constructor(data?: IPaginatedResultOfListThreadDto) {
+    constructor(data?: IPaginatedResultOfThreadDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1475,7 +1445,7 @@ export class PaginatedResultOfListThreadDto implements IPaginatedResultOfListThr
             if (Array.isArray(_data["pageItems"])) {
                 this.pageItems = [] as any;
                 for (let item of _data["pageItems"])
-                    this.pageItems!.push(ListThreadDto.fromJS(item));
+                    this.pageItems!.push(ThreadDto.fromJS(item));
             }
             this.pageIndex = _data["pageIndex"];
             this.totalPages = _data["totalPages"];
@@ -1485,9 +1455,9 @@ export class PaginatedResultOfListThreadDto implements IPaginatedResultOfListThr
         }
     }
 
-    static fromJS(data: any): PaginatedResultOfListThreadDto {
+    static fromJS(data: any): PaginatedResultOfThreadDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedResultOfListThreadDto();
+        let result = new PaginatedResultOfThreadDto();
         result.init(data);
         return result;
     }
@@ -1508,23 +1478,23 @@ export class PaginatedResultOfListThreadDto implements IPaginatedResultOfListThr
     }
 }
 
-export interface IPaginatedResultOfListThreadDto {
-    pageItems?: ListThreadDto[] | undefined;
-    pageIndex: number;
-    totalPages: number;
-    totalCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+export interface IPaginatedResultOfThreadDto {
+    pageItems?: ThreadDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
-export class ListThreadDto implements IListThreadDto {
-    id!: string;
+export class ThreadDto implements IThreadDto {
+    id?: string;
     title?: string | undefined;
     text?: string | undefined;
     threadImageUrls?: string[] | undefined;
-    posts?: ListPostDto[] | undefined;
+    posts?: PostDto[] | undefined;
 
-    constructor(data?: IListThreadDto) {
+    constructor(data?: IThreadDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1546,14 +1516,14 @@ export class ListThreadDto implements IListThreadDto {
             if (Array.isArray(_data["posts"])) {
                 this.posts = [] as any;
                 for (let item of _data["posts"])
-                    this.posts!.push(ListPostDto.fromJS(item));
+                    this.posts!.push(PostDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): ListThreadDto {
+    static fromJS(data: any): ThreadDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ListThreadDto();
+        let result = new ThreadDto();
         result.init(data);
         return result;
     }
@@ -1577,19 +1547,19 @@ export class ListThreadDto implements IListThreadDto {
     }
 }
 
-export interface IListThreadDto {
-    id: string;
+export interface IThreadDto {
+    id?: string;
     title?: string | undefined;
     text?: string | undefined;
     threadImageUrls?: string[] | undefined;
-    posts?: ListPostDto[] | undefined;
+    posts?: PostDto[] | undefined;
 }
 
-export class PaginationParamsDto implements IPaginationParamsDto {
-    pageIndex!: number;
-    pageSize!: number;
+export class PaginatedQuery implements IPaginatedQuery {
+    pageIndex?: number;
+    pageSize?: number;
 
-    constructor(data?: IPaginationParamsDto) {
+    constructor(data?: IPaginatedQuery) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1605,9 +1575,9 @@ export class PaginationParamsDto implements IPaginationParamsDto {
         }
     }
 
-    static fromJS(data: any): PaginationParamsDto {
+    static fromJS(data: any): PaginatedQuery {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginationParamsDto();
+        let result = new PaginatedQuery();
         result.init(data);
         return result;
     }
@@ -1620,14 +1590,98 @@ export class PaginationParamsDto implements IPaginationParamsDto {
     }
 }
 
-export interface IPaginationParamsDto {
-    pageIndex: number;
-    pageSize: number;
+export interface IPaginatedQuery {
+    pageIndex?: number;
+    pageSize?: number;
 }
 
-export interface FileParameter {
-    data: any;
-    fileName: string;
+export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThreadsByBoardQuery {
+    boardId?: string;
+
+    constructor(data?: IGetThreadsByBoardQuery) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.boardId = _data["boardId"];
+        }
+    }
+
+    static override fromJS(data: any): GetThreadsByBoardQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetThreadsByBoardQuery();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["boardId"] = this.boardId;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IGetThreadsByBoardQuery extends IPaginatedQuery {
+    boardId?: string;
+}
+
+export class CreateThreadCommand implements ICreateThreadCommand {
+    title?: string | undefined;
+    text?: string | undefined;
+    boardId?: string;
+    threadImages?: string[] | undefined;
+
+    constructor(data?: ICreateThreadCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.title = _data["title"];
+            this.text = _data["text"];
+            this.boardId = _data["boardId"];
+            if (Array.isArray(_data["threadImages"])) {
+                this.threadImages = [] as any;
+                for (let item of _data["threadImages"])
+                    this.threadImages!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateThreadCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateThreadCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["title"] = this.title;
+        data["text"] = this.text;
+        data["boardId"] = this.boardId;
+        if (Array.isArray(this.threadImages)) {
+            data["threadImages"] = [];
+            for (let item of this.threadImages)
+                data["threadImages"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface ICreateThreadCommand {
+    title?: string | undefined;
+    text?: string | undefined;
+    boardId?: string;
+    threadImages?: string[] | undefined;
 }
 
 export interface FileResponse {

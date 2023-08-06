@@ -16,7 +16,7 @@ Threadbox is anonymous imageboard for sharing texts and images.
 
 6. I you already launched server, compile client app `npm start`. Application local port is [4200](http://localhost:4200). The app will automatically reload if you change any of the source files.
 
-7. For comfort development it is worth to install recommended extensions for Visual Studio Code. When installing Angular Language Service select version 13.0.0.
+7. For comfort development it is worth to install workspace recommended extensions for Visual Studio Code (type '@recommended' in Extensions search input). When installing Angular Language Service select version 13.0.0.
 
 Don't use Angular DevTools extension for Chrome - for unknown reasons it does not allow the app to work.
 
@@ -50,16 +50,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Icons
 
-TODO: Normal icons will be added soon.
-
-Use icons in .svg format. Icons folder path is `src/app/assets/icons`.
-
-Example:
-
-```
-  <img
-   src="assets/icons/iconmonstr-pencil-square-filled.svg"
-   alt="iconmonstr-pencil-square-filled.svg"
-   width="30"
-  />
-```
+TODO: icomoon guide will be added soon
