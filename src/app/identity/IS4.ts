@@ -7,9 +7,9 @@ export class IS4 {
   private userManager = new UserManager({
     authority: 'https://localhost:5000',
     client_id: 'angular_client',
-    redirect_uri: 'http://localhost:4200',
+    redirect_uri: 'http://localhost:4200/is4/redirect-uri',
     response_type: 'code',
-    scope: 'openid profile threadbox_api',
+    scope: 'openid profile offline_access threadbox_api',
   });
 
   user$ = new BehaviorSubject<User | null>(null);
@@ -24,8 +24,14 @@ export class IS4 {
     return this.userManager.signinRedirect();
   }
 
-  // Required?
+  signInCallback() {
+    return this.userManager.signinRedirectCallback().then(user => {
+      console.log(user);
+      this.user$.next(user);
+    });
+  }
+
   signOut() {
-    this.userManager.signoutRedirectCallback();
+    return this.userManager.signoutRedirectCallback();
   }
 }
