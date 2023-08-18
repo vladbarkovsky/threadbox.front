@@ -1,22 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HeaderComponent } from './header.component';
+import { BoardListComponent } from '../board-list/board-list.component';
+import { BoardComponent } from '../board/board.component';
 
 const routes: Routes = [
   {
     path: '',
     component: HeaderComponent,
     children: [
-      {
-        path: 'home',
-        loadChildren: () => import('../home/home.module').then(m => m.HomeModule),
-      },
-      {
-        path: 'identity',
-        loadChildren: () => import('../identity/identity.module').then(m => m.IdentityModule),
-      },
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: '**', redirectTo: 'home' },
+      { path: 'boards-list', component: BoardListComponent },
+      { path: 'board/:boardId', component: BoardComponent },
+      { path: '', redirectTo: 'boards-list', pathMatch: 'full' },
+      { path: '**', redirectTo: 'boards-list' },
     ],
   },
   { path: '**', redirectTo: '' },
