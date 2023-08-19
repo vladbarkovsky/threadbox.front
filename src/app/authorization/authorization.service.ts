@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { User, UserManager } from 'oidc-client';
 import { BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
   get authorized$() {
-    return this.user$.pipe(map(x => x !== null));
+    return this.user$.pipe(map(x => !!x));
   }
 
-  user$ = new BehaviorSubject<User | null>(null);
+  user$ = new BehaviorSubject<User | undefined | null>(null);
 
   private userManager = new UserManager({
     authority: 'https://localhost:5000',
@@ -17,17 +18,18 @@ export class AuthorizationService {
     redirect_uri: 'http://localhost:4200/authorization/sign-in-redirect-callback',
     response_type: 'code',
     scope: 'openid profile offline_access threadbox_api',
+    automaticSilentRenew: true,
+    silent_redirect_uri: 'http://localhost:4200/authorization/sign-in-silent-callback',
   });
 
   constructor() {
-    if (!this.user$.value) {
-      this.userManager.getUser().then(user => {
-        if (user) {
-        } else {
-          this.signInRedirectCallback();
-        }
-      });
-    }
+    this.userManager.getUser().then(user => {
+      if (user) {
+        this.user$.next(user);
+      } else {
+        this.signInSilent();
+      }
+    });
   }
 
   signInRedirect() {
@@ -38,6 +40,14 @@ export class AuthorizationService {
     return this.userManager.signinRedirectCallback().then(user => {
       this.user$.next(user);
     });
+  }
+
+  signInSilent() {
+    return this.userManager.signinSilent();
+  }
+
+  signInSilentCallback() {
+    return this.userManager.signinSilentCallback().then(user => this.user$.next(user));
   }
 
   signOut() {
