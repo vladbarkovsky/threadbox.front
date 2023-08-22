@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { User, UserManager } from 'oidc-client';
 import { BehaviorSubject } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
   get authorized$() {
-    return this.user$.pipe(map(x => !!x));
+    return this.user$.pipe(map(x => !!x && !x.expired));
+  }
+
+  get accessToken() {
+    return this.user$.value?.access_token ?? undefined;
   }
 
   user$ = new BehaviorSubject<User | undefined | null>(null);
@@ -23,14 +27,12 @@ export class AuthorizationService {
   });
 
   constructor(private router: Router) {
+    this.userManager.events.addAccessTokenExpired(() => {
+      this.signInSilent();
+    });
+
     this.userManager.getUser().then(user => {
-      if (user) {
-        console.log('ctor got user', user);
-        this.user$.next(user);
-      } else {
-        console.log('ctor trying silent', user);
-        this.signInSilent();
-      }
+      this.user$.next(user);
     });
   }
 
@@ -51,14 +53,21 @@ export class AuthorizationService {
   }
 
   signInSilentCallback() {
-    return this.userManager.signinSilentCallback().then(user => {
-      console.log('signInSilentCallback', user);
-      this.user$.next(user);
-      this.router.navigate(['/app/boards-list']);
+    return this.userManager.signinSilentCallback().catch(error => {
+      console.error('signinSilentCallback error', error);
     });
+    // .then(user => {
+    //   console.log('signInSilentCallback', user);
+    //   this.user$.next(user);
+    //   this.router.navigate(['/app/boards-list']);
+    // });
   }
 
   signOut() {
     return this.userManager.signoutRedirect();
+  }
+
+  signOutRedirectCallback() {
+    return this.userManager.signoutRedirectCallback();
   }
 }
