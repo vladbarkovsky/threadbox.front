@@ -14,53 +14,62 @@ export class AuthorizationService {
     return this.user$.value?.access_token ?? undefined;
   }
 
-  user$ = new BehaviorSubject<User | undefined | null>(null);
+  private user$ = new BehaviorSubject<User | undefined | null>(null);
 
   private userManager = new UserManager({
     authority: 'https://localhost:5000',
     client_id: 'angular_client',
-    redirect_uri: 'https://localhost:4200/authorization/sign-in-redirect-callback',
-    response_type: 'code',
     scope: 'openid profile offline_access threadbox_api',
-    automaticSilentRenew: true,
+    response_type: 'code',
+    redirect_uri: 'https://localhost:4200/authorization/sign-in-redirect-callback',
     silent_redirect_uri: 'https://localhost:4200/authorization/sign-in-silent-callback',
+    automaticSilentRenew: true,
   });
 
   constructor(private router: Router) {
-    this.userManager.events.addAccessTokenExpired(() => {
-      this.signInSilent();
+    this.userManager.getUser().then(user => {
+      if (user) {
+        this.user$.next(user);
+      } else {
+        this.signInSilent();
+      }
     });
 
-    this.userManager.getUser().then(user => {
-      this.user$.next(user);
+    this.userManager.events.addAccessTokenExpired(() => {
+      this.signInSilent();
     });
   }
 
   signInRedirect() {
-    return this.userManager.signinRedirect();
+    return this.userManager.signinRedirect().catch(error => {
+      console.error('signinRedirect error:', error);
+    });
   }
 
   signInRedirectCallback() {
     return this.userManager.signinRedirectCallback().then(user => {
-      console.log('signInRedirectCallback', user);
       this.user$.next(user);
       this.router.navigate(['/app/boards-list']);
     });
   }
 
   signInSilent() {
-    return this.userManager.signinSilent();
+    return this.userManager.signinSilent().catch(error => {
+      console.error('signinSilent error:', error);
+    });
   }
 
   signInSilentCallback() {
-    return this.userManager.signinSilentCallback().catch(error => {
-      console.error('signinSilentCallback error', error);
-    });
-    // .then(user => {
-    //   console.log('signInSilentCallback', user);
-    //   this.user$.next(user);
-    //   this.router.navigate(['/app/boards-list']);
-    // });
+    return this.userManager
+      .signinSilentCallback()
+      .catch(error => {
+        console.error('signinSilentCallback error', error);
+      })
+      .then(user => {
+        console.log('signInSilentCallback', user);
+        this.user$.next(user!);
+        this.router.navigate(['/app/boards-list']);
+      });
   }
 
   signOut() {

@@ -10,11 +10,11 @@ export class AuthorizationInterceptor implements HttpInterceptor {
   constructor(private is4Service: AuthorizationService, private toastService: ToastService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return this.is4Service.user$.pipe(
-      switchMap(user => {
-        if (user) {
+    return this.is4Service.authorized$.pipe(
+      switchMap(authorized => {
+        if (authorized) {
           const clonedRequest = request.clone({
-            headers: request.headers.set('Authorization', 'Bearer ' + user.access_token),
+            headers: request.headers.set('Authorization', 'Bearer ' + this.is4Service.accessToken),
           });
 
           return next.handle(clonedRequest).pipe(
