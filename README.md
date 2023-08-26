@@ -14,7 +14,7 @@ Threadbox is anonymous imageboard for sharing texts and images.
 
 5. Install project dependencies `npm i`.
 
-6. I you already launched server, compile client app `npm start`. Application local port is [4200](http://localhost:4200). The app will automatically reload if you change any of the source files.
+6. I you already launched server, compile client app `npm start`. Application local port is [4200](https://localhost:4200). The app will automatically reload if you change any of the source files.
 
 7. For comfort development it is worth to install workspace recommended extensions for Visual Studio Code (type '@recommended' in Extensions search input). When installing Angular Language Service select version 13.0.0.
 

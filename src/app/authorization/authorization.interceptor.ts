@@ -22,7 +22,7 @@ export class AuthorizationInterceptor implements HttpInterceptor {
               error: (error: HttpErrorResponse) => {
                 switch (error.status) {
                   case HttpStatusCode.Unauthorized:
-                    this.is4Service.signOut();
+                    this.is4Service.signOutRedirect();
                     break;
                   case HttpStatusCode.Forbidden:
                     this.toastService.showErrorToast("You don't have permissions for this operation.");

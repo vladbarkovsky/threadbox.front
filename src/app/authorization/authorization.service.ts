@@ -1,20 +1,19 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { User, UserManager } from 'oidc-client';
-import { BehaviorSubject } from 'rxjs';
+import { Log, User, UserManager, WebStorageStateStore } from 'oidc-client';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
-  get authorized$() {
+  get authorized$(): Observable<boolean> {
     return this.user$.pipe(map(x => !!x && !x.expired));
   }
 
-  get accessToken() {
+  get accessToken(): string | undefined {
     return this.user$.value?.access_token ?? undefined;
   }
-
-  private user$ = new BehaviorSubject<User | undefined | null>(null);
 
   private userManager = new UserManager({
     authority: 'https://localhost:5000',
@@ -23,16 +22,18 @@ export class AuthorizationService {
     response_type: 'code',
     redirect_uri: 'https://localhost:4200/authorization/sign-in-redirect-callback',
     silent_redirect_uri: 'https://localhost:4200/authorization/sign-in-silent-callback',
+    post_logout_redirect_uri: 'https://localhost:4200/authorization/sign-out-redirect-callback',
     automaticSilentRenew: true,
   });
 
-  constructor(private router: Router) {
+  private user$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  private lastUrl: string = '';
+
+  constructor(private router: Router, private location: Location) {
+    Log.logger = console;
+
     this.userManager.getUser().then(user => {
-      if (user) {
-        this.user$.next(user);
-      } else {
-        this.signInSilent();
-      }
+      this.user$.next(user);
     });
 
     this.userManager.events.addAccessTokenExpired(() => {
@@ -40,43 +41,36 @@ export class AuthorizationService {
     });
   }
 
-  signInRedirect() {
-    return this.userManager.signinRedirect().catch(error => {
-      console.error('signinRedirect error:', error);
-    });
+  signInRedirect(): void {
+    this.lastUrl = this.location.path();
+    this.userManager.signinRedirect();
   }
 
-  signInRedirectCallback() {
-    return this.userManager.signinRedirectCallback().then(user => {
+  signInRedirectCallback(): void {
+    this.userManager.signinRedirectCallback().then(user => {
       this.user$.next(user);
-      this.router.navigate(['/app/boards-list']);
+      this.router.navigateByUrl(this.lastUrl);
     });
   }
 
-  signInSilent() {
-    return this.userManager.signinSilent().catch(error => {
-      console.error('signinSilent error:', error);
+  signInSilent(): void {
+    this.lastUrl = this.location.path();
+    this.userManager.signinSilent();
+  }
+
+  signInSilentCallback(): void {
+    this.userManager.signinSilentCallback().then(user => {
+      this.user$.next(user!);
+      this.router.navigateByUrl(this.lastUrl);
     });
   }
 
-  signInSilentCallback() {
-    return this.userManager
-      .signinSilentCallback()
-      .catch(error => {
-        console.error('signinSilentCallback error', error);
-      })
-      .then(user => {
-        console.log('signInSilentCallback', user);
-        this.user$.next(user!);
-        this.router.navigate(['/app/boards-list']);
-      });
+  signOutRedirect(): void {
+    this.lastUrl = this.location.path();
+    this.userManager.signoutRedirect();
   }
 
-  signOut() {
-    return this.userManager.signoutRedirect();
-  }
-
-  signOutRedirectCallback() {
-    return this.userManager.signoutRedirectCallback();
+  signOutRedirectCallback(): void {
+    this.userManager.signoutRedirectCallback().then(() => this.router.navigateByUrl(this.lastUrl));
   }
 }

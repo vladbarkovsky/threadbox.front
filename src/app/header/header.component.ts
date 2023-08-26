@@ -40,6 +40,6 @@ export class HeaderComponent extends MemoryLeaksProtectedComponent implements On
   }
 
   signOut() {
-    this.authorizationService.signOut();
+    this.authorizationService.signOutRedirect();
   }
 }
