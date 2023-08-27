@@ -2,19 +2,18 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { ToastService } from '../common/toast/toast.service';
 import { AuthorizationService } from './authorization.service';
 
 @Injectable()
 export class AuthorizationInterceptor implements HttpInterceptor {
-  constructor(private is4Service: AuthorizationService, private toastService: ToastService) {}
+  constructor(private authorizationService: AuthorizationService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return this.is4Service.authorized$.pipe(
+    return this.authorizationService.authorized$.pipe(
       switchMap(authorized => {
         if (authorized) {
           const clonedRequest = request.clone({
-            headers: request.headers.set('Authorization', 'Bearer ' + this.is4Service.accessToken),
+            headers: request.headers.set('Authorization', 'Bearer ' + this.authorizationService.accessToken),
           });
 
           return next.handle(clonedRequest).pipe(
@@ -22,10 +21,10 @@ export class AuthorizationInterceptor implements HttpInterceptor {
               error: (error: HttpErrorResponse) => {
                 switch (error.status) {
                   case HttpStatusCode.Unauthorized:
-                    this.is4Service.signOutRedirect();
+                    this.authorizationService.signOutRedirect();
                     break;
                   case HttpStatusCode.Forbidden:
-                    this.toastService.showErrorToast("You don't have permissions for this operation.");
+                    console.log('No permissions for operation.');
                     break;
                 }
               },

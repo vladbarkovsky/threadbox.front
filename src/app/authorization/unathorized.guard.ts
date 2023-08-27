@@ -5,9 +5,9 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class UnauthorizedGuard implements CanActivate {
-  constructor(private is4Service: AuthorizationService) {}
+  constructor(private authorizationService: AuthorizationService) {}
 
   canActivate() {
-    return this.is4Service.authorized$.pipe(map(x => !x));
+    return this.authorizationService.authorized$.pipe(map(x => !x));
   }
 }

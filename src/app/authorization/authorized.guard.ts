@@ -4,9 +4,9 @@ import { AuthorizationService } from './authorization.service';
 
 @Injectable()
 export class AuthorizedGuard implements CanActivate {
-  constructor(private is4Service: AuthorizationService) {}
+  constructor(private authorizationService: AuthorizationService) {}
 
   canActivate() {
-    return this.is4Service.authorized$;
+    return this.authorizationService.authorized$;
   }
 }

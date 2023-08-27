@@ -22,6 +22,8 @@ export class HeaderComponent extends MemoryLeaksProtectedComponent implements On
   }
 
   ngOnInit() {
+    this.authorizationService.initialize();
+
     this.authorized$
       .pipe(takeUntil(this.destroyed$))
       .subscribe(x => (this.links = x ? linksForUnauthorizedUsers : linksForAuthorizedUsers));

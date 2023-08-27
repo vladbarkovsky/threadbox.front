@@ -1,9 +1,10 @@
-import { Location } from '@angular/common';
-import { Injectable } from '@angular/core';
+import { DOCUMENT, Location } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Log, User, UserManager, WebStorageStateStore } from 'oidc-client';
+import { Log, User, UserManager } from 'oidc-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
@@ -16,61 +17,84 @@ export class AuthorizationService {
   }
 
   private userManager = new UserManager({
-    authority: 'https://localhost:5000',
+    authority: environment.apiBaseUrl,
     client_id: 'angular_client',
     scope: 'openid profile offline_access threadbox_api',
     response_type: 'code',
-    redirect_uri: 'https://localhost:4200/authorization/sign-in-redirect-callback',
-    silent_redirect_uri: 'https://localhost:4200/authorization/sign-in-silent-callback',
-    post_logout_redirect_uri: 'https://localhost:4200/authorization/sign-out-redirect-callback',
+    redirect_uri: this.document.baseURI + 'authorization/sign-in-redirect-callback',
+    silent_redirect_uri: this.document.baseURI + 'authorization/sign-in-silent-callback',
+    post_logout_redirect_uri: this.document.baseURI + 'authorization/sign-out-redirect-callback',
     automaticSilentRenew: true,
   });
 
   private user$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
-  private lastUrl: string = '';
 
-  constructor(private router: Router, private location: Location) {
+  constructor(private router: Router, private location: Location, @Inject(DOCUMENT) private document: Document) {}
+
+  initialize() {
+    // Write OIDC client logs to console
     Log.logger = console;
 
-    this.userManager.getUser().then(user => {
-      this.user$.next(user);
-    });
+    this.userManager
+      .querySessionStatus()
+      .catch(() => {
+        console.log('Unable to get session state.');
+      })
+      .then(sessionStatus => {
+        if (sessionStatus) {
+          console.log('Session status received - performing silent sign in...');
 
-    this.userManager.events.addAccessTokenExpired(() => {
-      this.signInSilent();
+          // If we received session state, it means that user is authorized;
+          // therefore we perform silent sign in to restore session data.
+          // It is necessary for cases when authorized user opens application in new tabs
+          this.signInSilent();
+        }
+      });
+
+    this.userManager.events.addUserLoaded(user => {
+      console.log('User loaded.');
+      this.user$.next(user);
     });
   }
 
   signInRedirect(): void {
-    this.lastUrl = this.location.path();
+    this.saveLastUrl();
     this.userManager.signinRedirect();
   }
 
   signInRedirectCallback(): void {
     this.userManager.signinRedirectCallback().then(user => {
       this.user$.next(user);
-      this.router.navigateByUrl(this.lastUrl);
+      this.navigateToLastUrl();
     });
-  }
-
-  signInSilent(): void {
-    this.lastUrl = this.location.path();
-    this.userManager.signinSilent();
   }
 
   signInSilentCallback(): void {
     this.userManager.signinSilentCallback().then(user => {
       this.user$.next(user!);
-      this.router.navigateByUrl(this.lastUrl);
+      this.navigateToLastUrl();
     });
   }
 
   signOutRedirect(): void {
-    this.lastUrl = this.location.path();
+    this.saveLastUrl();
     this.userManager.signoutRedirect();
   }
 
   signOutRedirectCallback(): void {
-    this.userManager.signoutRedirectCallback().then(() => this.router.navigateByUrl(this.lastUrl));
+    this.userManager.signoutRedirectCallback().then(() => this.navigateToLastUrl());
+  }
+
+  private signInSilent(): void {
+    this.saveLastUrl();
+    this.userManager.signinSilent();
+  }
+
+  private saveLastUrl(): void {
+    window.sessionStorage.setItem('lastUrl', this.location.path());
+  }
+
+  private navigateToLastUrl(): void {
+    this.router.navigateByUrl(window.sessionStorage.getItem('lastUrl')!);
   }
 }

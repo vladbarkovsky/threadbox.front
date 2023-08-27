@@ -5,9 +5,9 @@ import { AuthorizationService } from './authorization.service';
   template: '',
 })
 export class SignOutRedirectCallbackComponent implements OnInit {
-  constructor(private is4Service: AuthorizationService) {}
+  constructor(private authorizationService: AuthorizationService) {}
 
   ngOnInit(): void {
-    this.is4Service.signOutRedirectCallback();
+    this.authorizationService.signOutRedirectCallback();
   }
 }
