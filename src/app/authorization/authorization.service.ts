@@ -63,10 +63,16 @@ export class AuthorizationService {
   }
 
   signInRedirectCallback(): void {
-    this.userManager.signinRedirectCallback().then(user => {
-      this.user$.next(user);
-      this.navigateToLastUrl();
-    });
+    this.userManager
+      .signinRedirectCallback()
+      .catch(error => {
+        console.log('Sign In redirect callback error:', error.message);
+        this.navigateToLastUrl();
+      })
+      .then(user => {
+        this.user$.next(user!);
+        this.navigateToLastUrl();
+      });
   }
 
   signInSilentCallback(): void {
