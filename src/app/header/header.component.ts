@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IdentityService } from 'src/app/identity/identity.service';
 import { HeaderLink } from './header-link';
 import { linksForUnauthorizedUsers, linksForAuthorizedUsers } from './header-links';
 import { MemoryLeaksProtectedComponent } from '../common/memory-leaks-protected.component';
 import { takeUntil } from 'rxjs/operators';
+import { AuthorizationService } from '../authorization/authorization.service';
 
 @Component({
   selector: 'app-header',
@@ -12,17 +12,18 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent extends MemoryLeaksProtectedComponent implements OnInit {
+  authorized$ = this.authorizationService.authorized$;
   links: HeaderLink[] = [];
   activePath!: string;
   isCollapsed: boolean = true;
 
-  authorized$ = this.identityService.authorized$;
-
-  constructor(private identityService: IdentityService, private router: Router) {
+  constructor(private authorizationService: AuthorizationService, private router: Router) {
     super();
   }
 
   ngOnInit() {
+    this.authorizationService.initialize();
+
     this.authorized$
       .pipe(takeUntil(this.destroyed$))
       .subscribe(x => (this.links = x ? linksForUnauthorizedUsers : linksForAuthorizedUsers));
@@ -36,7 +37,11 @@ export class HeaderComponent extends MemoryLeaksProtectedComponent implements On
     this.isCollapsed = true;
   }
 
+  signIn() {
+    this.authorizationService.signInRedirect();
+  }
+
   signOut() {
-    this.identityService.signOut();
+    this.authorizationService.signOutRedirect();
   }
 }
