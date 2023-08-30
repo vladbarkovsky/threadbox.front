@@ -46,7 +46,7 @@ export class AuthorizationService {
 
           // If we received session state, it means that user is authorized;
           // therefore we perform silent sign in to restore session data.
-          // It is necessary for cases when authorized user opens application in new tabs
+          // It is necessary for cases when authorized user opens application in new tab
           this.signInSilent();
         }
       });
