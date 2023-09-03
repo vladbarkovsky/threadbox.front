@@ -19,7 +19,7 @@ export class AuthorizationService {
   private userManager = new UserManager({
     authority: environment.apiBaseUrl,
     client_id: 'angular_client',
-    scope: 'openid profile offline_access threadbox_api',
+    scope: 'openid profile offline_access threadbox_api.access',
     response_type: 'code',
     redirect_uri: this.document.baseURI + 'authorization/sign-in-redirect-callback',
     silent_redirect_uri: this.document.baseURI + 'authorization/sign-in-silent-callback',
