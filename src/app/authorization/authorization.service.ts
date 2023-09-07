@@ -35,6 +35,7 @@ export class AuthorizationService {
     // Write OIDC client logs to console
     Log.logger = console;
 
+    // TODO: Just check cookies instead of check session
     this.userManager
       .querySessionStatus()
       .catch(() => {
