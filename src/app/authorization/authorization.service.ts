@@ -1,20 +1,19 @@
 import { DOCUMENT, Location } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { Log, User, UserManager } from 'oidc-client';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
   get authorized$(): Observable<boolean> {
-    return this.user$.pipe(map(x => !!x && !x.expired));
+    return this.user$.pipe(map(x => !!x));
   }
 
-  get accessToken(): string | undefined {
-    return this.user$.value?.access_token ?? undefined;
-  }
+  user$: ReplaySubject<User | null> = new ReplaySubject<User | null>(1);
 
   private userManager = new UserManager({
     authority: environment.apiBaseUrl,
@@ -27,30 +26,25 @@ export class AuthorizationService {
     automaticSilentRenew: true,
   });
 
-  private user$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
-
-  constructor(private router: Router, private location: Location, @Inject(DOCUMENT) private document: Document) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private location: Location,
+    private router: Router,
+    private cookieService: CookieService
+  ) {}
 
   initialize() {
     // Write OIDC client logs to console
     Log.logger = console;
 
-    // TODO: Just check cookies instead of check session
-    this.userManager
-      .querySessionStatus()
-      .catch(() => {
-        console.log('Unable to get session state.');
-      })
-      .then(sessionStatus => {
-        if (sessionStatus) {
-          console.log('Session status received - performing silent sign in...');
+    const sessionCookieExists = this.cookieService.check('idsrv.session');
 
-          // If we received session state, it means that user is authorized;
-          // therefore we perform silent sign in to restore session data.
-          // It is necessary for cases when authorized user opens application in new tab
-          this.signInSilent();
-        }
-      });
+    if (sessionCookieExists) {
+      console.log('Found session cookie - performing silent sign in...');
+      this.signInSilent();
+    } else {
+      this.user$.next(null);
+    }
 
     this.userManager.events.addUserLoaded(user => {
       console.log('User loaded.');

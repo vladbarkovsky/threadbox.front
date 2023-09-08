@@ -1,64 +1,66 @@
-<!-- https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
+<ng-container *ngIf="authorizationStatusReceived">
+  <!-- https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
 
-<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <div class="navbar-brand d-flex">
-      <div class="mr-2">Threadbox</div>
+  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <div class="navbar-brand d-flex">
+        <div class="mr-2">Threadbox</div>
 
-      <img
-        src="assets/logo.png"
-        alt="Threadbox logo image"
-        width="30"
-      />
-    </div>
+        <img
+          src="assets/logo.png"
+          alt="Threadbox logo image"
+          width="30"
+        />
+      </div>
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      (click)="isCollapsed = !isCollapsed"
-    >
-      <!-- TODO: Replace with icomoon icon -->
-      &#9776;
-    </button>
+      <button
+        class="navbar-toggler"
+        type="button"
+        (click)="isCollapsed = !isCollapsed"
+      >
+        <!-- TODO: Replace with icomoon icon -->
+        &#9776;
+      </button>
 
-    <div
-      [ngbCollapse]="isCollapsed"
-      class="collapse navbar-collapse justify-content-between"
-    >
-      <ul class="navbar-nav">
-        <li
-          *ngFor="let link of links"
-          class="nav-item"
-        >
-          <a
-            class="nav-link"
-            [class.active]="link.path === activePath"
-            [routerLink]="link.path"
-            (click)="onLinkClick(link.path)"
-            >{{ link.title }}</a
+      <div
+        [ngbCollapse]="isCollapsed"
+        class="collapse navbar-collapse justify-content-between"
+      >
+        <ul class="navbar-nav">
+          <li
+            *ngFor="let link of links"
+            class="nav-item"
           >
-        </li>
-      </ul>
+            <a
+              class="nav-link"
+              [class.active]="link.path === activePath"
+              [routerLink]="link.path"
+              (click)="onLinkClick(link.path)"
+              >{{ link.title }}</a
+            >
+          </li>
+        </ul>
 
-      <button
-        *ngIf="(authorized$ | async) === false"
-        class="btn btn-secondary"
-        (click)="signIn()"
-      >
-        Sign in
-      </button>
+        <button
+          *ngIf="(authorized$ | async) === false"
+          class="btn btn-secondary"
+          (click)="signIn()"
+        >
+          Sign in
+        </button>
 
-      <button
-        *ngIf="authorized$ | async"
-        class="btn btn-secondary"
-        (click)="signOut()"
-      >
-        Sign out
-      </button>
+        <button
+          *ngIf="authorized$ | async"
+          class="btn btn-secondary"
+          (click)="signOut()"
+        >
+          Sign out
+        </button>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-<div class="m-2">
-  <router-outlet></router-outlet>
-</div>
+  <div class="m-2">
+    <router-outlet></router-outlet>
+  </div>
+</ng-container>

@@ -13,6 +13,7 @@ import { AuthorizationService } from '../authorization/authorization.service';
 })
 export class HeaderComponent extends MemoryLeaksProtectedComponent implements OnInit {
   authorized$ = this.authorizationService.authorized$;
+  authorizationStatusReceived = false;
   links: HeaderLink[] = [];
   activePath!: string;
   isCollapsed: boolean = true;
@@ -24,9 +25,10 @@ export class HeaderComponent extends MemoryLeaksProtectedComponent implements On
   ngOnInit() {
     this.authorizationService.initialize();
 
-    this.authorized$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(x => (this.links = x ? linksForUnauthorizedUsers : linksForAuthorizedUsers));
+    this.authorized$.pipe(takeUntil(this.destroyed$)).subscribe(x => {
+      this.authorizationStatusReceived = true;
+      return (this.links = x ? linksForUnauthorizedUsers : linksForAuthorizedUsers);
+    });
 
     // TODO: Describe / refactor
     this.activePath = this.router.url.split('/')[2];

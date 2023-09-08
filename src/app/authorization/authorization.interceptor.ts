@@ -9,11 +9,11 @@ export class AuthorizationInterceptor implements HttpInterceptor {
   constructor(private authorizationService: AuthorizationService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return this.authorizationService.authorized$.pipe(
-      switchMap(authorized => {
-        if (authorized) {
+    return this.authorizationService.user$.pipe(
+      switchMap(user => {
+        if (user) {
           const clonedRequest = request.clone({
-            headers: request.headers.set('Authorization', 'Bearer ' + this.authorizationService.accessToken),
+            headers: request.headers.set('Authorization', 'Bearer ' + user.access_token),
           });
 
           return next.handle(clonedRequest).pipe(
