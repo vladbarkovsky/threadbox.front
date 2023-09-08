@@ -11,28 +11,28 @@ export class AuthorizationInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return this.authorizationService.user$.pipe(
       switchMap(user => {
-        if (user) {
-          const clonedRequest = request.clone({
-            headers: request.headers.set('Authorization', 'Bearer ' + user.access_token),
-          });
-
-          return next.handle(clonedRequest).pipe(
-            tap({
-              error: (error: HttpErrorResponse) => {
-                switch (error.status) {
-                  case HttpStatusCode.Unauthorized:
-                    this.authorizationService.signOutRedirect();
-                    break;
-                  case HttpStatusCode.Forbidden:
-                    console.log('No permissions for operation.');
-                    break;
-                }
-              },
-            })
-          );
+        if (!user) {
+          return next.handle(request.clone());
         }
 
-        return next.handle(request.clone());
+        const clonedRequest = request.clone({
+          headers: request.headers.set('Authorization', 'Bearer ' + user.access_token),
+        });
+
+        return next.handle(clonedRequest).pipe(
+          tap({
+            error: (error: HttpErrorResponse) => {
+              switch (error.status) {
+                case HttpStatusCode.Unauthorized:
+                  this.authorizationService.signOutRedirect();
+                  break;
+                case HttpStatusCode.Forbidden:
+                  console.log('No permissions for operation.');
+                  break;
+              }
+            },
+          })
+        );
       })
     );
   }

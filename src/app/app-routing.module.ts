@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { UnauthorizedGuard } from './authorization/unathorized.guard';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   { path: 'app', loadChildren: () => import('./header/header.module').then(m => m.HeaderModule) },
   {
     path: 'authorization',
-    canActivate: [UnauthorizedGuard],
     loadChildren: () => import('./authorization/authorization.module').then(m => m.AuthorizationModule),
   },
   { path: '', redirectTo: 'app', pathMatch: 'full' },
@@ -14,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { enableTracing: false, preloadingStrategy: PreloadAllModules })],
+  imports: [RouterModule.forRoot(routes, { enableTracing: false })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

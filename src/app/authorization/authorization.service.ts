@@ -3,17 +3,20 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Log, User, UserManager } from 'oidc-client';
-import { Observable, ReplaySubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, skip } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
   get authorized$(): Observable<boolean> {
-    return this.user$.pipe(map(x => !!x));
+    return this.user$.pipe(
+      filter(x => x !== undefined),
+      map(x => !!x)
+    );
   }
 
-  user$: ReplaySubject<User | null> = new ReplaySubject<User | null>(1);
+  user$ = new BehaviorSubject<User | null | undefined>(undefined);
 
   private userManager = new UserManager({
     authority: environment.apiBaseUrl,
@@ -43,52 +46,68 @@ export class AuthorizationService {
       console.log('Found session cookie - performing silent sign in...');
       this.signInSilent();
     } else {
+      console.log('Opaa');
       this.user$.next(null);
     }
 
     this.userManager.events.addUserLoaded(user => {
-      console.log('User loaded.');
+      console.log('User loaded.', user);
       this.user$.next(user);
     });
   }
 
   signInRedirect(): void {
     this.saveLastUrl();
-    this.userManager.signinRedirect();
+
+    this.userManager.signinRedirect().catch(error => {
+      console.log('Sign in redirect error:', error);
+      this.user$.next(null);
+    });
   }
 
   signInRedirectCallback(): void {
     this.userManager
       .signinRedirectCallback()
       .catch(error => {
-        console.log('Sign In redirect callback error:', error.message);
-        this.navigateToLastUrl();
+        console.log('Sign in redirect callback error:', error.message);
+        this.user$.next(null);
       })
-      .then(user => {
-        this.user$.next(user!);
-        this.navigateToLastUrl();
-      });
+      //.then(user => this.user$.next(user!))
+      .finally(() => this.navigateToLastUrl());
   }
 
   signInSilentCallback(): void {
-    this.userManager.signinSilentCallback().then(user => {
-      this.user$.next(user!);
-      this.navigateToLastUrl();
-    });
+    this.userManager
+      .signinSilentCallback()
+      .catch(error => {
+        console.log('Sign in silent callback error:', error.message);
+        this.user$.next(null);
+      })
+      //.then(user => this.user$.next(user!))
+      .finally(() => this.navigateToLastUrl());
   }
 
   signOutRedirect(): void {
     this.saveLastUrl();
-    this.userManager.signoutRedirect();
+
+    this.userManager.signoutRedirect().catch(error => console.log('Sign in redirect error:', error));
   }
 
   signOutRedirectCallback(): void {
-    this.userManager.signoutRedirectCallback().then(() => this.navigateToLastUrl());
+    this.userManager
+      .signoutRedirectCallback()
+      .catch(error => console.log('Sign out redirect callback error:', error))
+      //.then(() => this.user$.next(null));
+      .finally(() => this.navigateToLastUrl());
   }
 
   private signInSilent(): void {
     this.saveLastUrl();
-    this.userManager.signinSilent();
+
+    this.userManager.signinSilent().catch(error => {
+      console.log('Sign in silent error:', error);
+      this.user$.next(null);
+    });
   }
 
   private saveLastUrl(): void {

@@ -8,8 +8,6 @@ import { API_BASE_URL } from 'api-client';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastModule } from './common/toast/toast.module';
 import { AuthorizationInterceptor } from './authorization/authorization.interceptor';
-import { AuthorizedGuard } from './authorization/authorized.guard';
-import { UnauthorizedGuard } from './authorization/unathorized.guard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,7 +17,6 @@ import { UnauthorizedGuard } from './authorization/unathorized.guard';
     { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl },
 
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true },
-    UnauthorizedGuard,
   ],
   bootstrap: [AppComponent],
 })
