@@ -42,7 +42,7 @@
         </ul>
 
         <button
-          *ngIf="(authorized$ | async) === false"
+          *ngIf="!authorized"
           class="btn btn-secondary"
           (click)="signIn()"
         >
@@ -50,7 +50,7 @@
         </button>
 
         <button
-          *ngIf="(authorized$ | async) === true"
+          *ngIf="authorized"
           class="btn btn-secondary"
           (click)="signOut()"
         >
