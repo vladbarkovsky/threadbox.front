@@ -1,7 +1,6 @@
 import { DOCUMENT, Location } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 import { Log, User, UserManager } from 'oidc-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -25,7 +24,7 @@ export class AuthorizationService {
   private userManager = new UserManager({
     authority: environment.apiBaseUrl,
     client_id: 'angular_client',
-    scope: 'openid profile ThreadboxApiAPI',
+    scope: 'openid profile threadbox_api.access',
     response_type: 'code',
     redirect_uri: this.document.baseURI + 'authorization/sign-in-redirect-callback',
     silent_redirect_uri: this.document.baseURI + 'authorization/sign-in-silent-callback',
@@ -33,26 +32,29 @@ export class AuthorizationService {
     automaticSilentRenew: true,
   });
 
-  constructor(
-    @Inject(DOCUMENT) private document: Document,
-    private location: Location,
-    private router: Router,
-    private cookieService: CookieService
-  ) {}
+  constructor(@Inject(DOCUMENT) private document: Document, private location: Location, private router: Router) {}
 
   initialize() {
     // Write OIDC client logs to console
     Log.logger = console;
 
-    const sessionCookieExists = this.cookieService.check('idsrv.session');
+    this.userManager
+      .querySessionStatus()
+      .catch(() => {
+        console.log('Unable to get session status - user is unauthorized');
+        this._user$.next(null);
+      })
+      .then(sessionStatus => {
+        if (sessionStatus) {
+          console.log('Session status received - performing silent sign in...');
 
-    if (sessionCookieExists) {
-      this.log('Session cookie detected - performing silent sign in...');
-      this.signInSilent();
-    } else {
-      this.log('Session cookie not found - user is unauthorized.');
-      this._user$.next(null);
-    }
+          // If we received session status, it means that user is authorized;
+          // therefore we perform silent sign in to restore session data.
+          // It is necessary for cases when authorized user opens application in new tab
+          // or uses offline access (authorization saving after closing the browser)
+          this.signInSilent();
+        }
+      });
 
     this.userManager.events.addUserLoaded(user => {
       this.log('User loaded.');
