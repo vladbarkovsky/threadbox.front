@@ -41,12 +41,12 @@ export class AuthorizationService {
     this.userManager
       .querySessionStatus()
       .catch(() => {
-        console.log('Unable to get session status - user is unauthorized');
+        this.log('Unable to get session status - user is unauthorized');
         this._user$.next(null);
       })
       .then(sessionStatus => {
         if (sessionStatus) {
-          console.log('Session status received - performing silent sign in...');
+          this.log('Session status received - performing silent sign in...');
 
           // If we received session status, it means that user is authorized;
           // therefore we perform silent sign in to restore session data.
