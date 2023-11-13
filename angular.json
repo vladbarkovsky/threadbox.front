@@ -76,7 +76,8 @@
               "browserTarget": "threadbox:build:production"
             },
             "development": {
-              "browserTarget": "threadbox:build:development"
+              "browserTarget": "threadbox:build:development",
+              "ssl": true
             }
           },
           "defaultConfiguration": "development"
