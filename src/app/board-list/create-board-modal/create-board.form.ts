@@ -1,4 +1,4 @@
-import { FormControl, AbstractControl, Validators } from '@angular/forms';
+import { UntypedFormControl, AbstractControl, Validators } from '@angular/forms';
 import { CreateBoardCommand } from 'api-client';
 import { GenericFormGroup } from 'src/app/common/generic-form-group';
 
@@ -20,8 +20,8 @@ export class CreateBoardForm extends GenericFormGroup<CreateBoardCommand> {
 
   constructor() {
     super({
-      title: new FormControl('', [Validators.required, Validators.maxLength(128)]),
-      description: new FormControl('', [Validators.required, Validators.maxLength(2048)]),
+      title: new UntypedFormControl('', [Validators.required, Validators.maxLength(128)]),
+      description: new UntypedFormControl('', [Validators.required, Validators.maxLength(2048)]),
     });
   }
 }

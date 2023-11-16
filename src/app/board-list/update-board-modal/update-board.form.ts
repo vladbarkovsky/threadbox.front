@@ -1,4 +1,4 @@
-import { FormControl, AbstractControl, Validators } from '@angular/forms';
+import { UntypedFormControl, AbstractControl, Validators } from '@angular/forms';
 import { BoardDto, UpdateBoardCommand } from 'api-client';
 import { GenericFormGroup } from 'src/app/common/generic-form-group';
 
@@ -23,8 +23,8 @@ export class UpdateBoardForm extends GenericFormGroup<UpdateBoardCommand> {
 
   constructor(boardDto: BoardDto) {
     super({
-      title: new FormControl(boardDto.title, [Validators.required, Validators.maxLength(128)]),
-      description: new FormControl(boardDto.description, [Validators.required, Validators.maxLength(2048)]),
+      title: new UntypedFormControl(boardDto.title, [Validators.required, Validators.maxLength(128)]),
+      description: new UntypedFormControl(boardDto.description, [Validators.required, Validators.maxLength(2048)]),
     });
 
     this.id = boardDto.id;
