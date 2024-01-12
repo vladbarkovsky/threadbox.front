@@ -6,6 +6,7 @@ import { ConfirmationModalConfig } from './confirmation-modal-config';
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-modal.component.html',
   styleUrls: ['./confirmation-modal.component.scss'],
+  standalone: true,
 })
 export class ConfirmationModalComponent {
   @Input() readonly config!: ConfirmationModalConfig;

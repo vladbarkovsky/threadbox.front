@@ -1,24 +1,23 @@
 <h3 class="mb-3">Boards</h3>
 
 <div class="boards-list list-group mb-4">
-  <div
-    *ngFor="let board of boards$ | async"
-    class="list-group-item list-group-item-action d-flex justify-content-between"
-  >
-    <a [routerLink]="['../board', board.id]">{{ board.title }}</a>
+  @for (board of (boards$ | async); track board.id) {
+    <div class="list-group-item list-group-item-action d-flex justify-content-between">
+      <a [routerLink]="['../board', board.id]">{{ board.title }}</a>
 
-    <div>
-      <i
-        class="icomoon-icon edit action-icon"
-        (click)="openUpdateBoardModal(board.id!)"
-      ></i>
+      <div>
+        <i
+          class="icomoon-icon edit action-icon"
+          (click)="openUpdateBoardModal(board.id!)"
+        ></i>
 
-      <i
-        class="icomoon-icon trash action-icon"
-        (click)="openDeleteConfirmationModule(board.id!)"
-      ></i>
+        <i
+          class="icomoon-icon trash action-icon"
+          (click)="openDeleteConfirmationModule(board.id!)"
+        ></i>
+      </div>
     </div>
-  </div>
+  }
 </div>
 
 <button

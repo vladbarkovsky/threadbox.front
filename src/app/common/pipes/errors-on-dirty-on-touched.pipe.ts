@@ -3,7 +3,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Pipe({
   name: 'errorsOnDirtyOrTouched',
-  pure: true,
+  standalone: true,
 })
 export class ErrorsOnDirtyOrTouchedPipe implements PipeTransform {
   transform(abstractControl: AbstractControl): ValidationErrors | undefined {

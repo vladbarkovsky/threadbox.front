@@ -1,16 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
-import { EventService } from 'src/app/services/event.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.scss'],
+  standalone: true,
 })
-export class PostComponent extends MemoryLeaksProtectedComponent implements OnInit {
-  constructor(public eventService: EventService) {
-    super();
-  }
-
-  ngOnInit(): void {}
-}
+export class PostComponent {}

@@ -1,29 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HeaderLink } from './header-link';
 import { linksForUnauthorizedUsers, linksForAuthorizedUsers } from './header-links';
-import { MemoryLeaksProtectedComponent } from '../common/memory-leaks-protected.component';
-import { takeUntil } from 'rxjs/operators';
 import { AuthorizationService } from '../authorization/authorization.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  standalone: true,
+  imports: [RouterOutlet, RouterLink, NgbCollapse],
 })
-export class HeaderComponent extends MemoryLeaksProtectedComponent implements OnInit {
+export class HeaderComponent implements OnInit {
   authorized: boolean | undefined = undefined;
   authorizationStatusReceived = false;
   links: HeaderLink[] = [];
   activePath!: string;
   isCollapsed: boolean = true;
 
-  constructor(private authorizationService: AuthorizationService, private router: Router) {
-    super();
-  }
+  private destroyRef = inject(DestroyRef);
+
+  constructor(
+    private authorizationService: AuthorizationService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.authorizationService.authorized$.pipe(takeUntil(this.destroyed$)).subscribe(x => {
+    this.authorizationService.authorized$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(x => {
       this.authorizationStatusReceived = true;
       this.authorized = x;
       return (this.links = x ? linksForUnauthorizedUsers : linksForAuthorizedUsers);

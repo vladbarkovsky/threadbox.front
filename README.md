@@ -8,15 +8,17 @@ Threadbox is anonymous imageboard for sharing texts and images.
 
 1. Install [Node Version Manager](https://github.com/nvm-sh/nvm#important-notes) (nvm).
 
-1. Install Node.js 16.17.1 using nvm.
+1. Install Node.js 20.9.0 using nvm.
 
-1. Install Angular command-line interface `npm install -g @angular/cli`.
+1. Install Angular CLI 17.0.8 `npm i @angular/cli@17.0.8`.
 
 1. Install project dependencies `npm i`.
 
-1. I you already launched server, compile client app `npm start`. Application local port is [4200](http://localhost:4200). The app will automatically reload if you change any of the source files.
+1. Allow untrusted SSL on localhost in your browser. If you are using Google Chrome, enable chrome://flags/#temporary-unexpire-flags-m118, reload browser, enable chrome://flags/#allow-insecure-localhost and reload again.
 
-1. For comfort development it is worth to install workspace recommended extensions for Visual Studio Code (type '@recommended' in Extensions search input). When installing Angular Language Service select version 13.0.0.
+1. I you already launched server, compile client app `npm start`. Application local port is [4200](https://localhost:4200). The app will automatically reload if you change any of the source files.
+
+1. For comfort development it is worth to install workspace recommended extensions for Visual Studio Code (type '@recommended' in Extensions search input). When installing Angular Language Service select v17.0.3.
 
 Don't use Angular DevTools extension for Chrome - for unknown reasons it does not allow the app to work.
 

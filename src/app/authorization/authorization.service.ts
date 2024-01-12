@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Log, User, UserManager } from 'oidc-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
@@ -32,7 +32,11 @@ export class AuthorizationService {
     automaticSilentRenew: true,
   });
 
-  constructor(@Inject(DOCUMENT) private document: Document, private location: Location, private router: Router) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private location: Location,
+    private router: Router
+  ) {}
 
   initialize() {
     // Write OIDC client logs to console

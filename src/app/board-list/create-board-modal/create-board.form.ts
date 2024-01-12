@@ -1,6 +1,6 @@
 import { UntypedFormControl, AbstractControl, Validators } from '@angular/forms';
-import { CreateBoardCommand } from 'api-client';
-import { GenericFormGroup } from 'src/app/common/generic-form-group';
+import { GenericFormGroup } from '../../common/generic-form-group';
+import { CreateBoardCommand } from '../../../../api-client';
 
 export class CreateBoardForm extends GenericFormGroup<CreateBoardCommand> {
   get data(): CreateBoardCommand {

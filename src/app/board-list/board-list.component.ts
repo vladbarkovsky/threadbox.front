@@ -4,14 +4,18 @@ import { CreateBoardModalComponent } from './create-board-modal/create-board-mod
 import { UpdateBoardModalComponent } from './update-board-modal/update-board-modal.component';
 import { BoardsListFacade } from './boards-list.facade';
 import { BoardsListState } from './boards-list.state';
-import { ToastService } from 'src/app/common/toast/toast.service';
-import { ConfirmationModalComponent } from 'src/app/common/confirmation-modal/confirmation-modal.component';
 import { first } from 'rxjs/operators';
+import { ConfirmationModalComponent } from '../common/confirmation-modal/confirmation-modal.component';
+import { ToastService } from '../common/toast/toast.service';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-boards-list',
   templateUrl: './boards-list.component.html',
   styleUrls: ['./boards-list.component.scss'],
+  standalone: true,
+  imports: [RouterLink, AsyncPipe],
 })
 export class BoardListComponent {
   boards$ = this.boardListState.getBoards();

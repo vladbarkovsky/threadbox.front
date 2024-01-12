@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BoardListDto } from 'api-client';
 import { BehaviorSubject } from 'rxjs';
+import { BoardListDto } from '../../../api-client';
 
 @Injectable({ providedIn: 'root' })
 export class BoardsListState {

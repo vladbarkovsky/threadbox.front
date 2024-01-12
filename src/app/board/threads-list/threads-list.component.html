@@ -1,47 +1,39 @@
 <button class="btn btn-secondary mb-2">Create thread</button>
 
-<ng-container *ngIf="(paginatedThreads$ | async)?.pageItems as threads">
-  <div
-    *ngFor="let thread of threads"
-    class="my-2"
-  >
-    <div class="card border-dark">
-      <div class="card-header thread-title">
-        {{ thread.title }}
-      </div>
+@if ((paginatedThreads$ | async)?.pageItems; as threads) {
+  @for (thread of threads; track thread.id) {
+    <div class="my-2">
+      <div class="card border-dark">
+        <div class="card-header thread-title">
+          {{ thread.title }}
+        </div>
 
-      <div class="card-body">
-        <p class="card-text">{{ thread.text }}</p>
+        <div class="card-body">
+          <p class="card-text">{{ thread.text }}</p>
 
-        <div class="row mb-2">
-          <div
-            *ngFor="let imageUrl of thread.threadImageUrls"
-            class="col-auto thread-image-col"
-          >
-            <img
-              [httpSource]="imageUrl"
-              [alt]="'Unable to load ' + imageUrl"
-              class="img-thumbnail thread-image"
-            />
+          <div class="row mb-2">
+            @for (imageUrl of thread.threadImageUrls; track $index) {
+              <div class="col-auto thread-image-col">
+                <img
+                  [httpSource]="imageUrl"
+                  [alt]="'Unable to load ' + imageUrl"
+                  class="img-thumbnail thread-image"
+                />
+              </div>
+            }
           </div>
+
+          @if (thread.threadImageUrls?.length) {
+            <button class="btn btn-secondary mb-2">Download images</button>
+          }
+
+          @for (post of thread.posts; track post.id) {
+            <div class="my-2">POST</div>
+          }
         </div>
 
-        <button
-          *ngIf="thread.threadImageUrls?.length"
-          class="btn btn-secondary mb-2"
-        >
-          Download images
-        </button>
-
-        <div
-          *ngFor="let post of thread.posts"
-          class="my-2"
-        >
-          POST
-        </div>
+        <!-- <div class="card-footer"></div> -->
       </div>
-
-      <!-- <div class="card-footer"></div> -->
     </div>
-  </div>
-</ng-container>
+  }
+}

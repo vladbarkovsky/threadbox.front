@@ -31,21 +31,15 @@
         type="text"
       />
 
-      <ng-container *ngIf="createBoardForm.title | errorsOnDirtyOrTouched as errors">
-        <small
-          class="text-danger"
-          *ngIf="errors.required"
-        >
-          Title required.
-        </small>
+      @if (createBoardForm.title | errorsOnDirtyOrTouched; as errors) {
+        @if (errors['required']) {
+          <small class="text-danger">Title required.</small>
+        }
 
-        <small
-          class="text-danger"
-          *ngIf="errors.maxlength"
-        >
-          Maximal length is {{ errors.maxlength.requiredLength }}.
-        </small>
-      </ng-container>
+        @if (errors['maxlength']; as maxLength) {
+          <small class="text-danger">Maximal length is {{ maxLength.requiredLength }}.</small>
+        }
+      }
     </div>
 
     <div class="mb-3">
@@ -62,21 +56,15 @@
         formControlName="description"
       ></textarea>
 
-      <ng-container *ngIf="createBoardForm.description | errorsOnDirtyOrTouched as errors">
-        <small
-          class="text-danger"
-          *ngIf="errors.required"
-        >
-          Description required.
-        </small>
+      @if (createBoardForm.title | errorsOnDirtyOrTouched; as errors) {
+        @if (errors['required']) {
+          <small class="text-danger">Title required.</small>
+        }
 
-        <small
-          class="text-danger"
-          *ngIf="errors.maxlength"
-        >
-          Maximal length is {{ errors.maxlength.requiredLength }}.
-        </small>
-      </ng-container>
+        @if (errors['maxLength']; as maxLength) {
+          <small class="text-danger">Maximal length is {{ maxLength.requiredLength }}.</small>
+        }
+      }
     </div>
   </form>
 </div>

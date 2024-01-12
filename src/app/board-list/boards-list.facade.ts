@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BoardDto, BoardsClient, CreateBoardCommand, UpdateBoardCommand } from 'api-client';
 import { first } from 'rxjs/operators';
-import { ToastService } from 'src/app/common/toast/toast.service';
 import { BoardsListState } from './boards-list.state';
+import { BoardsClient, BoardDto, CreateBoardCommand, UpdateBoardCommand } from '../../../api-client';
+import { ToastService } from '../common/toast/toast.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class BoardsListFacade {
-  constructor(private boardsClient: BoardsClient, private boardsListState: BoardsListState, private toastService: ToastService) {}
+  constructor(
+    private boardsClient: BoardsClient,
+    private boardsListState: BoardsListState,
+    private toastService: ToastService
+  ) {}
 
   getBoard(boardId: string, callback: (boardDto: BoardDto) => void) {
     return this.boardsClient

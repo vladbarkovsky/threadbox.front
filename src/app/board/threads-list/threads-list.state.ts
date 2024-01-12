@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { PaginatedResultOfThreadDto } from 'api-client';
 import { BehaviorSubject } from 'rxjs';
+import { PaginatedResultOfThreadDto } from '../../../../api-client';
 
 @Injectable({ providedIn: 'root' })
 export class ThreadsListState {

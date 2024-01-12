@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { GetThreadsByBoardQuery, ThreadsClient } from 'api-client';
 import { first } from 'rxjs/operators';
 import { ThreadsListState } from './threads-list.state';
+import { GetThreadsByBoardQuery, ThreadsClient } from '../../../../api-client';
 
 @Injectable({ providedIn: 'root' })
 export class ThreadsListFacade {
-  constructor(private threadsClient: ThreadsClient, private threadsListState: ThreadsListState) {}
+  constructor(
+    private threadsClient: ThreadsClient,
+    private threadsListState: ThreadsListState
+  ) {}
 
   getPaginatedThreads(query: GetThreadsByBoardQuery) {
     this.threadsClient
