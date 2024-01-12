@@ -7,6 +7,7 @@ import { filter, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
+// TODO: Implement methods through RxJS
 export class AuthorizationService {
   get authorized$(): Observable<boolean> {
     return this._user$.pipe(
@@ -27,7 +28,7 @@ export class AuthorizationService {
     scope: 'openid profile threadbox_api.access',
     response_type: 'code',
     redirect_uri: this.document.baseURI + 'authorization/sign-in-redirect-callback',
-    silent_redirect_uri: this.document.baseURI + 'authorization/sign-in-silent-callback',
+    silent_redirect_uri: this.document.baseURI + 'assets/authorization/sign-in-silent-callback.html',
     post_logout_redirect_uri: this.document.baseURI + 'authorization/sign-out-redirect-callback',
     automaticSilentRenew: true,
   });
