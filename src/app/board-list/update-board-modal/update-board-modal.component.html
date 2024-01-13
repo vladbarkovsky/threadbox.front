@@ -28,7 +28,7 @@
         type="text"
       />
 
-      @if (updateBoardForm.title | errorsOnDirtyOrTouched; as errors) {
+      @if (updateBoardForm.title | validationErrors; as errors) {
         <small class="text-danger">
           @if (errors['required']) {
             Title required.
@@ -55,7 +55,7 @@
         formControlName="description"
       ></textarea>
 
-      @if (updateBoardForm.description | errorsOnDirtyOrTouched; as errors) {
+      @if (updateBoardForm.description | validationErrors; as errors) {
         <small class="text-danger">
           @if (errors['required']) {
             Title required.

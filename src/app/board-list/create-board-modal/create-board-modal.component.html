@@ -31,7 +31,7 @@
         type="text"
       />
 
-      @if (createBoardForm.title | errorsOnDirtyOrTouched; as errors) {
+      @if (createBoardForm.title | validationErrors; as errors) {
         @if (errors['required']) {
           <small class="text-danger">Title required.</small>
         }
@@ -56,7 +56,7 @@
         formControlName="description"
       ></textarea>
 
-      @if (createBoardForm.title | errorsOnDirtyOrTouched; as errors) {
+      @if (createBoardForm.title | validationErrors; as errors) {
         @if (errors['required']) {
           <small class="text-danger">Title required.</small>
         }

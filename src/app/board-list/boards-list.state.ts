@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { BoardListDto } from '../../../api-client';
 
 @Injectable({ providedIn: 'root' })
 export class BoardsListState {
-  private boards$ = new BehaviorSubject<BoardListDto[] | undefined>(undefined);
+  private boards$ = new Subject<BoardListDto[]>();
 
-  getBoards() {
-    return this.boards$;
+  getBoards(): Observable<BoardListDto[] | undefined> {
+    return this.boards$.asObservable();
   }
 
-  setBoards(value: BoardListDto[]) {
+  setBoards(value: BoardListDto[]): void {
     this.boards$.next(value);
   }
 }

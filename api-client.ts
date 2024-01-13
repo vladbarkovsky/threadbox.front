@@ -23,7 +23,9 @@ export interface IBoardsClient {
     deleteBoard(boardId: string | undefined): Observable<FileResponse>;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class BoardsClient implements IBoardsClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -316,7 +318,9 @@ export interface IFilesClient {
     getPostImagesZip(postId: string | undefined): Observable<FileResponse>;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class FilesClient implements IFilesClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -501,7 +505,9 @@ export interface IPostsClient {
     createPost(command: CreatePostCommand): Observable<FileResponse>;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class PostsClient implements IPostsClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -633,7 +639,9 @@ export interface IThreadsClient {
     createThread(command: CreateThreadCommand): Observable<FileResponse>;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ThreadsClient implements IThreadsClient {
     private http: HttpClient;
     private baseUrl: string;

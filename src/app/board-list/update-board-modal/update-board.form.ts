@@ -1,9 +1,9 @@
-import { UntypedFormControl, AbstractControl, Validators } from '@angular/forms';
+import { AbstractControl, Validators, FormControl } from '@angular/forms';
 import { BoardDto, UpdateBoardCommand } from '../../../../api-client';
 import { GenericFormGroup } from '../../common/generic-form-group';
 
 export class UpdateBoardForm extends GenericFormGroup<UpdateBoardCommand> {
-  get data(): UpdateBoardCommand {
+  override get data(): UpdateBoardCommand {
     return new UpdateBoardCommand({
       id: this.id,
       title: this.title.value,
@@ -19,14 +19,14 @@ export class UpdateBoardForm extends GenericFormGroup<UpdateBoardCommand> {
     return this.controls['description'];
   }
 
-  private id: string | undefined;
+  private id: string;
 
   constructor(boardDto: BoardDto) {
     super({
-      title: new UntypedFormControl(boardDto.title, [Validators.required, Validators.maxLength(128)]),
-      description: new UntypedFormControl(boardDto.description, [Validators.required, Validators.maxLength(2048)]),
+      title: new FormControl<string>(boardDto.title!, [Validators.required, Validators.maxLength(128)]),
+      description: new FormControl<string>(boardDto.description!, [Validators.required, Validators.maxLength(2048)]),
     });
 
-    this.id = boardDto.id;
+    this.id = boardDto.id!;
   }
 }
