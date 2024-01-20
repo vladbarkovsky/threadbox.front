@@ -1,26 +1,26 @@
 import { DOCUMENT, Location } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Log, User, UserManager } from 'oidc-client';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { Observable, Subject, from } from 'rxjs';
+import { finalize, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
-// TODO: Implement methods through RxJS
 export class AuthorizationService {
+  private readonly document = inject(DOCUMENT);
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
+
   get authorized$(): Observable<boolean> {
-    return this._user$.pipe(
-      filter(x => x !== undefined),
-      map(x => !!x)
-    );
+    return this._user$.pipe(map(x => !!x));
   }
 
-  get user$(): Observable<User | null | undefined> {
+  get user$(): Observable<User | undefined> {
     return this._user$.asObservable();
   }
 
-  private _user$ = new BehaviorSubject<User | null | undefined>(undefined);
+  private _user$ = new Subject<User | undefined>();
 
   private userManager = new UserManager({
     authority: environment.apiBaseUrl,
@@ -33,23 +33,12 @@ export class AuthorizationService {
     automaticSilentRenew: true,
   });
 
-  constructor(
-    @Inject(DOCUMENT) private document: Document,
-    private location: Location,
-    private router: Router
-  ) {}
-
   initialize() {
     // Write OIDC client logs to console
     Log.logger = console;
 
-    this.userManager
-      .querySessionStatus()
-      .catch(() => {
-        this.log('Unable to get session status - user is unauthorized');
-        this._user$.next(null);
-      })
-      .then(sessionStatus => {
+    from(this.userManager.querySessionStatus()).subscribe({
+      next: sessionStatus => {
         if (sessionStatus) {
           this.log('Session status received - performing silent sign in...');
 
@@ -59,7 +48,12 @@ export class AuthorizationService {
           // or uses offline access (authorization saving after closing the browser)
           this.signInSilent();
         }
-      });
+      },
+      error: () => {
+        this.log('Unable to get session status - user is unauthorized.');
+        this._user$.next(undefined);
+      },
+    });
 
     this.userManager.events.addUserLoaded(user => {
       this.log('User loaded.');
@@ -70,51 +64,58 @@ export class AuthorizationService {
   signInRedirect(): void {
     this.saveLastUrl();
 
-    this.userManager.signinRedirect().catch(error => {
-      this.log('Sign in redirect error:', error);
+    from(this.userManager.signinRedirect()).subscribe({
+      error: error => this.log('Sign in redirect error:', error),
     });
   }
 
   signInRedirectCallback(): void {
-    this.userManager
-      .signinRedirectCallback()
-      .catch(error => {
-        this.log('Sign in redirect callback error:', error.message);
-        this._user$.next(null);
-      })
-      .finally(() => this.navigateToLastUrl());
+    from(this.userManager.signinRedirectCallback())
+      .pipe(finalize(() => this.navigateToLastUrl()))
+      .subscribe({
+        error: error => {
+          this.log('Sign in redirect callback error:', error.message);
+          this._user$.next(undefined);
+        },
+      });
   }
 
   private signInSilent(): void {
     this.saveLastUrl();
 
-    this.userManager.signinSilent().catch(error => {
-      this.log('Sign in silent error:', error);
-      this._user$.next(null);
+    from(this.userManager.signinSilent()).subscribe({
+      error: error => {
+        this.log('Sign in silent error:', error);
+        this._user$.next(undefined);
+      },
     });
   }
 
   signInSilentCallback(): void {
-    this.userManager
-      .signinSilentCallback()
-      .catch(error => {
-        this.log('Sign in silent callback error:', error.message);
-        this._user$.next(null);
-      })
-      .finally(() => this.navigateToLastUrl());
+    from(this.userManager.signinSilentCallback())
+      .pipe(finalize(() => this.navigateToLastUrl()))
+      .subscribe({
+        error: error => {
+          this.log('Sign in silent callback error:', error.message);
+          this._user$.next(undefined);
+        },
+      });
   }
 
   signOutRedirect(): void {
     this.saveLastUrl();
 
-    this.userManager.signoutRedirect().catch(error => this.log('Sign out redirect error:', error.message));
+    from(this.userManager.signoutRedirect()).subscribe({
+      error: error => this.log('Sign out redirect error:', error.message),
+    });
   }
 
   signOutRedirectCallback(): void {
-    this.userManager
-      .signoutRedirectCallback()
-      .catch(error => this.log('Sign out redirect callback error:', error))
-      .finally(() => this.navigateToLastUrl());
+    from(this.userManager.signoutRedirectCallback())
+      .pipe(finalize(() => this.navigateToLastUrl()))
+      .subscribe({
+        error: error => this.log('Sign out redirect callback error:', error),
+      });
   }
 
   private saveLastUrl(): void {
