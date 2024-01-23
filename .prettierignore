@@ -1,2 +1,4 @@
 .prettierrc
 api-client.ts
+api-permissions.ts
+src/assets/authorization/oidc-client.min.js

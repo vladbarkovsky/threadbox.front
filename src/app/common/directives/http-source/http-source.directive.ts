@@ -1,14 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
-import { finalize, first } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 @Directive({
   selector: 'img[httpSource]',
+  standalone: true,
 })
 export class HttpSourceDirective implements OnInit {
   @Input() httpSource!: string;
 
-  constructor(private http: HttpClient, private renderer2: Renderer2, private elementRef: ElementRef) {}
+  constructor(
+    private http: HttpClient,
+    private renderer2: Renderer2,
+    private elementRef: ElementRef
+  ) {}
 
   ngOnInit(): void {
     // TODO: Replace image hiding by CSS display property with ng-lazyload-image
@@ -20,7 +25,6 @@ export class HttpSourceDirective implements OnInit {
     this.http
       .get(this.httpSource, { responseType: 'blob' })
       .pipe(
-        first(),
         // Show image
         finalize(() => (this.elementRef.nativeElement.style.display = null))
       )

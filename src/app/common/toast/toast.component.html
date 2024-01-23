@@ -1,13 +1,14 @@
 <!-- https://ng-bootstrap.github.io/#/components/toast/overview#toast-service -->
 
-<ngb-toast
-  *ngFor="let toast of toasts"
-  class="text-light"
-  [ngClass]="toast.class"
-  [autohide]="true"
-  [delay]="toast.delayMilliseconds"
-  (hidden)="removeToast(toast)"
-  (click)="removeToast(toast)"
->
-  <div class="toast-text">{{ toast.text }}</div>
-</ngb-toast>
+@for (toast of toasts; track $index) {
+  <ngb-toast
+    class="text-light"
+    [ngClass]="toast.class"
+    [autohide]="true"
+    [delay]="toast.delayMilliseconds"
+    (hidden)="removeToast(toast)"
+    (click)="removeToast(toast)"
+  >
+    <div class="toast-text">{{ toast.text }}</div>
+  </ngb-toast>
+}

@@ -1,5 +1,5 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
-export abstract class GenericFormGroup<T> extends FormGroup {
+export abstract class GenericFormGroup<T> extends UntypedFormGroup {
   abstract get data(): T;
 }

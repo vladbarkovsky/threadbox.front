@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { HeaderComponent } from './header.component';
 import { BoardListComponent } from '../board-list/board-list.component';
 import { BoardComponent } from '../board/board.component';
 
-const routes: Routes = [
+export const HEADER_ROUTES: Routes = [
   {
     path: '',
     component: HeaderComponent,
@@ -17,9 +16,3 @@ const routes: Routes = [
   },
   { path: '**', redirectTo: '' },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class HeaderRoutingModule {}

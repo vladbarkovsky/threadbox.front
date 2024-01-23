@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MemoryLeaksProtectedComponent } from '../memory-leaks-protected.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ImageFile } from './image-file';
-import { ToastService } from 'src/app/common/toast/toast.service';
+import { ToastService } from '../toast/toast.service';
 
 @Component({
   selector: 'app-images-upload',
   templateUrl: './images-upload.component.html',
   styleUrls: ['./images-upload.component.scss'],
+  standalone: true,
 })
-export class ImagesUploadComponent extends MemoryLeaksProtectedComponent implements OnInit {
+export class ImagesUploadComponent implements OnInit {
   /**
    * Form with file input for images.
    *
@@ -20,9 +20,10 @@ export class ImagesUploadComponent extends MemoryLeaksProtectedComponent impleme
 
   imageFiles: ImageFile[] = [];
 
-  constructor(private formBuilder: FormBuilder, private toastService: ToastService) {
-    super();
-  }
+  constructor(
+    private formBuilder: FormBuilder,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {}
 

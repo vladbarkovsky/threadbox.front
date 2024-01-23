@@ -1,71 +1,29 @@
-import { Injectable } from '@angular/core';
-import { BoardDto, BoardsClient, CreateBoardCommand, UpdateBoardCommand } from 'api-client';
-import { first } from 'rxjs/operators';
-import { ToastService } from 'src/app/common/toast/toast.service';
-import { BoardsListState } from './boards-list.state';
+import { Injectable, inject } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { BoardsClient, BoardDto, CreateBoardCommand, UpdateBoardCommand, BoardListDto } from '../../../api-client';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class BoardsListFacade {
-  constructor(private boardsClient: BoardsClient, private boardsListState: BoardsListState, private toastService: ToastService) {}
+  private readonly boardsClient = inject(BoardsClient);
 
-  getBoard(boardId: string, callback: (boardDto: BoardDto) => void) {
-    return this.boardsClient
-      .getBoard(boardId)
-      .pipe(first())
-      .subscribe({
-        next: boardDto => callback(boardDto),
-        error: () => this.toastService.showErrorToast('Unable to get board data'),
-      });
+  getBoard(boardId: string): Observable<BoardDto> {
+    return this.boardsClient.getBoard(boardId);
   }
 
-  getBoards() {
-    this.boardsClient
-      .getBoardsList()
-      .pipe(first())
-      .subscribe({
-        next: boards => this.boardsListState.setBoards(boards),
-        // TODO: Set error in sign in state (error must be displayed in component)
-        error: error => console.log(error),
-      });
+  getBoards(): Observable<BoardListDto[]> {
+    return this.boardsClient.getBoardsList();
   }
 
-  createBoard(createBoardCommand: CreateBoardCommand, callback: () => void) {
-    this.boardsClient
-      .createBoard(createBoardCommand)
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccessToast('Board created');
-          callback();
-        },
-
-        // TODO: Set error in sign in state (error must be displayed in component)
-        error: error => console.log(error),
-      });
+  createBoard(createBoardCommand: CreateBoardCommand): Observable<void> {
+    return this.boardsClient.createBoard(createBoardCommand).pipe(map(() => {}));
   }
 
-  updateBoard(updateBoardCommand: UpdateBoardCommand, callback: () => void) {
-    this.boardsClient
-      .updateBoard(updateBoardCommand)
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccessToast('Board updated');
-          callback();
-        },
-
-        // TODO: Set error in sign in state (error must be displayed in component)
-        error: error => console.log(error),
-      });
+  updateBoard(updateBoardCommand: UpdateBoardCommand): Observable<void> {
+    return this.boardsClient.updateBoard(updateBoardCommand).pipe(map(() => {}));
   }
 
-  deleteBoard(boardId: string) {
-    this.boardsClient
-      .deleteBoard(boardId)
-      .pipe(first())
-      .subscribe({
-        next: () => this.toastService.showSuccessToast('Board deleted'),
-        error: () => this.toastService.showErrorToast('Unable to delete board'),
-      });
+  deleteBoard(boardId: string): Observable<void> {
+    return this.boardsClient.deleteBoard(boardId).pipe(map(() => {}));
   }
 }

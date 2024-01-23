@@ -4,7 +4,7 @@
   "bracketSpacing": true,
   "cursorOffset": -1,
   "embeddedLanguageFormatting": "off",
-  "endOfLine": "lf",
+  "endOfLine": "crlf",
   "htmlWhitespaceSensitivity": "css",
   "overrides": [],
   "printWidth": 130,

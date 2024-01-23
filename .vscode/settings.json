@@ -1,12 +1,6 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "cSpell.words": [],
-  "cSpell.ignorePaths": [],
   "editor.tabSize": 2,
-  "typescript.implementationsCodeLens.enabled": true,
-  "typescript.referencesCodeLens.enabled": true,
-  "editor.codeLens": true,
-  "gitlens.codeLens.enabled": false,
-  "gitlens.codeLens.authors.enabled": false
+  "editor.codeLens": true
 }

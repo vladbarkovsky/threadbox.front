@@ -1,4 +1,4 @@
-<ng-container *ngIf="authorizationStatusReceived">
+@if (authorizationStatusReceived) {
   <!-- https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
 
   <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
@@ -27,35 +27,34 @@
         class="collapse navbar-collapse justify-content-between"
       >
         <ul class="navbar-nav">
-          <li
-            *ngFor="let link of links"
-            class="nav-item"
-          >
-            <a
-              class="nav-link"
-              [class.active]="link.path === activePath"
-              [routerLink]="link.path"
-              (click)="onLinkClick(link.path)"
-              >{{ link.title }}</a
-            >
-          </li>
+          @for (link of links; track $index) {
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                [class.active]="link.path === activePath"
+                [routerLink]="link.path"
+                (click)="onLinkClick(link.path)"
+                >{{ link.title }}</a
+              >
+            </li>
+          }
         </ul>
 
-        <button
-          *ngIf="!authorized"
-          class="btn btn-secondary"
-          (click)="signIn()"
-        >
-          Sign in
-        </button>
-
-        <button
-          *ngIf="authorized"
-          class="btn btn-secondary"
-          (click)="signOut()"
-        >
-          Sign out
-        </button>
+        @if (authorized) {
+          <button
+            class="btn btn-secondary"
+            (click)="signOut()"
+          >
+            Sign out
+          </button>
+        } @else {
+          <button
+            class="btn btn-secondary"
+            (click)="signIn()"
+          >
+            Sign in
+          </button>
+        }
       </div>
     </div>
   </nav>
@@ -63,4 +62,4 @@
   <div class="m-2">
     <router-outlet></router-outlet>
   </div>
-</ng-container>
+}

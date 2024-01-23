@@ -1,14 +1,19 @@
-import { Component } from '@angular/core';
-import { ToastService } from 'src/app/common/toast/toast.service';
+import { Component, inject } from '@angular/core';
 import { Toast } from './toast';
+import { ToastService } from './toast.service';
+import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-toast',
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.scss'],
+  standalone: true,
+  imports: [NgbToast, NgClass],
 })
 export class ToastComponent {
-  constructor(private toastService: ToastService) {}
+  private toastService = inject(ToastService);
+
   get toasts(): Toast[] {
     return this.toastService.toasts;
   }

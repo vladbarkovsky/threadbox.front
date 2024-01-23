@@ -1,17 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MemoryLeaksProtectedComponent } from 'src/app/common/memory-leaks-protected.component';
 
 @Component({
   selector: 'app-thread',
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss'],
+  standalone: true,
 })
-export class ThreadComponent extends MemoryLeaksProtectedComponent implements OnInit {
+export class ThreadComponent {
   @Output() downloadImagesEvent: EventEmitter<string> = new EventEmitter();
-
-  constructor() {
-    super();
-  }
-
-  ngOnInit(): void {}
 }

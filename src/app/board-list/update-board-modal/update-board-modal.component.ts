@@ -1,26 +1,49 @@
-import { Component, Input } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UpdateBoardForm } from './update-board.form';
 import { BoardsListFacade } from '../boards-list.facade';
-import { BoardDto } from 'api-client';
+import { BoardDto } from '../../../../api-client';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ValidationErrorsPipe } from '../../common/pipes/validation-errors.pipe';
+import { ToastService } from '../../common/toast/toast.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-update-board-modal',
   templateUrl: './update-board-modal.component.html',
   styleUrls: ['./update-board-modal.component.scss'],
+  standalone: true,
+  imports: [ReactiveFormsModule, ValidationErrorsPipe],
 })
-export class UpdateBoardModalComponent {
+export class UpdateBoardModalComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly boardsListFacade = inject(BoardsListFacade);
+  private readonly toastService = inject(ToastService);
+  private readonly ngbActiveModal = inject(NgbActiveModal);
+
   @Input() readonly boardDto!: BoardDto;
 
-  updateBoardForm = new UpdateBoardForm(this.boardDto);
+  updateBoardForm!: UpdateBoardForm;
 
-  constructor(private activeModal: NgbActiveModal, private boardsListFacade: BoardsListFacade) {}
-
-  onSubmit() {
-    this.boardsListFacade.updateBoard(this.updateBoardForm!.data, this.activeModal.close);
+  ngOnInit(): void {
+    this.updateBoardForm = new UpdateBoardForm(this.boardDto);
   }
 
-  cancel() {
-    this.activeModal.dismiss();
+  onSubmit(): void {
+    this.boardsListFacade
+      .updateBoard(this.updateBoardForm!.data)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.ngbActiveModal.close();
+          this.toastService.showSuccessToast('Board updated');
+        },
+        // TODO: Set error in sign in state (error must be displayed in component)
+        error: error => console.log(error),
+      });
+  }
+
+  cancel(): void {
+    this.ngbActiveModal.dismiss();
   }
 }
