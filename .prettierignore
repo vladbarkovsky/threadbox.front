@@ -1,2 +1,3 @@
 .prettierrc
 api-client.ts
+api-permissions.ts
