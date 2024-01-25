@@ -1,65 +1,68 @@
-@if (authorizationStatusReceived) {
-  <!-- https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
+<!-- Many thanks to Alexey Zubov for these nested ifs ❤ -->
+@if ({ value: authorized$ | async }; as authorized) {
+  @if (authorized.value !== null) {
+    <!-- https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
 
-  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <div class="navbar-brand d-flex">
-        <div class="mr-2">Threadbox</div>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <div class="navbar-brand d-flex">
+          <div class="mr-2">Threadbox</div>
 
-        <img
-          src="assets/logo.png"
-          alt="Threadbox logo image"
-          width="30"
-        />
-      </div>
+          <img
+            src="assets/logo.png"
+            alt="Threadbox logo image"
+            width="30"
+          />
+        </div>
 
-      <button
-        class="navbar-toggler"
-        type="button"
-        (click)="isCollapsed = !isCollapsed"
-      >
-        <!-- TODO: Replace with icomoon icon -->
-        &#9776;
-      </button>
+        <button
+          class="navbar-toggler"
+          type="button"
+          (click)="isCollapsed = !isCollapsed"
+        >
+          <!-- TODO: Replace with icomoon icon -->
+          &#9776;
+        </button>
 
-      <div
-        [ngbCollapse]="isCollapsed"
-        class="collapse navbar-collapse justify-content-between"
-      >
-        <ul class="navbar-nav">
-          @for (link of links; track $index) {
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                [class.active]="link.path === activePath"
-                [routerLink]="link.path"
-                (click)="onLinkClick(link.path)"
-                >{{ link.title }}</a
-              >
-            </li>
+        <div
+          [ngbCollapse]="isCollapsed"
+          class="collapse navbar-collapse justify-content-between"
+        >
+          <ul class="navbar-nav">
+            @for (link of links; track $index) {
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  [class.active]="link.path === activePath"
+                  [routerLink]="link.path"
+                  (click)="onLinkClick(link.path)"
+                  >{{ link.title }}</a
+                >
+              </li>
+            }
+          </ul>
+
+          @if (authorized.value) {
+            <button
+              class="btn btn-secondary"
+              (click)="signOut()"
+            >
+              Sign out
+            </button>
+          } @else {
+            <button
+              class="btn btn-secondary"
+              (click)="signIn()"
+            >
+              Sign in
+            </button>
           }
-        </ul>
-
-        @if (authorized) {
-          <button
-            class="btn btn-secondary"
-            (click)="signOut()"
-          >
-            Sign out
-          </button>
-        } @else {
-          <button
-            class="btn btn-secondary"
-            (click)="signIn()"
-          >
-            Sign in
-          </button>
-        }
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <div class="m-2">
-    <router-outlet></router-outlet>
-  </div>
+    <div class="m-2">
+      <router-outlet></router-outlet>
+    </div>
+  }
 }

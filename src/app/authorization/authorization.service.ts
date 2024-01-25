@@ -1,26 +1,35 @@
 import { DOCUMENT, Location } from '@angular/common';
-import { Inject, Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Log, User, UserManager } from 'oidc-client';
-import { Observable, Subject, from } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
+import { User, UserManager } from 'oidc-client';
+import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
+import { filter, finalize, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { IdentityFacade } from './identity.facade';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
   private readonly document = inject(DOCUMENT);
   private readonly location = inject(Location);
   private readonly router = inject(Router);
+  private readonly identityFacade = inject(IdentityFacade);
+  private readonly permissionsService = inject(NgxPermissionsService);
 
   get authorized$(): Observable<boolean> {
-    return this._user$.pipe(map(x => !!x));
+    return this._user$.pipe(
+      filter(x => x !== null),
+      map(x => !!x)
+    );
   }
 
-  get user$(): Observable<User | undefined> {
-    return this._user$.asObservable();
+  get token$(): Observable<string | undefined> {
+    return this._user$.pipe(map(x => x?.access_token));
   }
 
-  private _user$ = new Subject<User | undefined>();
+  // undefined means that there are no authorized user.
+  // null means that we don't know yet.
+  private readonly _user$ = new BehaviorSubject<User | undefined | null>(null);
 
   private userManager = new UserManager({
     authority: environment.apiBaseUrl,
@@ -34,8 +43,18 @@ export class AuthorizationService {
   });
 
   initialize() {
+    this.authorized$
+      .pipe(
+        filter(x => x),
+        switchMap(() => this.identityFacade.getUserPermissions())
+      )
+      .subscribe(permissions => {
+        this.permissionsService.loadPermissions(permissions);
+      });
+
     // Write OIDC client logs to console
-    Log.logger = console;
+    // import { Log } from 'oidc-client';
+    // Log.logger = console;
 
     from(this.userManager.querySessionStatus()).subscribe({
       next: sessionStatus => {
@@ -51,13 +70,13 @@ export class AuthorizationService {
       },
       error: () => {
         this.log('Unable to get session status - user is unauthorized.');
-        this._user$.next(undefined);
+        this.setUser(undefined);
       },
     });
 
     this.userManager.events.addUserLoaded(user => {
       this.log('User loaded.');
-      this._user$.next(user);
+      this.setUser(user);
     });
   }
 
@@ -75,29 +94,7 @@ export class AuthorizationService {
       .subscribe({
         error: error => {
           this.log('Sign in redirect callback error:', error.message);
-          this._user$.next(undefined);
-        },
-      });
-  }
-
-  private signInSilent(): void {
-    this.saveLastUrl();
-
-    from(this.userManager.signinSilent()).subscribe({
-      error: error => {
-        this.log('Sign in silent error:', error);
-        this._user$.next(undefined);
-      },
-    });
-  }
-
-  signInSilentCallback(): void {
-    from(this.userManager.signinSilentCallback())
-      .pipe(finalize(() => this.navigateToLastUrl()))
-      .subscribe({
-        error: error => {
-          this.log('Sign in silent callback error:', error.message);
-          this._user$.next(undefined);
+          this.setUser(undefined);
         },
       });
   }
@@ -114,16 +111,36 @@ export class AuthorizationService {
     from(this.userManager.signoutRedirectCallback())
       .pipe(finalize(() => this.navigateToLastUrl()))
       .subscribe({
+        next: () => this.permissionsService.flushPermissions(),
         error: error => this.log('Sign out redirect callback error:', error),
       });
   }
 
+  private signInSilent(): void {
+    this.saveLastUrl();
+
+    from(this.userManager.signinSilent()).subscribe({
+      error: error => {
+        this.log('Sign in silent error:', error);
+        this.setUser(undefined);
+      },
+    });
+  }
+
+  private setUser(user: User | undefined) {
+    if (user !== this._user$.value) {
+      this._user$.next(user);
+    }
+  }
+
+  // TODO: Last URL service?
   private saveLastUrl(): void {
     const lastUrl = this.location.path();
     this.log('Set last URL:', lastUrl);
     window.sessionStorage.setItem('lastUrl', lastUrl);
   }
 
+  // TODO: Last URL service?
   private navigateToLastUrl(): void {
     const lastUrl = window.sessionStorage.getItem('lastUrl');
 

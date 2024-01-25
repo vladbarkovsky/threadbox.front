@@ -8,8 +8,9 @@ import { ConfirmationModalComponent } from '../common/confirmation-modal/confirm
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { pipe, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { ToastService } from '../common/toast/toast.service';
+import { BoardsPermissions } from '../../../api-permissions';
 
 @Component({
   selector: 'app-boards-list',
@@ -18,12 +19,14 @@ import { ToastService } from '../common/toast/toast.service';
   standalone: true,
   imports: [RouterLink, AsyncPipe],
 })
-export class BoardListComponent {
+export class BoardsListComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly boardsListFacade = inject(BoardsListFacade);
   private readonly boardsListState = inject(BoardsListState);
   private readonly ngbModal = inject(NgbModal);
   private readonly toastService = inject(ToastService);
+
+  boardsPermissions = BoardsPermissions;
 
   boards$ = this.boardsListState.getBoards();
 
@@ -60,7 +63,7 @@ export class BoardListComponent {
       });
   }
 
-  openDeleteConfirmationModule(boardId: string): void {
+  openDeleteConfirmationModal(boardId: string): void {
     const modal = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', keyboard: false, scrollable: true });
 
     modal.closed

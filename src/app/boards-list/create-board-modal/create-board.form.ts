@@ -3,7 +3,7 @@ import { GenericFormGroup } from '../../common/generic-form-group';
 import { CreateBoardCommand } from '../../../../api-client';
 
 export class CreateBoardForm extends GenericFormGroup<CreateBoardCommand> {
-  get data(): CreateBoardCommand {
+  override get data(): CreateBoardCommand {
     return new CreateBoardCommand({
       title: this.title.value,
       description: this.description.value,
