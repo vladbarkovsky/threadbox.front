@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
 
   links: HeaderLink[] = [];
   activePath = '';
-  isCollapsed = true;
+  headerCollapsed: boolean = true;
 
   ngOnInit(): void {
     this.authorizationService.authorized$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(authorized => {
@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
 
   onLinkClick(linkPath: string): void {
     this.activePath = linkPath;
-    this.isCollapsed = true;
+    this.headerCollapsed = true;
   }
 
   signIn(): void {

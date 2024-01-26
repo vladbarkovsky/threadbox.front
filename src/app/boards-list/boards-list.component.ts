@@ -11,13 +11,14 @@ import { switchMap } from 'rxjs';
 import { ToastService } from '../common/toast/toast.service';
 import { BoardsPermissions } from '../../../api-permissions';
 import { BoardsClient } from '../../../api-client';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 @Component({
   selector: 'app-boards-list',
   templateUrl: './boards-list.component.html',
   styleUrls: ['./boards-list.component.scss'],
   standalone: true,
-  imports: [RouterLink, AsyncPipe],
+  imports: [RouterLink, AsyncPipe, NgxPermissionsModule],
 })
 export class BoardsListComponent {
   private readonly destroyRef = inject(DestroyRef);

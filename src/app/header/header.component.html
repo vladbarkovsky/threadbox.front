@@ -5,7 +5,10 @@
 
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <div class="navbar-brand d-flex">
+        <div
+          class="navbar-brand d-flex"
+          routerLink="/app/boards-list"
+        >
           <div class="mr-2">Threadbox</div>
 
           <img
@@ -18,14 +21,14 @@
         <button
           class="navbar-toggler"
           type="button"
-          (click)="isCollapsed = !isCollapsed"
+          (click)="headerCollapsed = !headerCollapsed"
         >
           <!-- TODO: Replace with icomoon icon -->
           &#9776;
         </button>
 
         <div
-          [ngbCollapse]="isCollapsed"
+          [ngbCollapse]="headerCollapsed"
           class="collapse navbar-collapse justify-content-between"
         >
           <ul class="navbar-nav">
