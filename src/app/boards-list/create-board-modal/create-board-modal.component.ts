@@ -1,11 +1,11 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateBoardForm } from './create-board.form';
-import { BoardsListFacade } from '../boards-list.facade';
 import { ValidationErrorsPipe } from '../../common/pipes/validation-errors.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BoardsClient } from '../../../../api-client';
 
 @Component({
   selector: 'app-create-board-modal',
@@ -16,14 +16,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class CreateBoardModalComponent {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly boardsListFacade = inject(BoardsListFacade);
+  private readonly boardsClient = inject(BoardsClient);
   private readonly toastService = inject(ToastService);
   private readonly ngbActiveModal = inject(NgbActiveModal);
 
   readonly createBoardForm = new CreateBoardForm();
 
   onSubmit() {
-    this.boardsListFacade
+    this.boardsClient
       .createBoard(this.createBoardForm.data)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

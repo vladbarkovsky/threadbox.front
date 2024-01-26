@@ -2,7 +2,6 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateBoardModalComponent } from './create-board-modal/create-board-modal.component';
 import { UpdateBoardModalComponent } from './update-board-modal/update-board-modal.component';
-import { BoardsListFacade } from './boards-list.facade';
 import { BoardsListState } from './boards-list.state';
 import { ConfirmationModalComponent } from '../common/confirmation-modal/confirmation-modal.component';
 import { RouterLink } from '@angular/router';
@@ -11,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { ToastService } from '../common/toast/toast.service';
 import { BoardsPermissions } from '../../../api-permissions';
+import { BoardsClient } from '../../../api-client';
 
 @Component({
   selector: 'app-boards-list',
@@ -21,7 +21,7 @@ import { BoardsPermissions } from '../../../api-permissions';
 })
 export class BoardsListComponent {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly boardsListFacade = inject(BoardsListFacade);
+  private readonly boardsClient = inject(BoardsClient);
   private readonly boardsListState = inject(BoardsListState);
   private readonly ngbModal = inject(NgbModal);
   private readonly toastService = inject(ToastService);
@@ -31,8 +31,8 @@ export class BoardsListComponent {
   boards$ = this.boardsListState.getBoards();
 
   ngOnInit(): void {
-    this.boardsListFacade
-      .getBoards()
+    this.boardsClient
+      .getBoardsList()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: boards => this.boardsListState.setBoards(boards),
@@ -46,7 +46,7 @@ export class BoardsListComponent {
   }
 
   openUpdateBoardModal(boardId: string): void {
-    this.boardsListFacade
+    this.boardsClient
       .getBoard(boardId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -68,7 +68,7 @@ export class BoardsListComponent {
 
     modal.closed
       .pipe(
-        switchMap(() => this.boardsListFacade.deleteBoard(boardId)),
+        switchMap(() => this.boardsClient.deleteBoard(boardId)),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({

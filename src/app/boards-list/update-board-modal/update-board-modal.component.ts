@@ -1,8 +1,7 @@
 import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UpdateBoardForm } from './update-board.form';
-import { BoardsListFacade } from '../boards-list.facade';
-import { BoardDto } from '../../../../api-client';
+import { BoardDto, BoardsClient } from '../../../../api-client';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValidationErrorsPipe } from '../../common/pipes/validation-errors.pipe';
 import { ToastService } from '../../common/toast/toast.service';
@@ -17,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class UpdateBoardModalComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly boardsListFacade = inject(BoardsListFacade);
+  private readonly boardsListClient = inject(BoardsClient);
   private readonly toastService = inject(ToastService);
   private readonly ngbActiveModal = inject(NgbActiveModal);
 
@@ -30,7 +29,7 @@ export class UpdateBoardModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.boardsListFacade
+    this.boardsListClient
       .updateBoard(this.updateBoardForm!.data)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
