@@ -1,7 +1,7 @@
 <h3 class="mb-3">Boards</h3>
 
 <div class="boards-list list-group mb-4">
-  @for (board of (boards$ | async); track board.id) {
+  @for (board of boards$ | async; track board.id) {
     <div class="list-group-item list-group-item-action d-flex justify-content-between">
       <a [routerLink]="['../board', board.id]">{{ board.title }}</a>
 
@@ -13,7 +13,7 @@
 
         <i
           class="icomoon-icon trash action-icon"
-          (click)="openDeleteConfirmationModule(board.id!)"
+          (click)="openDeleteConfirmationModal(board.id!)"
         ></i>
       </div>
     </div>
@@ -21,6 +21,7 @@
 </div>
 
 <button
+  *ngxPermissionsOnly="boardsPermissions.create"
   class="btn btn-secondary"
   (click)="openCreateBoardModal()"
 >

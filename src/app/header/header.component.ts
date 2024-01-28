@@ -5,33 +5,29 @@ import { linksForUnauthorizedUsers, linksForAuthorizedUsers } from './header-lin
 import { AuthorizationService } from '../authorization/authorization.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   standalone: true,
-  imports: [RouterOutlet, RouterLink, NgbCollapse],
+  imports: [RouterOutlet, RouterLink, NgbCollapse, AsyncPipe],
 })
 export class HeaderComponent implements OnInit {
-  authorized: boolean | undefined = undefined;
-  authorizationStatusReceived = false;
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly authorizationService = inject(AuthorizationService);
+  private readonly router = inject(Router);
+
+  authorized$ = this.authorizationService.authorized$;
+
   links: HeaderLink[] = [];
-  activePath!: string;
-  isCollapsed: boolean = true;
+  activePath = '';
+  headerCollapsed: boolean = true;
 
-  private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private authorizationService: AuthorizationService,
-    private router: Router
-  ) {}
-
-  ngOnInit() {
-    this.authorizationService.authorized$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(x => {
-      this.authorizationStatusReceived = true;
-      this.authorized = x;
-      return (this.links = x ? linksForUnauthorizedUsers : linksForAuthorizedUsers);
+  ngOnInit(): void {
+    this.authorizationService.authorized$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(authorized => {
+      this.links = authorized ? linksForUnauthorizedUsers : linksForAuthorizedUsers;
     });
 
     this.authorizationService.initialize();
@@ -42,14 +38,14 @@ export class HeaderComponent implements OnInit {
 
   onLinkClick(linkPath: string): void {
     this.activePath = linkPath;
-    this.isCollapsed = true;
+    this.headerCollapsed = true;
   }
 
-  signIn() {
+  signIn(): void {
     this.authorizationService.signInRedirect();
   }
 
-  signOut() {
+  signOut(): void {
     this.authorizationService.signOutRedirect();
   }
 }

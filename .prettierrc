@@ -3,7 +3,7 @@
   "bracketSameLine": false,
   "bracketSpacing": true,
   "cursorOffset": -1,
-  "embeddedLanguageFormatting": "off",
+  "embeddedLanguageFormatting": "auto",
   "endOfLine": "crlf",
   "htmlWhitespaceSensitivity": "css",
   "overrides": [],

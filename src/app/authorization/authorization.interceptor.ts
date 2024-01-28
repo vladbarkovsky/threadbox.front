@@ -1,39 +1,34 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpStatusCode } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { HttpErrorResponse, HttpInterceptorFn, HttpStatusCode } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { switchMap, tap } from 'rxjs';
 import { AuthorizationService } from './authorization.service';
 
-@Injectable()
-export class AuthorizationInterceptor implements HttpInterceptor {
-  constructor(private authorizationService: AuthorizationService) {}
+export const authorizationInterceptor: HttpInterceptorFn = (req, next) => {
+  const authorizationService = inject(AuthorizationService);
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return this.authorizationService.user$.pipe(
-      switchMap(user => {
-        if (!user) {
-          return next.handle(request.clone());
-        }
+  return authorizationService.token$.pipe(
+    switchMap(token => {
+      if (!token) {
+        return next(req.clone());
+      }
 
-        const clonedRequest = request.clone({
-          headers: request.headers.set('Authorization', 'Bearer ' + user.access_token),
-        });
+      const clonedRequest = req.clone({
+        headers: req.headers.set('Authorization', 'Bearer ' + token),
+      });
 
-        return next.handle(clonedRequest).pipe(
-          tap({
-            error: (error: HttpErrorResponse) => {
-              switch (error.status) {
-                case HttpStatusCode.Unauthorized:
-                  this.authorizationService.signOutRedirect();
-                  break;
-                case HttpStatusCode.Forbidden:
-                  console.log('No permissions for operation.');
-                  break;
-              }
-            },
-          })
-        );
-      })
-    );
-  }
-}
+      return next(clonedRequest).pipe(
+        tap({
+          error: (error: HttpErrorResponse) => {
+            switch (error.status) {
+              case HttpStatusCode.Unauthorized:
+                console.log('unauthorized');
+                break;
+              case HttpStatusCode.Forbidden:
+                break;
+            }
+          },
+        })
+      );
+    })
+  );
+};
