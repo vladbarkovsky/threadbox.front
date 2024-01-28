@@ -1,8 +1,8 @@
+<!-- HTML is taken from https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
+
 <!-- Many thanks to Alexey Zubov for these nested ifs ❤ -->
 @if ({ value: authorized$ | async }; as authorized) {
   @if (authorized.value !== null) {
-    <!-- https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
-
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <div

@@ -9,7 +9,6 @@
 // ReSharper disable InconsistentNaming
 
 export class BoardsPermissions {
-  static readonly read: string = 'Boards.Read';
-  static readonly create: string = 'Boards.Create';
+  static readonly manage: string = 'Boards.Manage';
 }
 
