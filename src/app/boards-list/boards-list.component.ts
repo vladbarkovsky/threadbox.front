@@ -2,15 +2,15 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateBoardModalComponent } from './create-board-modal/create-board-modal.component';
 import { UpdateBoardModalComponent } from './update-board-modal/update-board-modal.component';
-import { BoardsListState } from './boards-list.state';
+import { HomePageState } from './home-page.state';
 import { ConfirmationModalComponent } from '../common/confirmation-modal/confirmation-modal.component';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { ToastService } from '../common/toast/toast.service';
-import { BoardsPermissions } from '../../../api-permissions';
-import { BoardsClient } from '../../../api-client';
+import { BoardsPermissions, SectionsPermissions } from '../../../api-permissions';
+import { BoardsClient, SectionsClient } from '../../../api-client';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
 @Component({
@@ -22,21 +22,23 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 })
 export class BoardsListComponent {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly sectionsClient = inject(SectionsClient);
   private readonly boardsClient = inject(BoardsClient);
-  private readonly boardsListState = inject(BoardsListState);
+  private readonly homePageState = inject(HomePageState);
   private readonly ngbModal = inject(NgbModal);
   private readonly toastService = inject(ToastService);
 
+  sectionsPermissions = SectionsPermissions;
   boardsPermissions = BoardsPermissions;
 
-  boards$ = this.boardsListState.getBoards();
+  sections$ = this.homePageState.getSections();
 
   ngOnInit(): void {
-    this.boardsClient
-      .getBoardsList()
+    this.sectionsClient
+      .getSections()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: boards => this.boardsListState.setBoards(boards),
+        next: sections => this.homePageState.setSections(sections),
         // TODO: Set error in sign in state (error must be displayed in component)
         error: error => console.log(error),
       });

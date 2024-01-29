@@ -1,29 +1,41 @@
-<h3 class="mb-3">Boards</h3>
-
-<div class="boards-list list-group mb-4">
-  @for (board of boards$ | async; track board.id) {
-    <div class="list-group-item list-group-item-action d-flex justify-content-between">
-      <a [routerLink]="['../board', board.id]">{{ board.title }}</a>
-
-      <div>
+<div class="sections-list list-group mb-4">
+  @for (section of sections$ | async; track section.id) {
+    <div class="list-group-item">
+      <div class="d-flex justify-content-between">
+        <h2>{{ section.title }}</h2>
         <i
-          class="icomoon-icon edit action-icon"
-          (click)="openUpdateBoardModal(board.id!)"
+          class="icomoon-icon plus action-icon"
+          (click)="('javascript:;')"
         ></i>
+      </div>
 
-        <i
-          class="icomoon-icon trash action-icon"
-          (click)="openDeleteConfirmationModal(board.id!)"
-        ></i>
+      <div class="d-flex flex-column">
+        @for (board of section.boards; track board.id) {
+          <div class="d-flex justify-content-between">
+            <a [routerLink]="['../board', board.id]">{{ board.title }}</a>
+
+            <div *ngxPermissionsOnly="sectionsPermissions.manage">
+              <i
+                class="icomoon-icon edit action-icon"
+                (click)="openUpdateBoardModal(section.id)"
+              ></i>
+
+              <i
+                class="icomoon-icon trash action-icon"
+                (click)="openDeleteConfirmationModal(section.id)"
+              ></i>
+            </div>
+          </div>
+        }
       </div>
     </div>
   }
 </div>
 
 <button
-  *ngxPermissionsOnly="boardsPermissions.create"
+  *ngxPermissionsOnly="sectionsPermissions.manage"
   class="btn btn-secondary"
   (click)="openCreateBoardModal()"
 >
-  Create board
+  Create section
 </button>
