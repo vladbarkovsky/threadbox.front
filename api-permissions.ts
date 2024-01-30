@@ -12,3 +12,7 @@ export class BoardsPermissions {
   static readonly manage: string = 'Boards.Manage';
 }
 
+export class SectionsPermissions {
+  static readonly manage: string = 'Sections.Manage';
+}
+

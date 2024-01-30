@@ -27,7 +27,12 @@
   &.edit:before {
     content: '\e900';
   }
+
   &.trash:before {
     content: '\e901';
+  }
+
+  &.plus:before {
+    content: '\e910';
   }
 }

@@ -16,7 +16,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IBoardsClient {
-    getBoardsList(): Observable<BoardListDto[]>;
+    getBoardsList(): Observable<SectionBoardDto[]>;
     getBoard(boardId: string | undefined): Observable<BoardDto>;
     createBoard(command: CreateBoardCommand): Observable<FileResponse>;
     updateBoard(command: UpdateBoardCommand): Observable<FileResponse>;
@@ -36,7 +36,7 @@ export class BoardsClient implements IBoardsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getBoardsList(): Observable<BoardListDto[]> {
+    getBoardsList(): Observable<SectionBoardDto[]> {
         let url_ = this.baseUrl + "/api/Boards/GetBoardsList";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -55,14 +55,14 @@ export class BoardsClient implements IBoardsClient {
                 try {
                     return this.processGetBoardsList(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BoardListDto[]>;
+                    return _observableThrow(e) as any as Observable<SectionBoardDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BoardListDto[]>;
+                return _observableThrow(response_) as any as Observable<SectionBoardDto[]>;
         }));
     }
 
-    protected processGetBoardsList(response: HttpResponseBase): Observable<BoardListDto[]> {
+    protected processGetBoardsList(response: HttpResponseBase): Observable<SectionBoardDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -76,7 +76,7 @@ export class BoardsClient implements IBoardsClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(BoardListDto.fromJS(item));
+                    result200!.push(SectionBoardDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -707,6 +707,79 @@ export class PostsClient implements IPostsClient {
     }
 }
 
+export interface ISectionsClient {
+    getSections(): Observable<SectionDto[]>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class SectionsClient implements ISectionsClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getSections(): Observable<SectionDto[]> {
+        let url_ = this.baseUrl + "/api/Sections/GetSections";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSections(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSections(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SectionDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SectionDto[]>;
+        }));
+    }
+
+    protected processGetSections(response: HttpResponseBase): Observable<SectionDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(SectionDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export interface IThreadsClient {
     getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto>;
     createThread(command: CreateThreadCommand): Observable<FileResponse>;
@@ -834,11 +907,11 @@ export class ThreadsClient implements IThreadsClient {
     }
 }
 
-export class BoardListDto implements IBoardListDto {
-    id?: string;
-    title?: string | undefined;
+export class SectionBoardDto implements ISectionBoardDto {
+    id!: string;
+    title!: string | undefined;
 
-    constructor(data?: IBoardListDto) {
+    constructor(data?: ISectionBoardDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -854,9 +927,9 @@ export class BoardListDto implements IBoardListDto {
         }
     }
 
-    static fromJS(data: any): BoardListDto {
+    static fromJS(data: any): SectionBoardDto {
         data = typeof data === 'object' ? data : {};
-        let result = new BoardListDto();
+        let result = new SectionBoardDto();
         result.init(data);
         return result;
     }
@@ -869,15 +942,15 @@ export class BoardListDto implements IBoardListDto {
     }
 }
 
-export interface IBoardListDto {
-    id?: string;
-    title?: string | undefined;
+export interface ISectionBoardDto {
+    id: string;
+    title: string | undefined;
 }
 
 export class BoardDto implements IBoardDto {
-    id?: string;
-    title?: string | undefined;
-    description?: string | undefined;
+    id!: string;
+    title!: string | undefined;
+    description!: string | undefined;
 
     constructor(data?: IBoardDto) {
         if (data) {
@@ -913,14 +986,14 @@ export class BoardDto implements IBoardDto {
 }
 
 export interface IBoardDto {
-    id?: string;
-    title?: string | undefined;
-    description?: string | undefined;
+    id: string;
+    title: string | undefined;
+    description: string | undefined;
 }
 
 export class CreateBoardCommand implements ICreateBoardCommand {
-    title?: string | undefined;
-    description?: string | undefined;
+    title!: string | undefined;
+    description!: string | undefined;
 
     constructor(data?: ICreateBoardCommand) {
         if (data) {
@@ -954,14 +1027,14 @@ export class CreateBoardCommand implements ICreateBoardCommand {
 }
 
 export interface ICreateBoardCommand {
-    title?: string | undefined;
-    description?: string | undefined;
+    title: string | undefined;
+    description: string | undefined;
 }
 
 export class UpdateBoardCommand implements IUpdateBoardCommand {
-    id?: string;
-    title?: string | undefined;
-    description?: string | undefined;
+    id!: string;
+    title!: string | undefined;
+    description!: string | undefined;
 
     constructor(data?: IUpdateBoardCommand) {
         if (data) {
@@ -997,16 +1070,16 @@ export class UpdateBoardCommand implements IUpdateBoardCommand {
 }
 
 export interface IUpdateBoardCommand {
-    id?: string;
-    title?: string | undefined;
-    description?: string | undefined;
+    id: string;
+    title: string | undefined;
+    description: string | undefined;
 }
 
 export class PostDto implements IPostDto {
-    id?: string;
-    text?: string | undefined;
-    threadId?: string;
-    postImageUrls?: string[] | undefined;
+    id!: string;
+    text!: string | undefined;
+    threadId!: string;
+    postImageUrls!: string[] | undefined;
 
     constructor(data?: IPostDto) {
         if (data) {
@@ -1052,16 +1125,16 @@ export class PostDto implements IPostDto {
 }
 
 export interface IPostDto {
-    id?: string;
-    text?: string | undefined;
-    threadId?: string;
-    postImageUrls?: string[] | undefined;
+    id: string;
+    text: string | undefined;
+    threadId: string;
+    postImageUrls: string[] | undefined;
 }
 
 export class CreatePostCommand implements ICreatePostCommand {
-    text?: string | undefined;
-    postImages?: string[] | undefined;
-    threadId?: string;
+    text!: string | undefined;
+    postImages!: string[] | undefined;
+    threadId!: string;
 
     constructor(data?: ICreatePostCommand) {
         if (data) {
@@ -1105,18 +1178,70 @@ export class CreatePostCommand implements ICreatePostCommand {
 }
 
 export interface ICreatePostCommand {
-    text?: string | undefined;
-    postImages?: string[] | undefined;
-    threadId?: string;
+    text: string | undefined;
+    postImages: string[] | undefined;
+    threadId: string;
+}
+
+export class SectionDto implements ISectionDto {
+    id!: string;
+    title!: string | undefined;
+    boards!: SectionBoardDto[] | undefined;
+
+    constructor(data?: ISectionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.title = _data["title"];
+            if (Array.isArray(_data["boards"])) {
+                this.boards = [] as any;
+                for (let item of _data["boards"])
+                    this.boards!.push(SectionBoardDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SectionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SectionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["title"] = this.title;
+        if (Array.isArray(this.boards)) {
+            data["boards"] = [];
+            for (let item of this.boards)
+                data["boards"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ISectionDto {
+    id: string;
+    title: string | undefined;
+    boards: SectionBoardDto[] | undefined;
 }
 
 export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {
-    pageItems?: ThreadDto[] | undefined;
-    pageIndex?: number;
-    totalPages?: number;
-    totalCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
+    pageItems!: ThreadDto[] | undefined;
+    pageIndex!: number;
+    totalPages!: number;
+    totalCount!: number;
+    hasPreviousPage!: boolean;
+    hasNextPage!: boolean;
 
     constructor(data?: IPaginatedResultOfThreadDto) {
         if (data) {
@@ -1166,20 +1291,20 @@ export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {
 }
 
 export interface IPaginatedResultOfThreadDto {
-    pageItems?: ThreadDto[] | undefined;
-    pageIndex?: number;
-    totalPages?: number;
-    totalCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
+    pageItems: ThreadDto[] | undefined;
+    pageIndex: number;
+    totalPages: number;
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
 }
 
 export class ThreadDto implements IThreadDto {
-    id?: string;
-    title?: string | undefined;
-    text?: string | undefined;
-    threadImageUrls?: string[] | undefined;
-    posts?: PostDto[] | undefined;
+    id!: string;
+    title!: string | undefined;
+    text!: string | undefined;
+    threadImageUrls!: string[] | undefined;
+    posts!: PostDto[] | undefined;
 
     constructor(data?: IThreadDto) {
         if (data) {
@@ -1235,16 +1360,16 @@ export class ThreadDto implements IThreadDto {
 }
 
 export interface IThreadDto {
-    id?: string;
-    title?: string | undefined;
-    text?: string | undefined;
-    threadImageUrls?: string[] | undefined;
-    posts?: PostDto[] | undefined;
+    id: string;
+    title: string | undefined;
+    text: string | undefined;
+    threadImageUrls: string[] | undefined;
+    posts: PostDto[] | undefined;
 }
 
 export class PaginatedQuery implements IPaginatedQuery {
-    pageIndex?: number;
-    pageSize?: number;
+    pageIndex!: number;
+    pageSize!: number;
 
     constructor(data?: IPaginatedQuery) {
         if (data) {
@@ -1278,12 +1403,12 @@ export class PaginatedQuery implements IPaginatedQuery {
 }
 
 export interface IPaginatedQuery {
-    pageIndex?: number;
-    pageSize?: number;
+    pageIndex: number;
+    pageSize: number;
 }
 
 export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThreadsByBoardQuery {
-    boardId?: string;
+    boardId!: string;
 
     constructor(data?: IGetThreadsByBoardQuery) {
         super(data);
@@ -1312,14 +1437,14 @@ export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThread
 }
 
 export interface IGetThreadsByBoardQuery extends IPaginatedQuery {
-    boardId?: string;
+    boardId: string;
 }
 
 export class CreateThreadCommand implements ICreateThreadCommand {
-    title?: string | undefined;
-    text?: string | undefined;
-    boardId?: string;
-    threadImages?: string[] | undefined;
+    title!: string | undefined;
+    text!: string | undefined;
+    boardId!: string;
+    threadImages!: string[] | undefined;
 
     constructor(data?: ICreateThreadCommand) {
         if (data) {
@@ -1365,10 +1490,10 @@ export class CreateThreadCommand implements ICreateThreadCommand {
 }
 
 export interface ICreateThreadCommand {
-    title?: string | undefined;
-    text?: string | undefined;
-    boardId?: string;
-    threadImages?: string[] | undefined;
+    title: string | undefined;
+    text: string | undefined;
+    boardId: string;
+    threadImages: string[] | undefined;
 }
 
 export interface FileResponse {

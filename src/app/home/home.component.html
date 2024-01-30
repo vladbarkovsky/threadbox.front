@@ -1,0 +1,42 @@
+<div class="sections-list list-group mb-4">
+  @for (section of sections$ | async; track section.id) {
+    <div class="list-group-item">
+      <div class="d-flex justify-content-between">
+        <h2>{{ section.title }}</h2>
+        <i
+          *ngxPermissionsOnly="boardsPermissions.manage"
+          class="icomoon-icon plus action-icon"
+          (click)="openCreateBoardModal()"
+        ></i>
+      </div>
+
+      <div class="d-flex flex-column">
+        @for (board of section.boards; track board.id) {
+          <div class="d-flex justify-content-between">
+            <a [routerLink]="['../board', board.id]">{{ board.title }}</a>
+
+            <div *ngxPermissionsOnly="sectionsPermissions.manage">
+              <i
+                class="icomoon-icon edit action-icon"
+                (click)="openUpdateBoardModal(section.id)"
+              ></i>
+
+              <i
+                class="icomoon-icon trash action-icon"
+                (click)="openDeleteConfirmationModal(section.id)"
+              ></i>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<button
+  *ngxPermissionsOnly="sectionsPermissions.manage"
+  class="btn btn-secondary"
+  (click)="openCreateBoardModal()"
+>
+  Create section
+</button>
