@@ -9,12 +9,12 @@ import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  templateUrl: './shell.component.html',
+  styleUrls: ['./shell.component.scss'],
   standalone: true,
   imports: [RouterOutlet, RouterLink, NgbCollapse, AsyncPipe],
 })
-export class HeaderComponent implements OnInit {
+export class ShellComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly authorizationService = inject(AuthorizationService);
   private readonly router = inject(Router);

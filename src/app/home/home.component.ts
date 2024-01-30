@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateBoardModalComponent } from './create-board-modal/create-board-modal.component';
 import { UpdateBoardModalComponent } from './update-board-modal/update-board-modal.component';
-import { HomePageState } from './home-page.state';
+import { HomeState } from './home.state';
 import { ConfirmationModalComponent } from '../common/confirmation-modal/confirmation-modal.component';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
@@ -14,17 +14,17 @@ import { BoardsClient, SectionsClient } from '../../../api-client';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
 @Component({
-  selector: 'app-boards-list',
-  templateUrl: './boards-list.component.html',
-  styleUrls: ['./boards-list.component.scss'],
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
   standalone: true,
   imports: [RouterLink, AsyncPipe, NgxPermissionsModule],
 })
-export class BoardsListComponent {
+export class HomeComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly sectionsClient = inject(SectionsClient);
   private readonly boardsClient = inject(BoardsClient);
-  private readonly homePageState = inject(HomePageState);
+  private readonly homePageState = inject(HomeState);
   private readonly ngbModal = inject(NgbModal);
   private readonly toastService = inject(ToastService);
 

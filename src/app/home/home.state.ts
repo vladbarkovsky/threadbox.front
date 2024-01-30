@@ -3,7 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { SectionDto } from '../../../api-client';
 
 @Injectable({ providedIn: 'root' })
-export class HomePageState {
+export class HomeState {
   private sections$ = new Subject<SectionDto[]>();
 
   getSections(): Observable<SectionDto[] | undefined> {
