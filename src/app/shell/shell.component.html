@@ -7,7 +7,7 @@
       <div class="container-fluid">
         <div
           class="navbar-brand d-flex"
-          routerLink="/app/boards-list"
+          routerLink="/"
         >
           <div class="mr-2">Threadbox</div>
 
@@ -18,31 +18,46 @@
           />
         </div>
 
+        <!-- TODO: Replace unicode symbol with icomoon icon -->
         <button
           class="navbar-toggler"
           type="button"
-          (click)="headerCollapsed = !headerCollapsed"
+          (click)="navbarCollapsed = !navbarCollapsed"
         >
-          <!-- TODO: Replace with icomoon icon -->
           &#9776;
         </button>
 
         <div
-          [ngbCollapse]="headerCollapsed"
+          [ngbCollapse]="navbarCollapsed"
           class="collapse navbar-collapse justify-content-between"
         >
           <ul class="navbar-nav">
-            @for (link of links; track $index) {
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  [class.active]="link.path === activePath"
-                  [routerLink]="link.path"
-                  (click)="onLinkClick(link.path)"
-                  >{{ link.title }}</a
-                >
-              </li>
-            }
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                routerLink="#"
+              >
+                Link 1
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                routerLink="#"
+              >
+                Link 2
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                routerLink="#"
+              >
+                Link 3
+              </a>
+            </li>
           </ul>
 
           @if (authorized.value) {

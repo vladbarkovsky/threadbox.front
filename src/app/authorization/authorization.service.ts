@@ -42,15 +42,13 @@ export class AuthorizationService {
     automaticSilentRenew: true,
   });
 
-  initialize() {
+  authorize() {
     this.authorized$
       .pipe(
         filter(x => x),
         switchMap(() => this.identityFacade.getUserPermissions())
       )
-      .subscribe(permissions => {
-        this.permissionsService.loadPermissions(permissions);
-      });
+      .subscribe(permissions => this.permissionsService.loadPermissions(permissions));
 
     // Write OIDC client logs to console
     // import { Log } from 'oidc-client';
