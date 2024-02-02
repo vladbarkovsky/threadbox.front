@@ -1,34 +1,36 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ThreadsListFacade } from './threads.list.facade';
+import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { ThreadsListState } from './threads-list.state';
-import { GetThreadsByBoardQuery } from '../../../../api-client';
-import { HttpSourceDirective } from '../../common/directives/http-source/http-source.directive';
+import { ThreadsClient } from '../../../../api-client';
 import { AsyncPipe } from '@angular/common';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-threads-list',
   templateUrl: './threads-list.component.html',
   styleUrls: ['./threads-list.component.scss'],
   standalone: true,
-  imports: [HttpSourceDirective, AsyncPipe],
+  imports: [LazyLoadImageModule, AsyncPipe],
+  providers: [ThreadsListState],
 })
 export class ThreadsListComponent implements OnInit {
+  private readonly threadsListState = inject(ThreadsListState);
+  private readonly threadsClient = inject(ThreadsClient);
+  private readonly destroyRef = inject(DestroyRef);
+
   @Input() boardId!: string;
 
-  paginatedThreads$ = this.threadsListState.getPaginatedThreads();
+  threads$ = this.threadsListState.getThreads();
 
-  constructor(
-    private threadsListFacade: ThreadsListFacade,
-    private threadsListState: ThreadsListState
-  ) {}
+  ngOnInit(): void {
+    this.threadsListState.query.boardId = this.boardId;
 
-  ngOnInit() {
-    this.threadsListFacade.getPaginatedThreads(
-      new GetThreadsByBoardQuery({
-        boardId: this.boardId,
-        pageIndex: 0,
-        pageSize: 10,
-      })
-    );
+    this.threadsClient
+      .getThreadsByBoard(this.threadsListState.query)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: result => this.threadsListState.addThreads(result),
+        error: error => console.log(error),
+      });
   }
 }

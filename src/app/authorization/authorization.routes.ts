@@ -1,13 +1,17 @@
 import { Routes } from '@angular/router';
-import { SignInRedirectCallbackComponent } from './sign-in-redirect-callback.component';
-import { SignOutRedirectCallbackComponent } from './sign-out-redirect-callback.component';
 
 export const AUTHORIZATION_ROUTES: Routes = [
   {
     path: '',
     children: [
-      { path: 'sign-in-redirect-callback', component: SignInRedirectCallbackComponent },
-      { path: 'sign-out-redirect-callback', component: SignOutRedirectCallbackComponent },
+      {
+        path: 'sign-in-redirect-callback',
+        loadComponent: () => import('./sign-in-redirect-callback.component').then(x => x.SignInRedirectCallbackComponent),
+      },
+      {
+        path: 'sign-out-redirect-callback',
+        loadComponent: () => import('./sign-out-redirect-callback.component').then(x => x.SignOutRedirectCallbackComponent),
+      },
       { path: '', redirectTo: 'app', pathMatch: 'full' },
       { path: '**', redirectTo: 'app' },
     ],

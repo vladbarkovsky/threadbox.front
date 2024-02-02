@@ -21,9 +21,10 @@ export const authorizationInterceptor: HttpInterceptorFn = (req, next) => {
           error: (error: HttpErrorResponse) => {
             switch (error.status) {
               case HttpStatusCode.Unauthorized:
-                console.log('unauthorized');
+                authorizationService.signOutRedirect();
                 break;
               case HttpStatusCode.Forbidden:
+                console.log('No permissions for operation.');
                 break;
             }
           },

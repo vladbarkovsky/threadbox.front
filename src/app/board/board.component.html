@@ -1,5 +1,5 @@
 @if (board$ | async; as board) {
   <h3>{{ board.title }}</h3>
   <p>{{ board.description }}</p>
-  <app-threads-list [boardId]="board.id!"></app-threads-list>
+  <app-threads-list [boardId]="board.id"></app-threads-list>
 }

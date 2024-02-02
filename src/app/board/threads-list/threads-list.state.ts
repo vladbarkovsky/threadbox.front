@@ -1,16 +1,28 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { PaginatedResultOfThreadDto } from '../../../../api-client';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { GetThreadsByBoardQuery, PaginatedResultOfThreadDto, ThreadDto } from '../../../../api-client';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ThreadsListState {
-  private paginatedThreads$ = new BehaviorSubject<PaginatedResultOfThreadDto | undefined>(undefined);
+  query: GetThreadsByBoardQuery;
+  result: PaginatedResultOfThreadDto | undefined;
 
-  getPaginatedThreads() {
-    return this.paginatedThreads$;
+  private readonly threads$ = new BehaviorSubject<ThreadDto[]>([]);
+
+  constructor() {
+    this.query = new GetThreadsByBoardQuery({
+      boardId: '',
+      pageIndex: 0,
+      pageSize: 10,
+    });
   }
 
-  setPaginatedThreads(paginatedThreads: PaginatedResultOfThreadDto) {
-    return this.paginatedThreads$.next(paginatedThreads);
+  getThreads(): Observable<ThreadDto[]> {
+    return this.threads$.asObservable();
+  }
+
+  addThreads(result: PaginatedResultOfThreadDto) {
+    this.result = result;
+    this.threads$.next(this.threads$.value.concat(result.pageItems!));
   }
 }
