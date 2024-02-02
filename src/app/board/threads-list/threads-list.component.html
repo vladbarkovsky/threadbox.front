@@ -2,33 +2,33 @@
 
 @if (threads$ | async; as threads) {
   @for (thread of threads; track thread.id) {
-    <div class="my-2">
-      <div class="card border-dark">
-        <div class="card-header thread-title">
-          {{ thread.title }}
+    <div class="card border-dark my-2">
+      <div class="card-header thread-title">
+        {{ thread.title }}
+      </div>
+
+      <div class="card-body">
+        <p class="card-text">{{ thread.text }}</p>
+
+        <div class="row mb-2">
+          @for (imageUrl of thread.threadImageUrls; track $index) {
+            <div class="col-auto image-col">
+              <img
+                [lazyLoad]="imageUrl"
+                src="assets/image-placeholder.gif"
+                alt="Thread image"
+                class="img-thumbnail image"
+              />
+            </div>
+          }
         </div>
 
-        <div class="card-body">
-          <p class="card-text">{{ thread.text }}</p>
+        @if (thread.threadImageUrls?.length! > 1) {
+          <button class="btn btn-secondary mb-2">Download images</button>
+        }
 
-          <div class="row mb-2">
-            @for (imageUrl of thread.threadImageUrls; track $index) {
-              <div class="col-auto image-col">
-                <img
-                  [lazyLoad]="imageUrl"
-                  src="assets/image-placeholder.gif"
-                  alt="Thread image"
-                  class="img-thumbnail image"
-                />
-              </div>
-            }
-          </div>
-
-          @if (thread.threadImageUrls?.length! > 1) {
-            <button class="btn btn-secondary mb-2">Download images</button>
-          }
-
-          @for (post of thread.posts; track post.id) {
+        @for (post of thread.posts; track post.id) {
+          <div class="card my-2">
             <div class="card-body">
               <p class="card-text">{{ post.text }}</p>
 
@@ -49,11 +49,11 @@
                 <button class="btn btn-secondary mb-2">Download images</button>
               }
             </div>
-          }
-        </div>
-
-        <!-- <div class="card-footer"></div> -->
+          </div>
+        }
       </div>
+
+      <!-- <div class="card-footer"></div> -->
     </div>
   }
 }
