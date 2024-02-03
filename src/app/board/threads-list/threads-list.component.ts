@@ -1,6 +1,6 @@
 import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { ThreadsListState } from './threads-list.state';
-import { GetThreadsByBoardQuery, ThreadsClient } from '../../../../api-client';
+import { GetThreadsByBoardQuery, PostsClient, ThreadDto, ThreadsClient } from '../../../../api-client';
 import { AsyncPipe } from '@angular/common';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -18,6 +18,7 @@ export class ThreadsListComponent implements OnInit {
   private readonly threadsListState = inject(ThreadsListState);
   private readonly threadsClient = inject(ThreadsClient);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly postsClient = inject(PostsClient);
 
   @Input() boardId!: string;
 
@@ -54,5 +55,15 @@ export class ThreadsListComponent implements OnInit {
     if (this.threadsListState.result?.hasNextPage) {
       this.getThreads();
     }
+  }
+
+  getAllPosts(thread: ThreadDto): void {
+    this.postsClient
+      .getPostsByThread(thread.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: posts => (thread.posts = posts),
+        error: error => console.log(error),
+      });
   }
 }

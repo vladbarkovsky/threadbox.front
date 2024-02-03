@@ -1305,6 +1305,7 @@ export class ThreadDto implements IThreadDto {
     text!: string | undefined;
     threadImageUrls!: string[] | undefined;
     posts!: PostDto[] | undefined;
+    hasMorePosts!: boolean;
 
     constructor(data?: IThreadDto) {
         if (data) {
@@ -1330,6 +1331,7 @@ export class ThreadDto implements IThreadDto {
                 for (let item of _data["posts"])
                     this.posts!.push(PostDto.fromJS(item));
             }
+            this.hasMorePosts = _data["hasMorePosts"];
         }
     }
 
@@ -1355,6 +1357,7 @@ export class ThreadDto implements IThreadDto {
             for (let item of this.posts)
                 data["posts"].push(item.toJSON());
         }
+        data["hasMorePosts"] = this.hasMorePosts;
         return data;
     }
 }
@@ -1365,6 +1368,7 @@ export interface IThreadDto {
     text: string | undefined;
     threadImageUrls: string[] | undefined;
     posts: PostDto[] | undefined;
+    hasMorePosts: boolean;
 }
 
 export class PaginatedQuery implements IPaginatedQuery {

@@ -1,8 +1,6 @@
-.image-col {
-  padding: 3px;
+@import '../../../assets/icons/icomoon/icons.scss';
 
-  .image {
-    max-width: 250px;
-    max-height: 250px;
-  }
+.image {
+  max-width: 250px;
+  max-height: 250px;
 }

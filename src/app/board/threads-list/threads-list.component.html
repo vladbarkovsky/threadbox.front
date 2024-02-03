@@ -7,8 +7,15 @@
   @if (threads$ | async; as threads) {
     @for (thread of threads; track thread.id) {
       <div class="card border-dark my-2">
-        <div class="card-header thread-title">
+        <div class="card-header thread-title d-flex justify-content-between">
           {{ thread.title }}
+
+          @if (thread.hasMorePosts) {
+            <i
+              class="icomoon-icon plus action-icon"
+              (click)="getAllPosts(thread)"
+            ></i>
+          }
         </div>
 
         <div class="card-body">
@@ -16,7 +23,7 @@
 
           <div class="row mb-2">
             @for (imageUrl of thread.threadImageUrls; track $index) {
-              <div class="col-auto image-col">
+              <div class="col-auto p-1">
                 <img
                   [lazyLoad]="imageUrl"
                   src="assets/image-placeholder.gif"
@@ -38,7 +45,7 @@
 
                 <div class="row mb-2">
                   @for (imageUrl of post.postImageUrls; track $index) {
-                    <div class="col-auto image-col">
+                    <div class="col-auto p-1">
                       <img
                         [lazyLoad]="imageUrl"
                         src="assets/image-placeholder.gif"
