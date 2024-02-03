@@ -1,5 +1,17 @@
 @if (board$ | async; as board) {
   <h3>{{ board.title }}</h3>
   <p>{{ board.description }}</p>
-  <app-threads-list [boardId]="board.id"></app-threads-list>
+
+  <div
+    scroll-tracking
+    (thresholdPassed)="onThresholdPassed()"
+  >
+    <button class="btn btn-secondary mb-2">Create thread</button>
+
+    @if (threads$ | async; as threads) {
+      @for (thread of threads; track thread.id) {
+        <app-thread [thread]="thread"></app-thread>
+      }
+    }
+  </div>
 }
