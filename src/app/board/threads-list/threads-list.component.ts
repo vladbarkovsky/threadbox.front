@@ -4,13 +4,14 @@ import { ThreadsClient } from '../../../../api-client';
 import { AsyncPipe } from '@angular/common';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ScrollTrackingDirective } from '../../common/scroll-tracking.directive';
 
 @Component({
   selector: 'app-threads-list',
   templateUrl: './threads-list.component.html',
   styleUrls: ['./threads-list.component.scss'],
   standalone: true,
-  imports: [LazyLoadImageModule, AsyncPipe],
+  imports: [LazyLoadImageModule, AsyncPipe, ScrollTrackingDirective],
   providers: [ThreadsListState],
 })
 export class ThreadsListComponent implements OnInit {
@@ -32,5 +33,14 @@ export class ThreadsListComponent implements OnInit {
         next: result => this.threadsListState.addThreads(result),
         error: error => console.log(error),
       });
+  }
+
+  /**
+   * Handles element scrolling threshold passing.
+   *
+   * @memberof ThreadsListComponent
+   */
+  onThresholdPassed(): void {
+    console.log('Scrolling threshold passed!');
   }
 }
