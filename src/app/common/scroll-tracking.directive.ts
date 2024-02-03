@@ -17,14 +17,14 @@ export class ScrollTrackingDirective {
   private readonly scrolling = new Subject<void>();
 
   constructor() {
-    this.scrolling.pipe(debounceTime(100), takeUntilDestroyed(this.destroyRef)).subscribe(() => this.checkIfNearBottom());
+    this.scrolling.pipe(debounceTime(100), takeUntilDestroyed(this.destroyRef)).subscribe(() => this.checkIfThresholdPassed());
   }
 
   @HostListener('window:scroll') onScroll(): void {
     this.scrolling.next();
   }
 
-  private checkIfNearBottom(): void {
+  private checkIfThresholdPassed(): void {
     const elementHeight = this.elementRef.nativeElement.scrollHeight;
     const scrollPosition = window.innerHeight + window.scrollY;
 

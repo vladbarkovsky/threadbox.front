@@ -4,18 +4,10 @@ import { GetThreadsByBoardQuery, PaginatedResultOfThreadDto, ThreadDto } from '.
 
 @Injectable()
 export class ThreadsListState {
-  query: GetThreadsByBoardQuery;
+  query: GetThreadsByBoardQuery | undefined;
   result: PaginatedResultOfThreadDto | undefined;
 
   private readonly threads$ = new BehaviorSubject<ThreadDto[]>([]);
-
-  constructor() {
-    this.query = new GetThreadsByBoardQuery({
-      boardId: '',
-      pageIndex: 0,
-      pageSize: 10,
-    });
-  }
 
   getThreads(): Observable<ThreadDto[]> {
     return this.threads$.asObservable();
@@ -24,5 +16,6 @@ export class ThreadsListState {
   addThreads(result: PaginatedResultOfThreadDto) {
     this.result = result;
     this.threads$.next(this.threads$.value.concat(result.pageItems!));
+    this.query!.pageIndex += 1;
   }
 }

@@ -1,6 +1,6 @@
 import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { ThreadsListState } from './threads-list.state';
-import { ThreadsClient } from '../../../../api-client';
+import { GetThreadsByBoardQuery, ThreadsClient } from '../../../../api-client';
 import { AsyncPipe } from '@angular/common';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -24,13 +24,23 @@ export class ThreadsListComponent implements OnInit {
   threads$ = this.threadsListState.getThreads();
 
   ngOnInit(): void {
-    this.threadsListState.query.boardId = this.boardId;
+    this.threadsListState.query = new GetThreadsByBoardQuery({
+      boardId: this.boardId,
+      pageIndex: 0,
+      pageSize: 4,
+    });
 
+    this.getThreads();
+  }
+
+  getThreads(): void {
     this.threadsClient
-      .getThreadsByBoard(this.threadsListState.query)
+      .getThreadsByBoard(this.threadsListState.query!)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: result => this.threadsListState.addThreads(result),
+        next: result => {
+          this.threadsListState.addThreads(result);
+        },
         error: error => console.log(error),
       });
   }
@@ -41,6 +51,8 @@ export class ThreadsListComponent implements OnInit {
    * @memberof ThreadsListComponent
    */
   onThresholdPassed(): void {
-    console.log('Scrolling threshold passed!');
+    if (this.threadsListState.result?.hasNextPage) {
+      this.getThreads();
+    }
   }
 }
