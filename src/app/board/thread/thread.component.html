@@ -4,7 +4,8 @@
 
     @if (thread.hasMorePosts) {
       <i
-        class="icomoon-icon plus action-icon"
+        class="icomoon-icon posts-toggle"
+        [ngClass]="{ up: allPostsLoaded, down: !allPostsLoaded }"
         (click)="togglePosts()"
       ></i>
     }

@@ -1413,6 +1413,7 @@ export interface IPaginatedQuery {
 
 export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThreadsByBoardQuery {
     boardId!: string;
+    searchText!: string | undefined;
 
     constructor(data?: IGetThreadsByBoardQuery) {
         super(data);
@@ -1422,6 +1423,7 @@ export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThread
         super.init(_data);
         if (_data) {
             this.boardId = _data["boardId"];
+            this.searchText = _data["searchText"];
         }
     }
 
@@ -1435,6 +1437,7 @@ export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThread
     override toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["boardId"] = this.boardId;
+        data["searchText"] = this.searchText;
         super.toJSON(data);
         return data;
     }
@@ -1442,6 +1445,7 @@ export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThread
 
 export interface IGetThreadsByBoardQuery extends IPaginatedQuery {
     boardId: string;
+    searchText: string | undefined;
 }
 
 export class CreateThreadCommand implements ICreateThreadCommand {

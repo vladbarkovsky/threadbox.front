@@ -1,5 +1,26 @@
 @if (board$ | async; as board) {
-  <h3>{{ board.title }}</h3>
+  <div class="d-flex justify-content-between mb-3">
+    <h3>{{ board.title }}</h3>
+
+    <div class="input-group ms-3 search-block">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search in threads and posts"
+        [(ngModel)]="searchText"
+        (blur)="onSearchInputBlur()"
+      />
+
+      <button
+        class="btn btn-secondary"
+        (click)="searchThreads()"
+        [disabled]="!searchText"
+      >
+        <i class="icomoon-icon search"></i>
+      </button>
+    </div>
+  </div>
+
   <p>{{ board.description }}</p>
 
   <div

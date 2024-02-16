@@ -16,6 +16,9 @@ export class ThreadsListState {
   addThreads(result: PaginatedResultOfThreadDto) {
     this.result = result;
     this.threads$.next(this.threads$.value.concat(result.pageItems!));
-    this.query!.pageIndex += 1;
+  }
+
+  clearThreads() {
+    this.threads$.next([]);
   }
 }

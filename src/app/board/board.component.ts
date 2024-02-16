@@ -2,20 +2,21 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BoardState } from './board.state';
 import { switchMap } from 'rxjs/operators';
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { BoardDto, BoardsClient, GetThreadsByBoardQuery, ThreadDto, ThreadsClient } from '../../../api-client';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ScrollTrackingDirective } from '../common/scroll-tracking.directive';
 import { ThreadsListState } from './threads-list.state';
 import { Observable } from 'rxjs';
 import { ThreadComponent } from './thread/thread.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
   standalone: true,
-  imports: [AsyncPipe, ScrollTrackingDirective, ThreadComponent],
+  imports: [AsyncPipe, ScrollTrackingDirective, ThreadComponent, FormsModule],
   providers: [BoardState, ThreadsListState],
 })
 export class BoardComponent implements OnInit {
@@ -29,6 +30,9 @@ export class BoardComponent implements OnInit {
   board$: Observable<BoardDto> = this.boardState.getBoard();
   threads$: Observable<ThreadDto[]> = this.threadsListState.getThreads();
 
+  // TODO: Create URL query parameter 'search', investigate safe URL features in Angular.
+  searchText: string = '';
+
   ngOnInit(): void {
     this.activatedRoute.params
       .pipe(
@@ -41,6 +45,7 @@ export class BoardComponent implements OnInit {
 
           this.threadsListState.query = new GetThreadsByBoardQuery({
             boardId: boardDto.id,
+            searchText: '',
             pageIndex: 0,
             pageSize: 4,
           });
@@ -62,6 +67,22 @@ export class BoardComponent implements OnInit {
     }
   }
 
+  onSearchInputBlur() {
+    if (!this.searchText && this.threadsListState.query?.searchText) {
+      this.threadsListState.query!.searchText = '';
+      this.threadsListState.query!.pageIndex = 0;
+      this.threadsListState.clearThreads();
+      this.getThreads();
+    }
+  }
+
+  searchThreads() {
+    this.threadsListState.query!.searchText = this.searchText;
+    this.threadsListState.query!.pageIndex = 0;
+    this.threadsListState.clearThreads();
+    this.getThreads();
+  }
+
   private getThreads(): void {
     this.threadsClient
       .getThreadsByBoard(this.threadsListState.query!)
@@ -69,6 +90,7 @@ export class BoardComponent implements OnInit {
       .subscribe({
         next: result => {
           this.threadsListState.addThreads(result);
+          this.threadsListState.query!.pageIndex += 1;
         },
         error: error => console.log(error),
       });
