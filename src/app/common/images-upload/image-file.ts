@@ -1,10 +1,10 @@
 /**
- * Contains file and it's Base64 representation
+ * File with it's Base64 representation
  *
  * @export
- * @interface ImageFile
+ * @class Base64File
+ * @extends {File}
  */
-export interface ImageFile {
-  file: File;
-  base64: string;
+export class Base64File extends File {
+  base64: string = '';
 }

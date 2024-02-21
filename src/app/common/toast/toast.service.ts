@@ -22,6 +22,14 @@ export class ToastService {
     });
   }
 
+  showWarningToast(text: string, delayMilliseconds: number = this.defaultDelayMilliseconds) {
+    this.toasts.push({
+      text: text,
+      class: 'bg-warning',
+      delayMilliseconds: delayMilliseconds,
+    });
+  }
+
   removeToast(toast: Toast): void {
     this.toasts = this.toasts.filter(x => x != toast);
   }

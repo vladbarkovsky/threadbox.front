@@ -1,0 +1,71 @@
+<button
+  class="btn btn-secondary"
+  (click)="collapse.toggle()"
+>
+  Create thread
+</button>
+
+<div
+  #collapse="ngbCollapse"
+  [(ngbCollapse)]="formCollapsed"
+>
+  <!-- <form [formGroup]="threadForm">
+    <div class="mb-3">
+      <label
+        class="mb-2 text-muted"
+        for="title"
+        >Title</label
+      >
+      <input
+        id="title"
+        class="form-control"
+        formControlName="title"
+        type="text"
+      />
+
+      <ng-container *ngIf="threadForm.controls['title'] as title">
+        <ng-container *ngIf="(title.dirty || title.touched) && title.errors as errors">
+          <small
+            class="text-danger"
+            *ngIf="errors.required"
+          >
+            Title required.
+          </small>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <div class="mb-3">
+      <label
+        class="mb-2 text-muted"
+        for="text"
+        >Text</label
+      >
+      <textarea
+        id="text"
+        class="form-control"
+        autoResize
+        formControlName="text"
+      ></textarea>
+    </div>
+
+    <div>
+      <app-images-upload></app-images-upload>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    class="btn btn-outline-dark"
+    type="button"
+    [disabled]="threadForm.invalid"
+  >
+    Submit
+  </button> -->
+
+  <app-images-upload
+    [formControl]="createThreadForm!.threadImages"
+    [maxCount]="5"
+  ></app-images-upload>
+</div>

@@ -10,13 +10,14 @@ import { ThreadsListState } from './threads-list.state';
 import { Observable } from 'rxjs';
 import { ThreadComponent } from './thread/thread.component';
 import { FormsModule } from '@angular/forms';
+import { CreateThreadComponent } from './create-thread/create-thread.component';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
   standalone: true,
-  imports: [AsyncPipe, ScrollTrackingDirective, ThreadComponent, FormsModule],
+  imports: [AsyncPipe, ScrollTrackingDirective, ThreadComponent, FormsModule, CreateThreadComponent],
   providers: [BoardState, ThreadsListState],
 })
 export class BoardComponent implements OnInit {

@@ -27,7 +27,8 @@
     scroll-tracking
     (thresholdPassed)="onThresholdPassed()"
   >
-    <button class="btn btn-secondary mb-2">Create thread</button>
+    <app-create-thread [boardId]="board.id"></app-create-thread>
+    <hr />
 
     @if (threads$ | async; as threads) {
       @for (thread of threads; track thread.id) {

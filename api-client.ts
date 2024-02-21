@@ -782,7 +782,7 @@ export class SectionsClient implements ISectionsClient {
 
 export interface IThreadsClient {
     getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto>;
-    createThread(command: CreateThreadCommand): Observable<FileResponse>;
+    createThread(title: string | null | undefined, text: string | null | undefined, boardId: string | undefined, threadImages: FileParameter[] | null | undefined): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -850,18 +850,27 @@ export class ThreadsClient implements IThreadsClient {
         return _observableOf(null as any);
     }
 
-    createThread(command: CreateThreadCommand): Observable<FileResponse> {
+    createThread(title: string | null | undefined, text: string | null | undefined, boardId: string | undefined, threadImages: FileParameter[] | null | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Threads/CreateThread";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(command);
+        const content_ = new FormData();
+        if (title !== null && title !== undefined)
+            content_.append("Title", title.toString());
+        if (text !== null && text !== undefined)
+            content_.append("Text", text.toString());
+        if (boardId === null || boardId === undefined)
+            throw new Error("The parameter 'boardId' cannot be null.");
+        else
+            content_.append("BoardId", boardId.toString());
+        if (threadImages !== null && threadImages !== undefined)
+            threadImages.forEach(item_ => content_.append("ThreadImages", item_.data, item_.fileName ? item_.fileName : "ThreadImages") );
 
         let options_ : any = {
             body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
             })
         };
@@ -1448,60 +1457,9 @@ export interface IGetThreadsByBoardQuery extends IPaginatedQuery {
     searchText: string | undefined;
 }
 
-export class CreateThreadCommand implements ICreateThreadCommand {
-    title!: string | undefined;
-    text!: string | undefined;
-    boardId!: string;
-    threadImages!: string[] | undefined;
-
-    constructor(data?: ICreateThreadCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.title = _data["title"];
-            this.text = _data["text"];
-            this.boardId = _data["boardId"];
-            if (Array.isArray(_data["threadImages"])) {
-                this.threadImages = [] as any;
-                for (let item of _data["threadImages"])
-                    this.threadImages!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): CreateThreadCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateThreadCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["title"] = this.title;
-        data["text"] = this.text;
-        data["boardId"] = this.boardId;
-        if (Array.isArray(this.threadImages)) {
-            data["threadImages"] = [];
-            for (let item of this.threadImages)
-                data["threadImages"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface ICreateThreadCommand {
-    title: string | undefined;
-    text: string | undefined;
-    boardId: string;
-    threadImages: string[] | undefined;
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export interface FileResponse {

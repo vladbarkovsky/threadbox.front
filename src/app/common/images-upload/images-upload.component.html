@@ -1,39 +1,36 @@
-<form [formGroup]="imagesForm">
-  <div class="form-group file-input">
-    <label
-      for="imagesInput"
-      class="btn btn-secondary"
-    >
-      Add images
-    </label>
+<div class="form-group file-input">
+  <label
+    for="imagesInput"
+    class="btn btn-secondary"
+  >
+    Add images
+  </label>
 
-    <input
-      #fileInput
-      formControlName="imagesInput"
-      id="imagesInput"
-      type="file"
-      class="d-none"
-      multiple=""
-      accept="image/*"
-      (change)="onFileChange(fileInput)"
-    />
-  </div>
+  <input
+    #fileInput
+    [formControl]="formControl"
+    id="imagesInput"
+    type="file"
+    class="d-none"
+    multiple
+    [accept]="allowedFormats | join"
+    (change)="onChange(fileInput)"
+  />
+</div>
 
-  <div class="row">
-    <div
-      *ngFor="let imageFile of imageFiles; let i = index"
-      class="col-auto image-col img-wraps"
-    >
+<div class="row">
+  @for (file of files; track file.name) {
+    <div class="col-auto image-col img-wraps">
       <i
         class="icomoon-icon trash trash-icon"
-        (click)="deleteImage(imageFile)"
+        (click)="deleteFile(file.name)"
       ></i>
 
       <img
-        [src]="imageFile.base64"
-        [alt]="'Unable to load ' + imageFile.file.name"
+        [src]="file.base64"
+        [alt]="'Unable to load ' + file.name"
         class="img-thumbnail image img-responsive"
       />
     </div>
-  </div>
-</form>
+  }
+</div>
