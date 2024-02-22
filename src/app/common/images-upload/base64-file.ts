@@ -3,8 +3,8 @@
  *
  * @export
  * @class Base64File
- * @extends {File}
  */
-export class Base64File extends File {
-  base64: string = '';
+export class Base64File {
+  file!: File;
+  base64!: string;
 }

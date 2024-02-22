@@ -1,8 +1,10 @@
-import { Component, Input, inject } from '@angular/core';
-import { Base64File } from './image-file';
+import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { ToastService } from '../toast/toast.service';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { JoinPipe } from '../pipes/join.pipe';
+import { Base64File } from './base64-file';
+import { Subject } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-images-upload',
@@ -11,26 +13,30 @@ import { JoinPipe } from '../pipes/join.pipe';
   standalone: true,
   imports: [ReactiveFormsModule, JoinPipe],
 })
-export class ImagesUploadComponent {
+export class ImagesUploadComponent implements OnInit {
   private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  @Input() formControl!: FormControl<File[]>;
-  @Input() maxCount: number | undefined;
+  @Input() files$!: Subject<File[]>;
+  @Input() maxCount!: number;
 
-  readonly allowedFormats: string[] = ['image/jpeg', 'image/gif', 'image/bmp', 'image/svg+xml'];
-  files: Base64File[] = [];
+  readonly allowedFormats: string[] = ['image/jpeg', 'image/gif', 'image/png', 'image/bmp', 'image/svg+xml'];
+  base64Files: Base64File[] = [];
 
-  onChange(fileInput: HTMLInputElement): void {
+  ngOnInit(): void {
+    this.files$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(x => {
+      if (!x.length) {
+        this.base64Files = [];
+      }
+    });
+  }
+
+  onFileInputChange(fileInput: HTMLInputElement): void {
     // Getting images uploaded to file input.
     let files: File[] = Array.from(fileInput.files!);
 
-    // TODO: Check if required.
-    if (!files.length) {
-      return;
-    }
-
-    if (this.maxCount && files.length > this.maxCount) {
-      files = files.slice(0, this.maxCount);
+    if (this.base64Files.length + files.length > this.maxCount) {
+      files = files.slice(0, this.maxCount - this.base64Files.length);
       this.toastService.showWarningToast(`Maximum allowed number of files is ${this.maxCount}.`);
     }
 
@@ -46,17 +52,23 @@ export class ImagesUploadComponent {
         const reader = new FileReader();
 
         reader.onload = event => {
-          const base64 = event.target?.result as string;
-          this.files.push({ ...file, base64: base64 });
+          const base64 = event.target!.result as string;
+          this.base64Files.push({ file: file, base64: base64 });
         };
 
         reader.readAsDataURL(file);
       });
+
+      this.files$.next(files);
     }
   }
 
-  deleteFile(fileName: string) {
-    this.formControl.patchValue(this.formControl.value.filter(x => x.name !== fileName));
-    this.files = this.files.filter(x => x.name !== fileName);
+  deleteFile(fileName: string): void {
+    this.base64Files = this.base64Files.filter(x => x.file.name !== fileName);
+    this.files$.next(this.base64Files.map(x => x.file));
+  }
+
+  deleteFiles(): void {
+    this.files$.next([]);
   }
 }

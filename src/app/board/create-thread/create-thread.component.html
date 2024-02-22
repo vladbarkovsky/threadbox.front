@@ -1,6 +1,6 @@
 <button
   class="btn btn-secondary"
-  (click)="collapse.toggle()"
+  (click)="toggleCollapse()"
 >
   Create thread
 </button>
@@ -65,7 +65,7 @@
   </button> -->
 
   <app-images-upload
-    [formControl]="createThreadForm!.threadImages"
+    [files$]="files$"
     [maxCount]="5"
   ></app-images-upload>
 </div>

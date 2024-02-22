@@ -6,29 +6,33 @@
     Add images
   </label>
 
+  <i
+    class="icomoon-icon trash"
+    (click)="deleteFiles()"
+  ></i>
+
   <input
     #fileInput
-    [formControl]="formControl"
     id="imagesInput"
     type="file"
     class="d-none"
     multiple
     [accept]="allowedFormats | join"
-    (change)="onChange(fileInput)"
+    (change)="onFileInputChange(fileInput)"
   />
 </div>
 
 <div class="row">
-  @for (file of files; track file.name) {
+  @for (base64File of base64Files; track base64File.file.name) {
     <div class="col-auto image-col img-wraps">
       <i
         class="icomoon-icon trash trash-icon"
-        (click)="deleteFile(file.name)"
+        (click)="deleteFile(base64File.file.name)"
       ></i>
 
       <img
-        [src]="file.base64"
-        [alt]="'Unable to load ' + file.name"
+        [src]="base64File.base64"
+        [alt]="'Unable to load ' + base64File.file.name"
         class="img-thumbnail image img-responsive"
       />
     </div>
