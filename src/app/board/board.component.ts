@@ -84,6 +84,13 @@ export class BoardComponent implements OnInit {
     this.getThreads();
   }
 
+  onThreadCreated(): void {
+    this.threadsListState.query!.searchText = '';
+    this.threadsListState.query!.pageIndex = 0;
+    this.threadsListState.clearThreads();
+    this.getThreads();
+  }
+
   private getThreads(): void {
     this.threadsClient
       .getThreadsByBoard(this.threadsListState.query!)

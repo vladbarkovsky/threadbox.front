@@ -13,7 +13,10 @@ export class ScrollTrackingDirective {
   @Output() readonly thresholdPassed = new EventEmitter<void>();
 
   private lastScrollPosition = 0;
-  private readonly threshold = 500;
+
+  // TODO: Threshold 500 don't work sometimes. Investigate.
+  private readonly threshold = 0;
+
   private readonly scrolling = new Subject<void>();
 
   constructor() {

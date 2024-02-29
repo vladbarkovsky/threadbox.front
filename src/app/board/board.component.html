@@ -27,7 +27,10 @@
     scroll-tracking
     (thresholdPassed)="onThresholdPassed()"
   >
-    <app-create-thread [boardId]="board.id"></app-create-thread>
+    <app-create-thread
+      [boardId]="board.id"
+      (threadCreated)="onThreadCreated()"
+    ></app-create-thread>
     <hr />
 
     @if (threads$ | async; as threads) {

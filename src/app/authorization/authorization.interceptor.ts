@@ -12,11 +12,11 @@ export const authorizationInterceptor: HttpInterceptorFn = (req, next) => {
         return next(req.clone());
       }
 
-      const clonedRequest = req.clone({
+      const clonedReq = req.clone({
         headers: req.headers.set('Authorization', 'Bearer ' + token),
       });
 
-      return next(clonedRequest).pipe(
+      return next(clonedReq).pipe(
         tap({
           error: (error: HttpErrorResponse) => {
             switch (error.status) {
