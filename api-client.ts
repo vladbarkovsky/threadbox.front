@@ -1088,7 +1088,7 @@ export class PostDto implements IPostDto {
     id!: string;
     text!: string | undefined;
     threadId!: string;
-    postImageUrls!: string[] | undefined;
+    postImages!: PostImageDto[] | undefined;
 
     constructor(data?: IPostDto) {
         if (data) {
@@ -1104,10 +1104,10 @@ export class PostDto implements IPostDto {
             this.id = _data["id"];
             this.text = _data["text"];
             this.threadId = _data["threadId"];
-            if (Array.isArray(_data["postImageUrls"])) {
-                this.postImageUrls = [] as any;
-                for (let item of _data["postImageUrls"])
-                    this.postImageUrls!.push(item);
+            if (Array.isArray(_data["postImages"])) {
+                this.postImages = [] as any;
+                for (let item of _data["postImages"])
+                    this.postImages!.push(PostImageDto.fromJS(item));
             }
         }
     }
@@ -1124,10 +1124,10 @@ export class PostDto implements IPostDto {
         data["id"] = this.id;
         data["text"] = this.text;
         data["threadId"] = this.threadId;
-        if (Array.isArray(this.postImageUrls)) {
-            data["postImageUrls"] = [];
-            for (let item of this.postImageUrls)
-                data["postImageUrls"].push(item);
+        if (Array.isArray(this.postImages)) {
+            data["postImages"] = [];
+            for (let item of this.postImages)
+                data["postImages"].push(item.toJSON());
         }
         return data;
     }
@@ -1137,7 +1137,47 @@ export interface IPostDto {
     id: string;
     text: string | undefined;
     threadId: string;
-    postImageUrls: string[] | undefined;
+    postImages: PostImageDto[] | undefined;
+}
+
+export class PostImageDto implements IPostImageDto {
+    fileInfoId!: string;
+    url!: string | undefined;
+
+    constructor(data?: IPostImageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fileInfoId = _data["fileInfoId"];
+            this.url = _data["url"];
+        }
+    }
+
+    static fromJS(data: any): PostImageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PostImageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fileInfoId"] = this.fileInfoId;
+        data["url"] = this.url;
+        return data;
+    }
+}
+
+export interface IPostImageDto {
+    fileInfoId: string;
+    url: string | undefined;
 }
 
 export class CreatePostCommand implements ICreatePostCommand {
@@ -1312,7 +1352,7 @@ export class ThreadDto implements IThreadDto {
     id!: string;
     title!: string | undefined;
     text!: string | undefined;
-    threadImageUrls!: string[] | undefined;
+    threadImages!: ThreadImageDto[] | undefined;
     posts!: PostDto[] | undefined;
     hasMorePosts!: boolean;
 
@@ -1330,10 +1370,10 @@ export class ThreadDto implements IThreadDto {
             this.id = _data["id"];
             this.title = _data["title"];
             this.text = _data["text"];
-            if (Array.isArray(_data["threadImageUrls"])) {
-                this.threadImageUrls = [] as any;
-                for (let item of _data["threadImageUrls"])
-                    this.threadImageUrls!.push(item);
+            if (Array.isArray(_data["threadImages"])) {
+                this.threadImages = [] as any;
+                for (let item of _data["threadImages"])
+                    this.threadImages!.push(ThreadImageDto.fromJS(item));
             }
             if (Array.isArray(_data["posts"])) {
                 this.posts = [] as any;
@@ -1356,10 +1396,10 @@ export class ThreadDto implements IThreadDto {
         data["id"] = this.id;
         data["title"] = this.title;
         data["text"] = this.text;
-        if (Array.isArray(this.threadImageUrls)) {
-            data["threadImageUrls"] = [];
-            for (let item of this.threadImageUrls)
-                data["threadImageUrls"].push(item);
+        if (Array.isArray(this.threadImages)) {
+            data["threadImages"] = [];
+            for (let item of this.threadImages)
+                data["threadImages"].push(item.toJSON());
         }
         if (Array.isArray(this.posts)) {
             data["posts"] = [];
@@ -1375,9 +1415,49 @@ export interface IThreadDto {
     id: string;
     title: string | undefined;
     text: string | undefined;
-    threadImageUrls: string[] | undefined;
+    threadImages: ThreadImageDto[] | undefined;
     posts: PostDto[] | undefined;
     hasMorePosts: boolean;
+}
+
+export class ThreadImageDto implements IThreadImageDto {
+    fileInfoId!: string;
+    url!: string | undefined;
+
+    constructor(data?: IThreadImageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fileInfoId = _data["fileInfoId"];
+            this.url = _data["url"];
+        }
+    }
+
+    static fromJS(data: any): ThreadImageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ThreadImageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fileInfoId"] = this.fileInfoId;
+        data["url"] = this.url;
+        return data;
+    }
+}
+
+export interface IThreadImageDto {
+    fileInfoId: string;
+    url: string | undefined;
 }
 
 export class PaginatedQuery implements IPaginatedQuery {

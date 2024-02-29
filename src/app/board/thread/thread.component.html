@@ -1,6 +1,7 @@
 <div class="card border-dark my-2">
   <div class="card-header thread-title d-flex justify-content-between">
     {{ thread.title }}
+    {{ thread.hasMorePosts }}
 
     @if (thread.hasMorePosts) {
       <i
@@ -15,10 +16,10 @@
     <p class="card-text">{{ thread.text }}</p>
 
     <div class="row mb-2">
-      @for (imageUrl of thread.threadImageUrls; track $index) {
+      @for (image of thread.threadImages; track $index) {
         <div class="col-auto p-1">
           <img
-            [lazyLoad]="imageUrl"
+            [lazyLoad]="image.url!"
             src="assets/image-placeholder.gif"
             alt="Thread image"
             class="img-thumbnail image"
@@ -27,8 +28,13 @@
       }
     </div>
 
-    @if (thread.threadImageUrls?.length! > 1) {
-      <button class="btn btn-secondary mb-2">Download images</button>
+    @if (thread.threadImages?.length; as length) {
+      <button
+        class="btn btn-secondary mb-2"
+        (click)="downloadThreadImages()"
+      >
+        {{ length > 1 ? 'Download images' : 'Download image' }}
+      </button>
     }
 
     @if (posts$ | async; as posts) {
@@ -38,10 +44,10 @@
             <p class="card-text">{{ post.text }}</p>
 
             <div class="row mb-2">
-              @for (imageUrl of post.postImageUrls; track $index) {
+              @for (image of post.postImages; track $index) {
                 <div class="col-auto p-1">
                   <img
-                    [lazyLoad]="imageUrl"
+                    [lazyLoad]="image.url!"
                     src="assets/image-placeholder.gif"
                     alt="Post image"
                     class="img-thumbnail image"
@@ -50,8 +56,13 @@
               }
             </div>
 
-            @if (post.postImageUrls?.length! > 1) {
-              <button class="btn btn-secondary mb-2">Download images</button>
+            @if (post.postImages?.length; as length) {
+              <button
+                class="btn btn-secondary mb-2"
+                (click)="downloadPostImages(post)"
+              >
+                {{ length > 1 ? 'Download images' : 'Download image' }}
+              </button>
             }
           </div>
         </div>

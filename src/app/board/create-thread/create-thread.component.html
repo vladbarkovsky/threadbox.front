@@ -9,63 +9,66 @@
   #collapse="ngbCollapse"
   [(ngbCollapse)]="formCollapsed"
 >
-  <!-- <form [formGroup]="threadForm">
+  <form
+    [formGroup]="createThreadForm"
+    (ngSubmit)="onSubmit()"
+  >
     <div class="mb-3">
       <label
         class="mb-2 text-muted"
         for="title"
-        >Title</label
       >
+        Title
+      </label>
+
       <input
         id="title"
         class="form-control"
-        formControlName="title"
+        [formControl]="createThreadForm.title"
         type="text"
       />
 
-      <ng-container *ngIf="threadForm.controls['title'] as title">
-        <ng-container *ngIf="(title.dirty || title.touched) && title.errors as errors">
-          <small
-            class="text-danger"
-            *ngIf="errors.required"
-          >
-            Title required.
-          </small>
-        </ng-container>
-      </ng-container>
+      @if (createThreadForm.title.touched && createThreadForm.title.errors; as errors) {
+        @if (errors['required']) {
+          <small class="text-danger">Title required.</small>
+        }
+      }
     </div>
 
     <div class="mb-3">
       <label
         class="mb-2 text-muted"
         for="text"
-        >Text</label
       >
+        Text
+      </label>
+
       <textarea
         id="text"
         class="form-control"
-        autoResize
-        formControlName="text"
+        [formControl]="createThreadForm.text"
       ></textarea>
+
+      @if (createThreadForm.text.touched && createThreadForm.text.errors; as errors) {
+        @if (errors['required']) {
+          <small class="text-danger">Text required.</small>
+        }
+      }
     </div>
 
     <div>
-      <app-images-upload></app-images-upload>
+      <app-images-upload
+        [imagesUploadState]="imagesUploadState"
+        [maxCount]="5"
+      ></app-images-upload>
     </div>
+
+    <button
+      class="btn btn-outline-dark"
+      type="submit"
+      [disabled]="createThreadForm.invalid"
+    >
+      Submit
+    </button>
   </form>
-</div>
-
-<div class="modal-footer">
-  <button
-    class="btn btn-outline-dark"
-    type="button"
-    [disabled]="threadForm.invalid"
-  >
-    Submit
-  </button> -->
-
-  <app-images-upload
-    [files$]="files$"
-    [maxCount]="5"
-  ></app-images-upload>
 </div>

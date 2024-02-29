@@ -1,40 +1,46 @@
-<div class="form-group file-input">
-  <label
-    for="imagesInput"
-    class="btn btn-secondary"
-  >
-    Add images
-  </label>
+@if ({ value: base64Files$ | async }; as base64Files) {
+  @if (base64Files.value !== null) {
+    <div class="form-group file-input">
+      <label
+        for="imagesInput"
+        class="btn btn-secondary"
+        [class.disabled]="base64Files.value.length === maxCount"
+      >
+        Add images
+      </label>
 
-  <i
-    class="icomoon-icon trash"
-    (click)="deleteFiles()"
-  ></i>
-
-  <input
-    #fileInput
-    id="imagesInput"
-    type="file"
-    class="d-none"
-    multiple
-    [accept]="allowedFormats | join"
-    (change)="onFileInputChange(fileInput)"
-  />
-</div>
-
-<div class="row">
-  @for (base64File of base64Files; track base64File.file.name) {
-    <div class="col-auto image-col img-wraps">
       <i
-        class="icomoon-icon trash trash-icon"
-        (click)="deleteFile(base64File.file.name)"
+        class="icomoon-icon trash"
+        (click)="deleteFiles()"
       ></i>
 
-      <img
-        [src]="base64File.base64"
-        [alt]="'Unable to load ' + base64File.file.name"
-        class="img-thumbnail image img-responsive"
+      <input
+        #fileInput
+        id="imagesInput"
+        type="file"
+        class="d-none"
+        multiple
+        [accept]="allowedFormats | join"
+        (change)="onFileInputChange(fileInput)"
+        [disabled]="base64Files.value.length === maxCount"
       />
     </div>
+
+    <div class="row">
+      @for (base64File of base64Files.value; track base64File.file.name) {
+        <div class="col-auto image-col img-wraps">
+          <i
+            class="icomoon-icon trash trash-icon"
+            (click)="deleteFile(base64File.file.name)"
+          ></i>
+
+          <img
+            [src]="base64File.base64"
+            [alt]="'Unable to load ' + base64File.file.name"
+            class="img-thumbnail image img-responsive"
+          />
+        </div>
+      }
+    </div>
   }
-</div>
+}
