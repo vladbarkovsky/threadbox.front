@@ -2,25 +2,22 @@
 @import '../../../../node_modules/bootstrap/scss/variables';
 @import '../../../../src/assets/icons/icomoon/icons.scss';
 
-.image-col {
-  padding: 3px;
-
-  .image {
-    max-width: 250px;
-    max-height: 250px;
-  }
+.trash-icon {
+  cursor: pointer;
+  color: $danger;
+  font-size: x-large;
 }
 
-.img-wraps {
+.image-col {
+  padding: 3px;
   position: relative;
   display: inline-block;
   font-size: 0;
   opacity: 1;
 
-  &:hover .trash-icon {
-    opacity: 1;
-    color: $danger;
-    font-size: x-large;
+  .image {
+    max-width: 250px;
+    max-height: 250px;
   }
 
   .trash-icon {
@@ -30,5 +27,11 @@
     z-index: 100;
     padding: 4px 3px;
     cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+      color: $danger;
+      font-size: x-large;
+    }
   }
 }

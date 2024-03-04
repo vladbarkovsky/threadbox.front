@@ -10,8 +10,9 @@
       </label>
 
       <i
-        class="icomoon-icon trash"
+        class="icomoon-icon trash trash-icon align-middle ms-2"
         (click)="deleteFiles()"
+        title="Delete all images"
       ></i>
 
       <input
@@ -26,9 +27,12 @@
       />
     </div>
 
-    <div class="row">
+    <div
+      class="row"
+      [class.mt-2]="base64Files.value.length"
+    >
       @for (base64File of base64Files.value; track base64File.file.name) {
-        <div class="col-auto image-col img-wraps">
+        <div class="col-auto image-col">
           <i
             class="icomoon-icon trash trash-icon"
             (click)="deleteFile(base64File.file.name)"

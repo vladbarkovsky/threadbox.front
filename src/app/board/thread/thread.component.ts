@@ -1,6 +1,6 @@
 import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { ThreadState } from './thread.state';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { FilesClient, PostDto, PostsClient, ThreadDto } from '../../../../api-client';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,7 +12,7 @@ import { downloadFile } from '../../common/file-operations';
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss',
   standalone: true,
-  imports: [LazyLoadImageModule, AsyncPipe, NgClass],
+  imports: [LazyLoadImageModule, AsyncPipe, NgClass, DatePipe],
   providers: [ThreadState],
 })
 export class ThreadComponent implements OnInit {

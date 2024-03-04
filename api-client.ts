@@ -1089,6 +1089,7 @@ export class PostDto implements IPostDto {
     text!: string | undefined;
     threadId!: string;
     postImages!: PostImageDto[] | undefined;
+    createdAt!: Date;
 
     constructor(data?: IPostDto) {
         if (data) {
@@ -1109,6 +1110,7 @@ export class PostDto implements IPostDto {
                 for (let item of _data["postImages"])
                     this.postImages!.push(PostImageDto.fromJS(item));
             }
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
         }
     }
 
@@ -1129,6 +1131,7 @@ export class PostDto implements IPostDto {
             for (let item of this.postImages)
                 data["postImages"].push(item.toJSON());
         }
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -1138,6 +1141,7 @@ export interface IPostDto {
     text: string | undefined;
     threadId: string;
     postImages: PostImageDto[] | undefined;
+    createdAt: Date;
 }
 
 export class PostImageDto implements IPostImageDto {
@@ -1355,6 +1359,7 @@ export class ThreadDto implements IThreadDto {
     threadImages!: ThreadImageDto[] | undefined;
     posts!: PostDto[] | undefined;
     hasMorePosts!: boolean;
+    createdAt!: Date;
 
     constructor(data?: IThreadDto) {
         if (data) {
@@ -1381,6 +1386,7 @@ export class ThreadDto implements IThreadDto {
                     this.posts!.push(PostDto.fromJS(item));
             }
             this.hasMorePosts = _data["hasMorePosts"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
         }
     }
 
@@ -1407,6 +1413,7 @@ export class ThreadDto implements IThreadDto {
                 data["posts"].push(item.toJSON());
         }
         data["hasMorePosts"] = this.hasMorePosts;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -1418,6 +1425,7 @@ export interface IThreadDto {
     threadImages: ThreadImageDto[] | undefined;
     posts: PostDto[] | undefined;
     hasMorePosts: boolean;
+    createdAt: Date;
 }
 
 export class ThreadImageDto implements IThreadImageDto {

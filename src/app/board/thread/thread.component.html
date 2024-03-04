@@ -1,10 +1,12 @@
 <div class="card border-dark my-2">
-  <div class="card-header thread-title d-flex justify-content-between">
-    {{ thread.title }}
+  <div class="card-header thread-header">
+    <span class="fw-bold">{{ thread.title }}</span>
+    <span>{{ 'Anonymous' }}</span>
+    <span>{{ thread.createdAt | date: 'dd.MM.yy EEEE HH:mm:ss' }}</span>
 
     @if (thread.hasMorePosts) {
       <i
-        class="icomoon-icon posts-toggle"
+        class="icomoon-icon posts-toggle align-middle"
         [ngClass]="{ up: allPostsLoaded, down: !allPostsLoaded }"
         (click)="togglePosts()"
       ></i>
