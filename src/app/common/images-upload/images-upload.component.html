@@ -2,7 +2,7 @@
   @if (base64Files.value !== null) {
     <div class="form-group file-input">
       <label
-        for="imagesInput"
+        [for]="fileInputId"
         class="btn btn-secondary"
         [class.disabled]="base64Files.value.length === maxCount"
       >
@@ -17,7 +17,7 @@
 
       <input
         #fileInput
-        id="imagesInput"
+        [id]="fileInputId"
         type="file"
         class="d-none"
         multiple

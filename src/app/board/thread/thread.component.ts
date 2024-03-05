@@ -6,6 +6,8 @@ import { FilesClient, PostDto, PostsClient, ThreadDto } from '../../../../api-cl
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 import { downloadFile } from '../../common/file-operations';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CreatePostModalComponent } from '../create-post/create-post-modal.component';
 
 @Component({
   selector: 'app-thread',
@@ -20,11 +22,10 @@ export class ThreadComponent implements OnInit {
   private readonly threadState = inject(ThreadState);
   private readonly destroyRef = inject(DestroyRef);
   private readonly filesClient = inject(FilesClient);
+  private readonly ngbModal = inject(NgbModal);
 
   @Input() thread!: ThreadDto;
-
   posts$: Observable<PostDto[]> = this.threadState.getPosts();
-
   allPostsLoaded = false;
 
   ngOnInit(): void {
@@ -48,6 +49,15 @@ export class ThreadComponent implements OnInit {
       this.threadState.hidePosts();
       this.allPostsLoaded = false;
     }
+  }
+
+  openCreatePostModal(): void {
+    const ngbModalRef = this.ngbModal.open(CreatePostModalComponent, {
+      backdrop: false,
+      keyboard: false,
+    });
+
+    // ngbModalRef.componentInstance
   }
 
   downloadThreadImages(): void {

@@ -1,0 +1,43 @@
+<form
+  [formGroup]="createPostForm"
+  (ngSubmit)="('javascript:;')"
+>
+  <div class="mb-3">
+    <label
+      class="mb-2 text-muted"
+      for="text"
+    >
+      Text
+    </label>
+
+    <textarea
+      id="text"
+      class="form-control"
+      [formControl]="createPostForm.text"
+    ></textarea>
+
+    @if (createPostForm.text.touched && createPostForm.text.errors; as errors) {
+      @if (errors['required']) {
+        <small class="text-danger">Text required.</small>
+      }
+
+      <!-- TODO: Max length validation error -->
+    }
+  </div>
+
+  <div>
+    <app-images-upload
+      [imagesUploadState]="imagesUploadState"
+      [maxCount]="5"
+      [fileInputId]="threadId"
+    ></app-images-upload>
+  </div>
+
+  <button
+    class="btn btn-outline-dark mt-3"
+    type="submit"
+    [disabled]="createPostForm.invalid"
+  >
+    Submit
+  </button>
+</form>

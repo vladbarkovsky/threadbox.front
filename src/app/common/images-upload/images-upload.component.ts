@@ -20,6 +20,15 @@ export class ImagesUploadComponent {
   @Input() imagesUploadState!: ImagesUploadState;
   @Input() maxCount!: number;
 
+  /**
+   * Required for multiple component instances.
+   * Must be unique for each component instance.
+   *
+   * @type {string}
+   * @memberof ImagesUploadComponent
+   */
+  @Input() fileInputId!: string;
+
   get base64Files$(): Observable<Base64File[]> {
     return this.imagesUploadState.getBase64Files();
   }

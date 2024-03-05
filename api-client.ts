@@ -575,7 +575,7 @@ export class IdentityClient implements IIdentityClient {
 
 export interface IPostsClient {
     getPostsByThread(threadId: string | undefined): Observable<PostDto[]>;
-    createPost(command: CreatePostCommand): Observable<FileResponse>;
+    createPost(threadId: string | undefined, text: string | null | undefined, postImages: FileParameter[] | null | undefined): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -650,18 +650,25 @@ export class PostsClient implements IPostsClient {
         return _observableOf(null as any);
     }
 
-    createPost(command: CreatePostCommand): Observable<FileResponse> {
+    createPost(threadId: string | undefined, text: string | null | undefined, postImages: FileParameter[] | null | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Posts/CreatePost";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(command);
+        const content_ = new FormData();
+        if (threadId === null || threadId === undefined)
+            throw new Error("The parameter 'threadId' cannot be null.");
+        else
+            content_.append("ThreadId", threadId.toString());
+        if (text !== null && text !== undefined)
+            content_.append("Text", text.toString());
+        if (postImages !== null && postImages !== undefined)
+            postImages.forEach(item_ => content_.append("PostImages", item_.data, item_.fileName ? item_.fileName : "PostImages") );
 
         let options_ : any = {
             body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
             })
         };
@@ -1182,58 +1189,6 @@ export class PostImageDto implements IPostImageDto {
 export interface IPostImageDto {
     fileInfoId: string;
     url: string | undefined;
-}
-
-export class CreatePostCommand implements ICreatePostCommand {
-    text!: string | undefined;
-    postImages!: string[] | undefined;
-    threadId!: string;
-
-    constructor(data?: ICreatePostCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.text = _data["text"];
-            if (Array.isArray(_data["postImages"])) {
-                this.postImages = [] as any;
-                for (let item of _data["postImages"])
-                    this.postImages!.push(item);
-            }
-            this.threadId = _data["threadId"];
-        }
-    }
-
-    static fromJS(data: any): CreatePostCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreatePostCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["text"] = this.text;
-        if (Array.isArray(this.postImages)) {
-            data["postImages"] = [];
-            for (let item of this.postImages)
-                data["postImages"].push(item);
-        }
-        data["threadId"] = this.threadId;
-        return data;
-    }
-}
-
-export interface ICreatePostCommand {
-    text: string | undefined;
-    postImages: string[] | undefined;
-    threadId: string;
 }
 
 export class SectionDto implements ISectionDto {

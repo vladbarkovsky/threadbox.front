@@ -4,13 +4,10 @@
     <span>{{ 'Anonymous' }}</span>
     <span>{{ thread.createdAt | date: 'dd.MM.yy EEEE HH:mm:ss' }}</span>
 
-    @if (thread.hasMorePosts) {
-      <i
-        class="icomoon-icon posts-toggle align-middle"
-        [ngClass]="{ up: allPostsLoaded, down: !allPostsLoaded }"
-        (click)="togglePosts()"
-      ></i>
-    }
+    <i
+      class="icomoon-icon plus align-middle"
+      (click)="openCreatePostModal()"
+    ></i>
   </div>
 
   <div class="card-body">
@@ -30,17 +27,32 @@
     </div>
 
     @if (thread.threadImages?.length; as length) {
-      <button
-        class="btn btn-secondary mb-2"
-        (click)="downloadThreadImages()"
-      >
-        {{ length > 1 ? 'Download images' : 'Download image' }}
-      </button>
+      <div>
+        <button
+          class="btn btn-secondary mb-2"
+          (click)="downloadThreadImages()"
+        >
+          {{ length > 1 ? 'Download images' : 'Download image' }}
+        </button>
+      </div>
+    }
+
+    @if (thread.hasMorePosts) {
+      <i
+        class="icomoon-icon posts-toggle align-middle"
+        [ngClass]="{ up: allPostsLoaded, down: !allPostsLoaded }"
+        (click)="togglePosts()"
+      ></i>
     }
 
     @if (posts$ | async; as posts) {
       @for (post of posts; track post.id) {
         <div class="card my-2">
+          <div class="card-header post-header">
+            <span>{{ 'Anonymous' }}</span>
+            <span>{{ thread.createdAt | date: 'dd.MM.yy EEEE HH:mm:ss' }}</span>
+          </div>
+
           <div class="card-body">
             <p class="card-text">{{ post.text }}</p>
 

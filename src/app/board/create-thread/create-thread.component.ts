@@ -42,14 +42,14 @@ export class CreateThreadComponent {
       .getFiles()
       .pipe(
         first(),
-        switchMap(files => {
-          return this.threadsClient.createThread(
+        switchMap(files =>
+          this.threadsClient.createThread(
             this.createThreadForm.title.value,
             this.createThreadForm.text.value,
             this.boardId,
             files.map(convertToNSwagFileParameter)
-          );
-        }),
+          )
+        ),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({

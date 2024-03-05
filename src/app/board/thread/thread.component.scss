@@ -2,12 +2,16 @@
 @import '../../../../node_modules/bootstrap/scss/variables';
 @import '../../../assets/icons/icomoon/icons.scss';
 
-.thread-header > *:not(:first-child) {
+.thread-header > *:not(:first-child),
+.post-header > *:not(:first-child) {
   margin-left: map-get($spacers, 2);
 }
 
+.create-post {
+  cursor: pointer;
+}
+
 .posts-toggle {
-  font-size: large;
   cursor: pointer;
 }
 
