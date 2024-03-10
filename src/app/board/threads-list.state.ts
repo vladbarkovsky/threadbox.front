@@ -18,7 +18,7 @@ export class ThreadsListState {
     this.threads$.next(this.threads$.value.concat(result.pageItems!));
   }
 
-  clearThreads() {
+  reset() {
     this.threads$.next([]);
   }
 }

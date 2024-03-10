@@ -14,52 +14,81 @@
     [formGroup]="createThreadForm"
     (ngSubmit)="onSubmit()"
   >
-    <div class="mb-3">
-      <label
-        class="mb-2 text-muted"
-        for="title"
-      >
-        Title
-      </label>
+    @if (createThreadForm.title; as title) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="title"
+        >
+          Title
+        </label>
 
-      <input
-        id="title"
-        class="form-control"
-        [formControl]="createThreadForm.title"
-        type="text"
-      />
+        <input
+          id="title"
+          class="form-control"
+          [formControl]="title"
+          type="text"
+        />
 
-      @if (createThreadForm.title.touched && createThreadForm.title.errors; as errors) {
-        @if (errors['required']) {
-          <small class="text-danger">Title required.</small>
+        @if (title.touched && title.errors; as errors) {
+          @if (errors['required']) {
+            <small class="text-danger">Title required.</small>
+          }
+
+          <!-- TODO: Max length validation error -->
         }
+      </div>
+    }
 
-        <!-- TODO: Max length validation error -->
-      }
-    </div>
+    @if (createThreadForm.text; as text) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="text"
+        >
+          Text
+        </label>
 
-    <div class="mb-3">
-      <label
-        class="mb-2 text-muted"
-        for="text"
-      >
-        Text
-      </label>
+        <textarea
+          id="text"
+          class="form-control"
+          [formControl]="text"
+        ></textarea>
 
-      <textarea
-        id="text"
-        class="form-control"
-        [formControl]="createThreadForm.text"
-      ></textarea>
+        @if (text.touched && text.errors; as errors) {
+          @if (errors['required']) {
+            <small class="text-danger">Text required.</small>
+          }
 
-      @if (createThreadForm.text.touched && createThreadForm.text.errors; as errors) {
-        @if (errors['required']) {
-          <small class="text-danger">Text required.</small>
+          <!-- TODO: Max length validation error -->
         }
+      </div>
+    }
 
-        <!-- TODO: Max length validation error -->
-      }
-    </div>
+    @if (createThreadForm.tripcodeString; as tripcodeString) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="tripcodeString"
+        >
+          Tripcode
+        </label>
+
+        <input
+          id="tripcodeString"
+          class="form-control"
+          [formControl]="tripcodeString"
+        />
+
+        @if (tripcodeString.touched && tripcodeString.errors; as errors) {
+          @if (errors['pattern']) {
+            <small class="text-danger">Invalid tripcode format.</small>
+          }
+
+          <!-- TODO: Tripcode pattern description -->
+        }
+      </div>
+    }
 
     <div>
       <app-images-upload
@@ -70,7 +99,7 @@
     </div>
 
     <button
-      class="btn btn-outline-dark mt-3"
+      class="btn btn-outline-secondary mt-3"
       type="submit"
       [disabled]="createThreadForm.invalid"
     >

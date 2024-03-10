@@ -52,12 +52,9 @@ export class ThreadComponent implements OnInit {
   }
 
   openCreatePostModal(): void {
-    const ngbModalRef = this.ngbModal.open(CreatePostModalComponent, {
-      backdrop: false,
-      keyboard: false,
-    });
+    const ngbModalRef = this.ngbModal.open(CreatePostModalComponent, { size: 'xl' });
 
-    // ngbModalRef.componentInstance
+    ngbModalRef.componentInstance.threadId = this.thread.id;
   }
 
   downloadThreadImages(): void {

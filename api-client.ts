@@ -575,7 +575,7 @@ export class IdentityClient implements IIdentityClient {
 
 export interface IPostsClient {
     getPostsByThread(threadId: string | undefined): Observable<PostDto[]>;
-    createPost(threadId: string | undefined, text: string | null | undefined, postImages: FileParameter[] | null | undefined): Observable<FileResponse>;
+    createPost(text: string | null | undefined, threadId: string | undefined, tripcodeString: string | null | undefined, postImages: FileParameter[] | null | undefined): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -650,17 +650,19 @@ export class PostsClient implements IPostsClient {
         return _observableOf(null as any);
     }
 
-    createPost(threadId: string | undefined, text: string | null | undefined, postImages: FileParameter[] | null | undefined): Observable<FileResponse> {
+    createPost(text: string | null | undefined, threadId: string | undefined, tripcodeString: string | null | undefined, postImages: FileParameter[] | null | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Posts/CreatePost";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
+        if (text !== null && text !== undefined)
+            content_.append("Text", text.toString());
         if (threadId === null || threadId === undefined)
             throw new Error("The parameter 'threadId' cannot be null.");
         else
             content_.append("ThreadId", threadId.toString());
-        if (text !== null && text !== undefined)
-            content_.append("Text", text.toString());
+        if (tripcodeString !== null && tripcodeString !== undefined)
+            content_.append("TripcodeString", tripcodeString.toString());
         if (postImages !== null && postImages !== undefined)
             postImages.forEach(item_ => content_.append("PostImages", item_.data, item_.fileName ? item_.fileName : "PostImages") );
 
@@ -789,7 +791,7 @@ export class SectionsClient implements ISectionsClient {
 
 export interface IThreadsClient {
     getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto>;
-    createThread(title: string | null | undefined, text: string | null | undefined, boardId: string | undefined, threadImages: FileParameter[] | null | undefined): Observable<FileResponse>;
+    createThread(title: string | null | undefined, text: string | null | undefined, boardId: string | undefined, tripcodeString: string | null | undefined, threadImages: FileParameter[] | null | undefined): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -857,7 +859,7 @@ export class ThreadsClient implements IThreadsClient {
         return _observableOf(null as any);
     }
 
-    createThread(title: string | null | undefined, text: string | null | undefined, boardId: string | undefined, threadImages: FileParameter[] | null | undefined): Observable<FileResponse> {
+    createThread(title: string | null | undefined, text: string | null | undefined, boardId: string | undefined, tripcodeString: string | null | undefined, threadImages: FileParameter[] | null | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Threads/CreateThread";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -870,6 +872,8 @@ export class ThreadsClient implements IThreadsClient {
             throw new Error("The parameter 'boardId' cannot be null.");
         else
             content_.append("BoardId", boardId.toString());
+        if (tripcodeString !== null && tripcodeString !== undefined)
+            content_.append("TripcodeString", tripcodeString.toString());
         if (threadImages !== null && threadImages !== undefined)
             threadImages.forEach(item_ => content_.append("ThreadImages", item_.data, item_.fileName ? item_.fileName : "ThreadImages") );
 
@@ -1095,6 +1099,7 @@ export class PostDto implements IPostDto {
     id!: string;
     text!: string | undefined;
     threadId!: string;
+    tripcodeKey!: string | undefined;
     postImages!: PostImageDto[] | undefined;
     createdAt!: Date;
 
@@ -1112,6 +1117,7 @@ export class PostDto implements IPostDto {
             this.id = _data["id"];
             this.text = _data["text"];
             this.threadId = _data["threadId"];
+            this.tripcodeKey = _data["tripcodeKey"];
             if (Array.isArray(_data["postImages"])) {
                 this.postImages = [] as any;
                 for (let item of _data["postImages"])
@@ -1133,6 +1139,7 @@ export class PostDto implements IPostDto {
         data["id"] = this.id;
         data["text"] = this.text;
         data["threadId"] = this.threadId;
+        data["tripcodeKey"] = this.tripcodeKey;
         if (Array.isArray(this.postImages)) {
             data["postImages"] = [];
             for (let item of this.postImages)
@@ -1147,6 +1154,7 @@ export interface IPostDto {
     id: string;
     text: string | undefined;
     threadId: string;
+    tripcodeKey: string | undefined;
     postImages: PostImageDto[] | undefined;
     createdAt: Date;
 }
@@ -1311,8 +1319,9 @@ export class ThreadDto implements IThreadDto {
     id!: string;
     title!: string | undefined;
     text!: string | undefined;
-    threadImages!: ThreadImageDto[] | undefined;
+    tripcodeKey!: string | undefined;
     posts!: PostDto[] | undefined;
+    threadImages!: ThreadImageDto[] | undefined;
     hasMorePosts!: boolean;
     createdAt!: Date;
 
@@ -1330,15 +1339,16 @@ export class ThreadDto implements IThreadDto {
             this.id = _data["id"];
             this.title = _data["title"];
             this.text = _data["text"];
-            if (Array.isArray(_data["threadImages"])) {
-                this.threadImages = [] as any;
-                for (let item of _data["threadImages"])
-                    this.threadImages!.push(ThreadImageDto.fromJS(item));
-            }
+            this.tripcodeKey = _data["tripcodeKey"];
             if (Array.isArray(_data["posts"])) {
                 this.posts = [] as any;
                 for (let item of _data["posts"])
                     this.posts!.push(PostDto.fromJS(item));
+            }
+            if (Array.isArray(_data["threadImages"])) {
+                this.threadImages = [] as any;
+                for (let item of _data["threadImages"])
+                    this.threadImages!.push(ThreadImageDto.fromJS(item));
             }
             this.hasMorePosts = _data["hasMorePosts"];
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
@@ -1357,15 +1367,16 @@ export class ThreadDto implements IThreadDto {
         data["id"] = this.id;
         data["title"] = this.title;
         data["text"] = this.text;
-        if (Array.isArray(this.threadImages)) {
-            data["threadImages"] = [];
-            for (let item of this.threadImages)
-                data["threadImages"].push(item.toJSON());
-        }
+        data["tripcodeKey"] = this.tripcodeKey;
         if (Array.isArray(this.posts)) {
             data["posts"] = [];
             for (let item of this.posts)
                 data["posts"].push(item.toJSON());
+        }
+        if (Array.isArray(this.threadImages)) {
+            data["threadImages"] = [];
+            for (let item of this.threadImages)
+                data["threadImages"].push(item.toJSON());
         }
         data["hasMorePosts"] = this.hasMorePosts;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
@@ -1377,8 +1388,9 @@ export interface IThreadDto {
     id: string;
     title: string | undefined;
     text: string | undefined;
-    threadImages: ThreadImageDto[] | undefined;
+    tripcodeKey: string | undefined;
     posts: PostDto[] | undefined;
+    threadImages: ThreadImageDto[] | undefined;
     hasMorePosts: boolean;
     createdAt: Date;
 }

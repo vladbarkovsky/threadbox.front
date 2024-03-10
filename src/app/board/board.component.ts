@@ -72,7 +72,7 @@ export class BoardComponent implements OnInit {
     if (!this.searchText && this.threadsListState.query?.searchText) {
       this.threadsListState.query!.searchText = '';
       this.threadsListState.query!.pageIndex = 0;
-      this.threadsListState.clearThreads();
+      this.threadsListState.reset();
       this.getThreads();
     }
   }
@@ -80,14 +80,14 @@ export class BoardComponent implements OnInit {
   searchThreads() {
     this.threadsListState.query!.searchText = this.searchText;
     this.threadsListState.query!.pageIndex = 0;
-    this.threadsListState.clearThreads();
+    this.threadsListState.reset();
     this.getThreads();
   }
 
   onThreadCreated(): void {
     this.threadsListState.query!.searchText = '';
     this.threadsListState.query!.pageIndex = 0;
-    this.threadsListState.clearThreads();
+    this.threadsListState.reset();
     this.getThreads();
   }
 

@@ -32,13 +32,18 @@ export class CreatePostModalComponent {
     this.ngbActiveModal.dismiss();
   }
 
-  private createPost(): void {
+  onSubmit(): void {
     this.imagesUploadState
       .getFiles()
       .pipe(
         first(),
         switchMap(files =>
-          this.postsClient.createPost(this.threadId, this.createPostForm.text.value, files.map(convertToNSwagFileParameter))
+          this.postsClient.createPost(
+            this.createPostForm.text.value,
+            this.threadId,
+            this.createPostForm.tripcodeString.value,
+            files.map(convertToNSwagFileParameter)
+          )
         ),
         takeUntilDestroyed(this.destroyRef)
       )

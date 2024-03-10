@@ -1,43 +1,80 @@
-<form
-  [formGroup]="createPostForm"
-  (ngSubmit)="('javascript:;')"
->
-  <div class="mb-3">
-    <label
-      class="mb-2 text-muted"
-      for="text"
-    >
-      Text
-    </label>
-
-    <textarea
-      id="text"
-      class="form-control"
-      [formControl]="createPostForm.text"
-    ></textarea>
-
-    @if (createPostForm.text.touched && createPostForm.text.errors; as errors) {
-      @if (errors['required']) {
-        <small class="text-danger">Text required.</small>
-      }
-
-      <!-- TODO: Max length validation error -->
-    }
-  </div>
-
-  <div>
-    <app-images-upload
-      [imagesUploadState]="imagesUploadState"
-      [maxCount]="5"
-      [fileInputId]="threadId"
-    ></app-images-upload>
-  </div>
-
+<div class="modal-header">
+  <h4 class="modal-title">Create thread</h4>
   <button
-    class="btn btn-outline-dark mt-3"
-    type="submit"
-    [disabled]="createPostForm.invalid"
+    class="btn-close"
+    (click)="close()"
+  ></button>
+</div>
+
+<div class="modal-body">
+  <form
+    [formGroup]="createPostForm"
+    (ngSubmit)="onSubmit()"
   >
-    Submit
-  </button>
-</form>
+    @if (createPostForm.text; as text) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="text"
+        >
+          Text
+        </label>
+
+        <textarea
+          id="text"
+          class="form-control"
+          [formControl]="text"
+        ></textarea>
+
+        @if (text.touched && text.errors; as errors) {
+          @if (errors['required']) {
+            <small class="text-danger">Text required.</small>
+          }
+
+          <!-- TODO: Max length validation error -->
+        }
+      </div>
+    }
+
+    @if (createPostForm.tripcodeString; as tripcodeString) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="tripcodeString"
+        >
+          Tripcode
+        </label>
+
+        <input
+          id="tripcodeString"
+          class="form-control"
+          [formControl]="tripcodeString"
+        />
+
+        @if (tripcodeString.touched && tripcodeString.errors; as errors) {
+          @if (errors['pattern']) {
+            <small class="text-danger">Invalid tripcode format.</small>
+          }
+
+          <!-- TODO: Tripcode pattern description -->
+        }
+      </div>
+    }
+
+    <div>
+      <app-images-upload
+        [imagesUploadState]="imagesUploadState"
+        [maxCount]="5"
+        [fileInputId]="threadId"
+      ></app-images-upload>
+    </div>
+
+    <button
+      class="btn btn-outline-secondary mt-3"
+      type="submit"
+      [disabled]="createPostForm.invalid"
+    >
+      Submit
+    </button>
+  </form>
+</div>

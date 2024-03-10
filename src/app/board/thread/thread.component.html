@@ -1,7 +1,7 @@
 <div class="card border-dark my-2">
   <div class="card-header thread-header">
     <span class="fw-bold">{{ thread.title }}</span>
-    <span>{{ 'Anonymous' }}</span>
+    <span>{{ thread.tripcodeKey ?? 'Anonymous' }}</span>
     <span>{{ thread.createdAt | date: 'dd.MM.yy EEEE HH:mm:ss' }}</span>
 
     <i
@@ -49,7 +49,7 @@
       @for (post of posts; track post.id) {
         <div class="card my-2">
           <div class="card-header post-header">
-            <span>{{ 'Anonymous' }}</span>
+            <span>{{ post.tripcodeKey ?? 'Anonymous' }}</span>
             <span>{{ thread.createdAt | date: 'dd.MM.yy EEEE HH:mm:ss' }}</span>
           </div>
 

@@ -47,6 +47,7 @@ export class CreateThreadComponent {
             this.createThreadForm.title.value,
             this.createThreadForm.text.value,
             this.boardId,
+            this.createThreadForm.tripcodeString.value,
             files.map(convertToNSwagFileParameter)
           )
         ),

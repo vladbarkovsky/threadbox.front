@@ -1,6 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
-export const userNameValidators: ValidatorFn[] = [Validators.required, Validators.minLength(5), Validators.maxLength(20)];
 export const passwordValidators: ValidatorFn[] = [Validators.required, Validators.minLength(8), Validators.maxLength(30)];
 
 export function matchValidator(matchTo: string): ValidatorFn {
@@ -17,3 +16,6 @@ export function matchValidator(matchTo: string): ValidatorFn {
     return null;
   };
 }
+
+// Regex: 1-128 ASCII characters (33-126) + '#' + 8-128 ASCII characters (33-126).
+export const tripcodeStringValidator = Validators.pattern(/^[!-~]{1,128}#[!-~]{8,128}$/);
