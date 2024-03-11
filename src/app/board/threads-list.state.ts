@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { GetThreadsByBoardQuery, PaginatedResultOfThreadDto, ThreadDto } from '../../../api-client';
+import { GetThreadsQuery, PaginatedResultOfThreadDto, ThreadDto } from '../../../api-client';
 
 @Injectable()
 export class ThreadsListState {
-  query: GetThreadsByBoardQuery | undefined;
+  query: GetThreadsQuery | undefined;
   result: PaginatedResultOfThreadDto | undefined;
 
   private readonly threads$ = new BehaviorSubject<ThreadDto[]>([]);

@@ -4,7 +4,7 @@ import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { FilesClient, PostDto, PostsClient, ThreadDto } from '../../../../api-client';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
+import { Observable, switchMap, takeUntil } from 'rxjs';
 import { downloadFile } from '../../common/file-operations';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePostModalComponent } from '../create-post/create-post-modal.component';
@@ -36,7 +36,7 @@ export class ThreadComponent implements OnInit {
   togglePosts(): void {
     if (!this.allPostsLoaded) {
       this.postsClient
-        .getPostsByThread(this.thread.id)
+        .getPosts(this.thread.id, true)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: posts => {
@@ -52,9 +52,18 @@ export class ThreadComponent implements OnInit {
   }
 
   openCreatePostModal(): void {
-    const ngbModalRef = this.ngbModal.open(CreatePostModalComponent, { size: 'xl' });
-
+    const ngbModalRef = this.ngbModal.open(CreatePostModalComponent, { backdrop: 'static', centered: true, size: 'xl' });
     ngbModalRef.componentInstance.threadId = this.thread.id;
+
+    ngbModalRef.closed
+      .pipe(
+        switchMap(() => this.postsClient.getPosts(this.thread.id, this.allPostsLoaded)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: posts => this.threadState.setPosts(posts),
+        error: error => console.log(error),
+      });
   }
 
   downloadThreadImages(): void {

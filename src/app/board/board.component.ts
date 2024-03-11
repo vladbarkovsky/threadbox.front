@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BoardState } from './board.state';
 import { switchMap } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
-import { BoardDto, BoardsClient, GetThreadsByBoardQuery, ThreadDto, ThreadsClient } from '../../../api-client';
+import { BoardDto, BoardsClient, GetThreadsQuery, ThreadDto, ThreadsClient } from '../../../api-client';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ScrollTrackingDirective } from '../common/scroll-tracking.directive';
 import { ThreadsListState } from './threads-list.state';
@@ -44,7 +44,7 @@ export class BoardComponent implements OnInit {
         next: boardDto => {
           this.boardState.setBoard(boardDto);
 
-          this.threadsListState.query = new GetThreadsByBoardQuery({
+          this.threadsListState.query = new GetThreadsQuery({
             boardId: boardDto.id,
             searchText: '',
             pageIndex: 0,
@@ -93,7 +93,7 @@ export class BoardComponent implements OnInit {
 
   private getThreads(): void {
     this.threadsClient
-      .getThreadsByBoard(this.threadsListState.query!)
+      .getThreads(this.threadsListState.query!)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: result => {

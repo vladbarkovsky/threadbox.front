@@ -574,7 +574,7 @@ export class IdentityClient implements IIdentityClient {
 }
 
 export interface IPostsClient {
-    getPostsByThread(threadId: string | undefined): Observable<PostDto[]>;
+    getPosts(threadId: string | undefined, all: boolean | undefined): Observable<PostDto[]>;
     createPost(text: string | null | undefined, threadId: string | undefined, tripcodeString: string | null | undefined, postImages: FileParameter[] | null | undefined): Observable<FileResponse>;
 }
 
@@ -591,12 +591,16 @@ export class PostsClient implements IPostsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getPostsByThread(threadId: string | undefined): Observable<PostDto[]> {
-        let url_ = this.baseUrl + "/api/Posts/GetPostsByThread?";
+    getPosts(threadId: string | undefined, all: boolean | undefined): Observable<PostDto[]> {
+        let url_ = this.baseUrl + "/api/Posts/GetPosts?";
         if (threadId === null)
             throw new Error("The parameter 'threadId' cannot be null.");
         else if (threadId !== undefined)
             url_ += "ThreadId=" + encodeURIComponent("" + threadId) + "&";
+        if (all === null)
+            throw new Error("The parameter 'all' cannot be null.");
+        else if (all !== undefined)
+            url_ += "All=" + encodeURIComponent("" + all) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -608,11 +612,11 @@ export class PostsClient implements IPostsClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPostsByThread(response_);
+            return this.processGetPosts(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPostsByThread(response_ as any);
+                    return this.processGetPosts(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<PostDto[]>;
                 }
@@ -621,7 +625,7 @@ export class PostsClient implements IPostsClient {
         }));
     }
 
-    protected processGetPostsByThread(response: HttpResponseBase): Observable<PostDto[]> {
+    protected processGetPosts(response: HttpResponseBase): Observable<PostDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -790,7 +794,7 @@ export class SectionsClient implements ISectionsClient {
 }
 
 export interface IThreadsClient {
-    getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto>;
+    getThreads(query: GetThreadsQuery): Observable<PaginatedResultOfThreadDto>;
     createThread(title: string | null | undefined, text: string | null | undefined, boardId: string | undefined, tripcodeString: string | null | undefined, threadImages: FileParameter[] | null | undefined): Observable<FileResponse>;
 }
 
@@ -807,8 +811,8 @@ export class ThreadsClient implements IThreadsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getThreadsByBoard(query: GetThreadsByBoardQuery): Observable<PaginatedResultOfThreadDto> {
-        let url_ = this.baseUrl + "/api/Threads/GetThreadsByBoard";
+    getThreads(query: GetThreadsQuery): Observable<PaginatedResultOfThreadDto> {
+        let url_ = this.baseUrl + "/api/Threads/GetThreads";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(query);
@@ -824,11 +828,11 @@ export class ThreadsClient implements IThreadsClient {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetThreadsByBoard(response_);
+            return this.processGetThreads(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetThreadsByBoard(response_ as any);
+                    return this.processGetThreads(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<PaginatedResultOfThreadDto>;
                 }
@@ -837,7 +841,7 @@ export class ThreadsClient implements IThreadsClient {
         }));
     }
 
-    protected processGetThreadsByBoard(response: HttpResponseBase): Observable<PaginatedResultOfThreadDto> {
+    protected processGetThreads(response: HttpResponseBase): Observable<PaginatedResultOfThreadDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1475,11 +1479,11 @@ export interface IPaginatedQuery {
     pageSize: number;
 }
 
-export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThreadsByBoardQuery {
+export class GetThreadsQuery extends PaginatedQuery implements IGetThreadsQuery {
     boardId!: string;
     searchText!: string | undefined;
 
-    constructor(data?: IGetThreadsByBoardQuery) {
+    constructor(data?: IGetThreadsQuery) {
         super(data);
     }
 
@@ -1491,9 +1495,9 @@ export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThread
         }
     }
 
-    static override fromJS(data: any): GetThreadsByBoardQuery {
+    static override fromJS(data: any): GetThreadsQuery {
         data = typeof data === 'object' ? data : {};
-        let result = new GetThreadsByBoardQuery();
+        let result = new GetThreadsQuery();
         result.init(data);
         return result;
     }
@@ -1507,7 +1511,7 @@ export class GetThreadsByBoardQuery extends PaginatedQuery implements IGetThread
     }
 }
 
-export interface IGetThreadsByBoardQuery extends IPaginatedQuery {
+export interface IGetThreadsQuery extends IPaginatedQuery {
     boardId: string;
     searchText: string | undefined;
 }
