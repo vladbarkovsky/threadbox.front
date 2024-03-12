@@ -35,7 +35,10 @@
 
     @if (threads$ | async; as threads) {
       @for (thread of threads; track thread.id) {
-        <app-thread [thread]="thread"></app-thread>
+        <app-thread
+          [thread]="thread"
+          (deleteThread)="deleteThread(thread.id)"
+        ></app-thread>
       }
     }
   </div>

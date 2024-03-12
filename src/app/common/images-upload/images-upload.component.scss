@@ -3,7 +3,6 @@
 @import '../../../../src/assets/icons/icomoon/icons.scss';
 
 .trash-icon {
-  cursor: pointer;
   color: $danger;
   font-size: x-large;
 }
@@ -26,7 +25,6 @@
     right: 8px;
     z-index: 100;
     padding: 4px 3px;
-    cursor: pointer;
 
     &:hover {
       opacity: 1;

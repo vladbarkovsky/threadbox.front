@@ -1,23 +1,22 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthorizationService } from '../authorization/authorization.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { AsyncPipe } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-shell',
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],
   standalone: true,
   imports: [RouterOutlet, RouterLink, NgbCollapse, AsyncPipe],
 })
 export class ShellComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
   private readonly authorizationService = inject(AuthorizationService);
-  private readonly router = inject(Router);
 
-  authorized$ = this.authorizationService.authorized$;
+  authorized$: Observable<boolean> = this.authorizationService.authorized$;
+  userName$: Observable<string> = this.authorizationService.userName$;
   navbarCollapsed: boolean = true;
 
   ngOnInit(): void {

@@ -8,6 +8,7 @@
           *ngxPermissionsOnly="boardsPermissions.manage"
           class="icomoon-icon plus action-icon"
           (click)="openCreateBoardModal()"
+          role="button"
         ></i>
       </div>
 
@@ -20,11 +21,13 @@
               <i
                 class="icomoon-icon edit action-icon"
                 (click)="openUpdateBoardModal(section.id)"
+                role="button"
               ></i>
 
               <i
                 class="icomoon-icon trash action-icon"
                 (click)="openDeleteConfirmationModal(section.id)"
+                role="button"
               ></i>
             </div>
           </div>

@@ -2,34 +2,41 @@ import { DOCUMENT, Location } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { User, UserManager } from 'oidc-client';
-import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 import { filter, finalize, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { IdentityFacade } from './identity.facade';
+import { IdentityClient } from '../../../api-client';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
   private readonly document = inject(DOCUMENT);
   private readonly location = inject(Location);
   private readonly router = inject(Router);
-  private readonly identityFacade = inject(IdentityFacade);
+  private readonly identityClient = inject(IdentityClient);
   private readonly permissionsService = inject(NgxPermissionsService);
 
   get authorized$(): Observable<boolean> {
-    return this._user$.pipe(
+    return this.user$.pipe(
       filter(x => x !== null),
       map(x => !!x)
     );
   }
 
   get token$(): Observable<string | undefined> {
-    return this._user$.pipe(map(x => x?.access_token));
+    return this.user$.pipe(map(x => x?.access_token));
+  }
+
+  get userName$(): Observable<string> {
+    return this.user$.pipe(
+      filter(x => !!x),
+      map(x => x!.profile.name!)
+    );
   }
 
   // undefined means that there are no authorized user.
   // null means that we don't know yet.
-  private readonly _user$ = new BehaviorSubject<User | undefined | null>(null);
+  private readonly user$ = new BehaviorSubject<User | undefined | null>(null);
 
   private userManager = new UserManager({
     authority: environment.apiBaseUrl,
@@ -46,11 +53,11 @@ export class AuthorizationService {
     this.authorized$
       .pipe(
         filter(x => x),
-        switchMap(() => this.identityFacade.getUserPermissions())
+        switchMap(() => this.identityClient.getUserPermissions())
       )
       .subscribe(permissions => this.permissionsService.loadPermissions(permissions));
 
-    // Write OIDC client logs to console
+    // Write OIDC client logs to console.
     // import { Log } from 'oidc-client';
     // Log.logger = console;
 
@@ -62,7 +69,7 @@ export class AuthorizationService {
           // If we received session status, it means that user is authorized;
           // therefore we perform silent sign in to restore session data.
           // It is necessary for cases when authorized user opens application in new tab
-          // or uses offline access (authorization saving after closing the browser)
+          // or uses offline access (authorization saving after closing the browser).
           this.signInSilent();
         }
       },
@@ -126,8 +133,8 @@ export class AuthorizationService {
   }
 
   private setUser(user: User | undefined) {
-    if (user !== this._user$.value) {
-      this._user$.next(user);
+    if (user !== this.user$.value) {
+      this.user$.next(user);
     }
   }
 

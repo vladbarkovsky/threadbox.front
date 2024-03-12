@@ -18,6 +18,10 @@ export class ThreadsListState {
     this.threads$.next(this.threads$.value.concat(result.pageItems!));
   }
 
+  removeThread(threadId: string) {
+    this.threads$.next(this.threads$.value.filter(x => x.id !== threadId));
+  }
+
   reset() {
     this.threads$.next([]);
   }

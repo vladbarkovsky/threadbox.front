@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ConfirmationModalConfig } from './confirmation-modal-config';
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -9,15 +8,16 @@ import { ConfirmationModalConfig } from './confirmation-modal-config';
   standalone: true,
 })
 export class ConfirmationModalComponent {
-  @Input() readonly config!: ConfirmationModalConfig;
+  @Input() readonly title?: string;
+  @Input() readonly text!: string;
 
   constructor(private activeModal: NgbActiveModal) {}
 
-  accept() {
+  close() {
     this.activeModal.close();
   }
 
-  decline() {
+  dismiss() {
     this.activeModal.dismiss();
   }
 }

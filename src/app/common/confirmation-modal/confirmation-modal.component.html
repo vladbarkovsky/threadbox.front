@@ -1,35 +1,29 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{ config.title ?? 'Confirm action' }}</h4>
+  <h4 class="modal-title">{{ title ?? 'Confirm action' }}</h4>
 
   <button
     type="button"
-    class="close"
-    aria-label="Close"
-    (click)="decline()"
-  >
-    <!-- TODO: Replace with icomoon icon -->
-    <span aria-hidden="true">&times;</span>
-  </button>
+    class="btn-close"
+    (click)="dismiss()"
+  ></button>
 </div>
 
-<div class="modal-body">
-  {{ config.text }}
-</div>
+<div class="modal-body">{{ text }}</div>
 
-<div class="modal-footer">
+<div class="modal-footer justify-content-start">
   <button
+    type="button"
     class="btn btn-outline-secondary"
+    (click)="close()"
+  >
+    Confirm
+  </button>
+
+  <button
     type="button"
-    (click)="decline()"
+    class="btn btn-outline-secondary"
+    (click)="dismiss()"
   >
     Decline
-  </button>
-
-  <button
-    class="btn btn-outline-secondary"
-    type="button"
-    (click)="accept()"
-  >
-    Accept
   </button>
 </div>

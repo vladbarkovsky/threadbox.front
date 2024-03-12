@@ -1,20 +1,22 @@
-import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { ThreadState } from './thread.state';
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { FilesClient, PostDto, PostsClient, ThreadDto } from '../../../../api-client';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, switchMap, takeUntil } from 'rxjs';
+import { Observable, first, switchMap, takeUntil } from 'rxjs';
 import { downloadFile } from '../../common/file-operations';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePostModalComponent } from '../create-post/create-post-modal.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { PostsPermissions, ThreadsPermissions } from '../../../../api-permissions';
 
 @Component({
   selector: 'app-thread',
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss',
   standalone: true,
-  imports: [LazyLoadImageModule, AsyncPipe, NgClass, DatePipe],
+  imports: [LazyLoadImageModule, AsyncPipe, NgClass, DatePipe, NgxPermissionsModule],
   providers: [ThreadState],
 })
 export class ThreadComponent implements OnInit {
@@ -24,13 +26,21 @@ export class ThreadComponent implements OnInit {
   private readonly filesClient = inject(FilesClient);
   private readonly ngbModal = inject(NgbModal);
 
+  threadPermissions = ThreadsPermissions;
+  postPermissions = PostsPermissions;
+
   @Input() thread!: ThreadDto;
+  @Output() readonly deleteThread = new EventEmitter<void>();
   posts$: Observable<PostDto[]> = this.threadState.getPosts();
   allPostsLoaded = false;
 
   ngOnInit(): void {
     this.allPostsLoaded = !this.thread.hasMorePosts;
     this.threadState.setPosts(this.thread.posts!);
+  }
+
+  emitDeleteThreadEvent(): void {
+    this.deleteThread.emit();
   }
 
   togglePosts(): void {
@@ -57,6 +67,7 @@ export class ThreadComponent implements OnInit {
 
     ngbModalRef.closed
       .pipe(
+        first(),
         switchMap(() => this.postsClient.getPosts(this.thread.id, this.allPostsLoaded)),
         takeUntilDestroyed(this.destroyRef)
       )

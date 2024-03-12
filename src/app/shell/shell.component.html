@@ -1,6 +1,6 @@
-<!-- HTML is taken from https://ng-bootstrap.github.io/#/components/collapse/examples#navbar -->
+<!-- HTML is taken from https://ng-bootstrap.github.io/#/components/collapse/examples#navbar. -->
 
-<!-- Many thanks to Alexey Zubov for these nested ifs ❤ -->
+<!-- Many thanks to Alexey Zubov for these nested ifs ❤. -->
 @if ({ value: authorized$ | async }; as authorized) {
   @if (authorized.value !== null) {
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
@@ -8,6 +8,7 @@
         <div
           class="navbar-brand d-flex"
           routerLink="/"
+          role="button"
         >
           <div class="mr-2">Threadbox</div>
 
@@ -18,7 +19,7 @@
           />
         </div>
 
-        <!-- TODO: Replace unicode symbol with icomoon icon -->
+        <!-- TODO: Replace unicode symbol with icomoon icon. -->
         <button
           class="navbar-toggler"
           type="button"
@@ -60,26 +61,30 @@
             </li>
           </ul>
 
-          @if (authorized.value) {
-            <button
-              class="btn btn-secondary"
-              (click)="signOut()"
-            >
-              Sign out
-            </button>
-          } @else {
-            <button
-              class="btn btn-secondary"
-              (click)="signIn()"
-            >
-              Sign in
-            </button>
-          }
+          <div>
+            @if (authorized.value) {
+              Authorized as {{ userName$ | async }}
+
+              <button
+                class="btn btn-secondary ms-3"
+                (click)="signOut()"
+              >
+                Sign out
+              </button>
+            } @else {
+              <button
+                class="btn btn-secondary"
+                (click)="signIn()"
+              >
+                Sign in
+              </button>
+            }
+          </div>
         </div>
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container mt-3">
       <router-outlet></router-outlet>
     </div>
   }

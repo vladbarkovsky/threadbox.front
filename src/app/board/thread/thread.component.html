@@ -7,6 +7,14 @@
     <i
       class="icomoon-icon plus align-middle"
       (click)="openCreatePostModal()"
+      role="button"
+    ></i>
+
+    <i
+      *ngxPermissionsOnly="threadPermissions.delete"
+      class="icomoon-icon trash align-middle"
+      (click)="emitDeleteThreadEvent()"
+      role="button"
     ></i>
   </div>
 
@@ -39,9 +47,10 @@
 
     @if (thread.hasMorePosts) {
       <i
-        class="icomoon-icon posts-toggle align-middle"
+        class="icomoon-icon align-middle"
         [ngClass]="{ up: allPostsLoaded, down: !allPostsLoaded }"
         (click)="togglePosts()"
+        role="button"
       ></i>
     }
 
@@ -51,6 +60,13 @@
           <div class="card-header post-header">
             <span>{{ post.tripcodeKey ?? 'Anonymous' }}</span>
             <span>{{ post.createdAt | date: 'dd.MM.yy EEEE HH:mm:ss' }}</span>
+
+            <i
+              *ngxPermissionsOnly="postPermissions.delete"
+              class="icomoon-icon trash align-middle"
+              (click)="('javascript:;')"
+              role="button"
+            ></i>
           </div>
 
           <div class="card-body">
