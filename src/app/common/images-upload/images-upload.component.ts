@@ -35,9 +35,9 @@ export class ImagesUploadComponent {
 
   readonly allowedFormats: string[] = ['image/jpeg', 'image/gif', 'image/png', 'image/bmp', 'image/svg+xml'];
 
-  onFileInputChange(fileInput: HTMLInputElement): void {
-    // Getting images uploaded to file input.
-    let files: File[] = Array.from(fileInput.files!);
+  onFileInputChange($event: Event): void {
+    const fileInput = $event.target as HTMLInputElement;
+    let files = Array.from(fileInput.files!);
 
     files.forEach((file, i) => {
       if (this.imagesUploadState.base64Files.find(x => x.file.name === file.name)) {
@@ -70,6 +70,9 @@ export class ImagesUploadComponent {
         reader.readAsDataURL(file);
       });
     }
+
+    // Clearing file input.
+    fileInput.value = '';
   }
 
   deleteFile(fileName: string): void {

@@ -14,7 +14,7 @@ Threadbox is anonymous imageboard for sharing texts and images.
 
 1. Install project dependencies `npm i`.
 
-1. Allow untrusted SSL on localhost in your browser. If you are using Google Chrome, enable chrome://flags/#temporary-unexpire-flags-m118, reload browser, enable chrome://flags/#allow-insecure-localhost and reload again.
+1. Allow untrusted SSL on localhost in your browser. If you are using Google Chrome, enable chrome://flags/#allow-insecure-localhost and reload browser.
 
 1. I you already launched server, compile client app `npm start`. Application local port is [4200](https://localhost:4200). The app will automatically reload if you change any of the source files.
 

@@ -41,7 +41,12 @@ export class AuthorizationService {
   private userManager = new UserManager({
     authority: environment.apiBaseUrl,
     client_id: 'angular_client',
+
+    // Check Startup.cs on server for more information about commented scope.
+    // Search string 'IdentityServerConstants.StandardScopes.OfflineAccess'.
+    // offline_access
     scope: 'openid profile threadbox_api.access',
+
     response_type: 'code',
     redirect_uri: this.document.baseURI + 'authorization/sign-in-redirect-callback',
     silent_redirect_uri: this.document.baseURI + 'assets/authorization/sign-in-silent-callback.html',
@@ -55,7 +60,11 @@ export class AuthorizationService {
         filter(x => x),
         switchMap(() => this.identityClient.getUserPermissions())
       )
-      .subscribe(permissions => this.permissionsService.loadPermissions(permissions));
+      .subscribe({
+        next: permissions => this.permissionsService.loadPermissions(permissions),
+        // TODO: Error handling.
+        error: error => {},
+      });
 
     // Write OIDC client logs to console.
     // import { Log } from 'oidc-client';

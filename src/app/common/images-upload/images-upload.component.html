@@ -1,6 +1,7 @@
 @if ({ value: base64Files$ | async }; as base64Files) {
   @if (base64Files.value !== null) {
     <div class="form-group file-input">
+      <!-- TODO: Check if disabled attribute can be moved to label from input. -->
       <label
         [for]="fileInputId"
         class="btn btn-secondary"
@@ -16,14 +17,14 @@
         title="Delete all images"
       ></i>
 
+      <!-- TODO: JoinPipe is not required - accept attribute can process string arrays. -->
       <input
-        #fileInput
         [id]="fileInputId"
         type="file"
-        class="d-none"
+        hidden
         multiple
         [accept]="allowedFormats | join"
-        (change)="onFileInputChange(fileInput)"
+        (change)="onFileInputChange($event)"
         [disabled]="base64Files.value.length === maxCount"
       />
     </div>
