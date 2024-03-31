@@ -1,123 +1,123 @@
-<!-- HTML is taken from https://ng-bootstrap.github.io/#/components/collapse/examples#navbar. -->
+<ng-container *transloco="let translate">
+  @if ({ value: authorized$ | async }; as authorized) {
+    @if (authorized.value !== null) {
+      <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <div
+            class="navbar-brand d-flex"
+            routerLink="/"
+            role="button"
+          >
+            <div class="mr-2">Threadbox</div>
 
-<!-- Many thanks to Alexey Zubov for these nested ifs ❤. -->
-@if ({ value: authorized$ | async }; as authorized) {
-  @if (authorized.value !== null) {
-    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <div
-          class="navbar-brand d-flex"
-          routerLink="/"
-          role="button"
-        >
-          <div class="mr-2">Threadbox</div>
+            <img
+              src="assets/logo.png"
+              alt="Threadbox logo image"
+              width="30"
+            />
+          </div>
 
-          <img
-            src="assets/logo.png"
-            alt="Threadbox logo image"
-            width="30"
-          />
-        </div>
+          <button
+            class="navbar-toggler"
+            type="button"
+            (click)="navbarCollapsed = !navbarCollapsed"
+          >
+            <!-- TODO: Replace with icomoon icon. -->
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          (click)="navbarCollapsed = !navbarCollapsed"
-        >
-          <!-- TODO: Replace with icomoon icon. -->
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div
-          [ngbCollapse]="navbarCollapsed"
-          class="navbar-collapse justify-content-between"
-          [class.collapse]="navbarCollapsed"
-        >
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                routerLink="#"
-              >
-                Link 1
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                routerLink="#"
-              >
-                Link 2
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                routerLink="#"
-              >
-                Link 3
-              </a>
-            </li>
-          </ul>
-
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              @if (authorized.value) {
-                {{ 'AUTHORIZED_AS' | transloco }} {{ userName$ | async }}
-
-                <button
-                  class="btn btn-secondary ms-2"
-                  (click)="signOut()"
+          <div
+            [ngbCollapse]="navbarCollapsed"
+            class="navbar-collapse justify-content-between"
+            [class.collapse]="navbarCollapsed"
+          >
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  routerLink="#"
+                  (click)="test()"
                 >
-                  {{ 'SIGN_OUT' | transloco }}
-                </button>
-              } @else {
-                <button
-                  class="btn btn-secondary"
-                  (click)="signIn()"
+                  Link 1
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  routerLink="#"
                 >
-                  {{ 'SIGN_IN' | transloco }}
-                </button>
-              }
-            </li>
+                  Link 2
+                </a>
+              </li>
 
-            <li
-              ngbDropdown
-              class="nav-item ms-lg-2"
-            >
-              <a
-                ngbDropdownToggle
-                class="nav-link"
-                role="button"
-              >
-                {{ selectedLanguage | uppercase }}
-              </a>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  routerLink="#"
+                >
+                  Link 3
+                </a>
+              </li>
+            </ul>
 
-              <div
-                ngbDropdownMenu
-                class="dropdown-menu dropdown-menu-end"
-              >
-                @for (language of availableLanguages; track $index) {
-                  @if (language !== selectedLanguage) {
-                    <a
-                      ngbDropdownItem
-                      (click)="changeLanguage(language)"
-                    >
-                      {{ language | uppercase }}
-                    </a>
-                  }
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                @if (authorized.value) {
+                  {{ translate('AUTHORIZED_AS') }} {{ userName$ | async }}
+
+                  <button
+                    class="btn btn-secondary ms-2"
+                    (click)="signOut()"
+                  >
+                    {{ translate('SIGN_OUT') }}
+                  </button>
+                } @else {
+                  <button
+                    class="btn btn-secondary"
+                    (click)="signIn()"
+                  >
+                    {{ translate('SIGN_IN') }}
+                  </button>
                 }
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+              </li>
 
-    <div class="container mt-3">
-      <router-outlet></router-outlet>
-    </div>
+              <li
+                ngbDropdown
+                class="nav-item ms-lg-2"
+              >
+                <a
+                  ngbDropdownToggle
+                  class="nav-link"
+                  role="button"
+                >
+                  {{ selectedLanguage | uppercase }}
+                </a>
+
+                <div
+                  ngbDropdownMenu
+                  class="dropdown-menu dropdown-menu-end"
+                >
+                  @for (language of availableLanguages; track $index) {
+                    @if (language !== selectedLanguage) {
+                      <a
+                        ngbDropdownItem
+                        (click)="changeLanguage(language)"
+                      >
+                        {{ language | uppercase }}
+                      </a>
+                    }
+                  }
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container mt-3">
+        <router-outlet></router-outlet>
+      </div>
+    }
   }
-}
+</ng-container>

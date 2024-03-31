@@ -721,7 +721,10 @@ export class PostsClient implements IPostsClient {
 }
 
 export interface ISectionsClient {
-    getSections(): Observable<SectionDto[]>;
+    getSection(id: string | undefined): Observable<SectionDto>;
+    getSections(): Observable<SectionListDto[]>;
+    createSection(command: CreateSectionCommand): Observable<FileResponse>;
+    updateSection(command: UpdateSectionCommand): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -737,7 +740,59 @@ export class SectionsClient implements ISectionsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getSections(): Observable<SectionDto[]> {
+    getSection(id: string | undefined): Observable<SectionDto> {
+        let url_ = this.baseUrl + "/api/Sections/GetSection?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSection(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSection(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SectionDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SectionDto>;
+        }));
+    }
+
+    protected processGetSection(response: HttpResponseBase): Observable<SectionDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getSections(): Observable<SectionListDto[]> {
         let url_ = this.baseUrl + "/api/Sections/GetSections";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -756,14 +811,14 @@ export class SectionsClient implements ISectionsClient {
                 try {
                     return this.processGetSections(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<SectionDto[]>;
+                    return _observableThrow(e) as any as Observable<SectionListDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<SectionDto[]>;
+                return _observableThrow(response_) as any as Observable<SectionListDto[]>;
         }));
     }
 
-    protected processGetSections(response: HttpResponseBase): Observable<SectionDto[]> {
+    protected processGetSections(response: HttpResponseBase): Observable<SectionListDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -777,13 +832,125 @@ export class SectionsClient implements ISectionsClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(SectionDto.fromJS(item));
+                    result200!.push(SectionListDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
             }
             return _observableOf(result200);
             }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createSection(command: CreateSectionCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Sections/CreateSection";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateSection(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateSection(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processCreateSection(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    updateSection(command: UpdateSectionCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Sections/UpdateSection";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateSection(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateSection(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processUpdateSection(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1262,10 +1429,54 @@ export interface IPostImageDto {
 
 export class SectionDto implements ISectionDto {
     id!: string;
+    rowVersion!: string | undefined;
+    title!: string | undefined;
+
+    constructor(data?: ISectionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.rowVersion = _data["rowVersion"];
+            this.title = _data["title"];
+        }
+    }
+
+    static fromJS(data: any): SectionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SectionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["rowVersion"] = this.rowVersion;
+        data["title"] = this.title;
+        return data;
+    }
+}
+
+export interface ISectionDto {
+    id: string;
+    rowVersion: string | undefined;
+    title: string | undefined;
+}
+
+export class SectionListDto implements ISectionListDto {
+    id!: string;
     title!: string | undefined;
     boards!: SectionBoardDto[] | undefined;
 
-    constructor(data?: ISectionDto) {
+    constructor(data?: ISectionListDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1286,9 +1497,9 @@ export class SectionDto implements ISectionDto {
         }
     }
 
-    static fromJS(data: any): SectionDto {
+    static fromJS(data: any): SectionListDto {
         data = typeof data === 'object' ? data : {};
-        let result = new SectionDto();
+        let result = new SectionListDto();
         result.init(data);
         return result;
     }
@@ -1306,10 +1517,90 @@ export class SectionDto implements ISectionDto {
     }
 }
 
-export interface ISectionDto {
+export interface ISectionListDto {
     id: string;
     title: string | undefined;
     boards: SectionBoardDto[] | undefined;
+}
+
+export class CreateSectionCommand implements ICreateSectionCommand {
+    title!: string | undefined;
+
+    constructor(data?: ICreateSectionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.title = _data["title"];
+        }
+    }
+
+    static fromJS(data: any): CreateSectionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSectionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["title"] = this.title;
+        return data;
+    }
+}
+
+export interface ICreateSectionCommand {
+    title: string | undefined;
+}
+
+export class UpdateSectionCommand implements IUpdateSectionCommand {
+    id!: string;
+    rowVersion!: string | undefined;
+    title!: string | undefined;
+
+    constructor(data?: IUpdateSectionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.rowVersion = _data["rowVersion"];
+            this.title = _data["title"];
+        }
+    }
+
+    static fromJS(data: any): UpdateSectionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateSectionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["rowVersion"] = this.rowVersion;
+        data["title"] = this.title;
+        return data;
+    }
+}
+
+export interface IUpdateSectionCommand {
+    id: string;
+    rowVersion: string | undefined;
+    title: string | undefined;
 }
 
 export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {

@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { SectionDto } from '../../../api-client';
+import { SectionListDto } from '../../../api-client';
 
 @Injectable({ providedIn: 'root' })
 export class HomeState {
-  private sections$ = new Subject<SectionDto[]>();
+  private sections$ = new Subject<SectionListDto[]>();
 
-  getSections(): Observable<SectionDto[] | undefined> {
+  getSections(): Observable<SectionListDto[] | undefined> {
     return this.sections$.asObservable();
   }
 
-  setSections(value: SectionDto[]): void {
+  setSections(value: SectionListDto[]): void {
     this.sections$.next(value);
   }
 }

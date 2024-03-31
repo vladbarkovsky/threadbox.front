@@ -1,10 +1,10 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthorizationService } from '../authorization/authorization.service';
-import { NgbCollapse, NgbDropdown, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapse, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { Observable } from 'rxjs';
-import { TranslocoPipe, TranslocoService } from '@ngneat/transloco';
+import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],
   standalone: true,
-  imports: [RouterOutlet, RouterLink, NgbCollapse, AsyncPipe, TranslocoPipe, NgbDropdownModule, UpperCasePipe],
+  imports: [RouterOutlet, RouterLink, NgbCollapse, AsyncPipe, TranslocoDirective, NgbDropdownModule, UpperCasePipe],
 })
 export class ShellComponent implements OnInit {
   private readonly authorizationService = inject(AuthorizationService);
@@ -24,7 +24,8 @@ export class ShellComponent implements OnInit {
   authorized$: Observable<boolean> = this.authorizationService.authorized$;
   userName$: Observable<string> = this.authorizationService.userName$;
 
-  // TODO: Store last selected language in database for authorized users.
+  // TODO: Store last selected language in cookies or local storage.
+  // For registered users store language in database.
   selectedLanguage: string = this.translocoService.getActiveLang();
 
   availableLanguages = this.translocoService.getAvailableLangs() as string[];

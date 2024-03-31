@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Toast } from './toast';
 
+// TODO: Translate toast messages.
 @Injectable({ providedIn: 'root' })
 export class ToastService {
   toasts: Toast[] = [];
@@ -31,6 +32,6 @@ export class ToastService {
   }
 
   removeToast(toast: Toast): void {
-    this.toasts = this.toasts.filter(x => x != toast);
+    this.toasts = this.toasts.filter(x => x !== toast);
   }
 }

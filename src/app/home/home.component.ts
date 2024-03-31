@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, ViewEncapsulation, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateBoardModalComponent } from './create-board-modal/create-board-modal.component';
 import { UpdateBoardModalComponent } from './update-board-modal/update-board-modal.component';
@@ -19,6 +19,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
   styleUrls: ['./home.component.scss'],
   standalone: true,
   imports: [RouterLink, AsyncPipe, NgxPermissionsModule],
+  encapsulation: ViewEncapsulation.Emulated,
 })
 export class HomeComponent {
   private readonly destroyRef = inject(DestroyRef);
