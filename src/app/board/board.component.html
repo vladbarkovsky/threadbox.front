@@ -1,4 +1,4 @@
-@if (board$ | async; as board) {
+@if (board) {
   <div class="d-flex justify-content-between mb-3">
     <h3>{{ board.title }}</h3>
 
@@ -39,7 +39,13 @@
           [thread]="thread"
           (deleteThread)="deleteThread(thread.id)"
         ></app-thread>
+      } @empty {
+        <!-- TODO: There are no threads -->
       }
+    } @else {
+      <!-- TODO: Loader -->
     }
   </div>
+} @else {
+  <!-- TODO: Loader -->
 }

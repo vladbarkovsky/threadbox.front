@@ -18,7 +18,7 @@ import { convertToNSwagFileParameter } from '../../common/file-operations';
   providers: [ImagesUploadState],
 })
 export class CreateThreadComponent {
-  public readonly imagesUploadState = inject(ImagesUploadState);
+  readonly imagesUploadState = inject(ImagesUploadState);
   private readonly threadsClient = inject(ThreadsClient);
   private readonly destroyRef = inject(DestroyRef);
 
