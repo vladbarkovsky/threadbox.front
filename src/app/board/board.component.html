@@ -33,19 +33,13 @@
     ></app-create-thread>
     <hr />
 
-    @if (threads$ | async; as threads) {
+    @if (threads) {
       @for (thread of threads; track thread.id) {
         <app-thread
           [thread]="thread"
           (deleteThread)="deleteThread(thread.id)"
         ></app-thread>
-      } @empty {
-        <!-- TODO: There are no threads -->
       }
-    } @else {
-      <!-- TODO: Loader -->
     }
   </div>
-} @else {
-  <!-- TODO: Loader -->
 }

@@ -29,8 +29,11 @@ export class BoardComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly ngbModal = inject(NgbModal);
 
+  get threads(): ThreadDto[] {
+    return this.threadsListState.threads;
+  }
+
   board: BoardDto | undefined;
-  threads$: Observable<ThreadDto[]> = this.threadsListState.getThreads();
 
   // TODO: Create URL query parameter 'search', investigate safe URL features in Angular.
   searchText: string = '';
