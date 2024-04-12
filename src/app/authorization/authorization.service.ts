@@ -59,22 +59,6 @@ export class AuthorizationService {
     // import { Log } from 'oidc-client';
     // Log.logger = console;
 
-    this.userManager = new UserManager({
-      authority: environment.apiBaseUrl,
-      client_id: 'angular_client',
-
-      // Check Startup.cs on server for more information about commented scope.
-      // Search string 'IdentityServerConstants.StandardScopes.OfflineAccess'.
-      // offline_access
-      scope: 'openid profile threadbox_api.access',
-
-      response_type: 'code',
-      redirect_uri: this.document.baseURI + 'authorization/sign-in-redirect-callback',
-      silent_redirect_uri: this.document.baseURI + 'assets/authorization/sign-in-silent-callback.html',
-      post_logout_redirect_uri: this.document.baseURI + 'authorization/sign-out-redirect-callback',
-      automaticSilentRenew: true,
-    });
-
     this.userManager.events.addUserLoaded(user => {
       this.log('User loaded.');
       this.setUser(user);
@@ -93,27 +77,28 @@ export class AuthorizationService {
   }
 
   checkAuthorization(): void {
-    if (this.user$.value !== null) {
-      return;
-    }
+    this.user$
+      .pipe(
+        filter(x => x === null),
+        switchMap(() => from(this.userManager.querySessionStatus()))
+      )
+      .subscribe({
+        next: sessionStatus => {
+          if (sessionStatus) {
+            this.log('Session status received - performing silent sign in...');
 
-    from(this.userManager.querySessionStatus()).subscribe({
-      next: sessionStatus => {
-        if (sessionStatus) {
-          this.log('Session status received - performing silent sign in...');
-
-          // If we received session status, it means that user is authorized;
-          // therefore we perform silent sign in to restore session data.
-          // It is necessary for cases when authorized user opens application in new tab
-          // or uses offline access (authorization saving after closing the browser).
-          this.signInSilent();
-        }
-      },
-      error: () => {
-        this.log('Unable to get session status - user is unauthorized.');
-        this.setUser(undefined);
-      },
-    });
+            // If we received session status, it means that user is authorized;
+            // therefore we perform silent sign in to restore session data.
+            // It is necessary for cases when authorized user opens application in new tab
+            // or uses offline access (authorization saving after closing the browser).
+            this.signInSilent();
+          }
+        },
+        error: () => {
+          this.log('Unable to get session status - user is unauthorized.');
+          this.setUser(undefined);
+        },
+      });
   }
 
   signInRedirect(): void {

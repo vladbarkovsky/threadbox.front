@@ -22,7 +22,7 @@ export class CreateBoardModalComponent {
 
   readonly createBoardForm = new CreateBoardForm();
 
-  onSubmit() {
+  onSubmit(): void {
     this.boardsClient
       .createBoard(this.createBoardForm.data)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -36,7 +36,7 @@ export class CreateBoardModalComponent {
       });
   }
 
-  cancel() {
+  cancel(): void {
     this.ngbActiveModal.dismiss();
   }
 }

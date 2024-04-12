@@ -5,9 +5,9 @@
         <h2>{{ section.title }}</h2>
 
         <i
-          *ngxPermissionsOnly="boardsPermissions.manage"
+          *ngxPermissionsOnly="sectionsPermissions.manage"
           class="icomoon-icon plus action-icon"
-          (click)="openCreateBoardModal()"
+          (click)="openCreateSectionModal()"
           role="button"
         ></i>
       </div>

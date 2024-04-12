@@ -2,70 +2,71 @@
   <h4 class="modal-title">Create board</h4>
 
   <button
-    type="button"
-    class="close"
-    aria-label="Close"
+    class="btn-close"
     (click)="cancel()"
-  >
-    <!-- TODO: Add icomoon icon -->
-    <span aria-hidden="true">&times;</span>
-  </button>
+  ></button>
 </div>
 
 <div class="modal-body">
   <form
     [formGroup]="createBoardForm"
-    (submit)="onSubmit()"
+    (ngSubmit)="onSubmit()"
   >
-    <div class="mb-3">
-      <label
-        class="mb-2 text-muted"
-        for="title"
-        >Title</label
-      >
+    @if (createBoardForm.title; as title) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="title"
+        >
+          Title
+        </label>
 
-      <input
-        id="title"
-        class="form-control"
-        formControlName="title"
-        type="text"
-      />
+        <input
+          id="title"
+          class="form-control"
+          [formControl]="title"
+          type="text"
+        />
 
-      @if (createBoardForm.title | validationErrors; as errors) {
-        @if (errors['required']) {
-          <small class="text-danger">Title required.</small>
+        @if (title.touched && title.errors; as errors) {
+          @if (errors['required']) {
+            <small class="text-danger">Title required.</small>
+          }
+
+          @if (errors['maxlength']; as maxLength) {
+            <small class="text-danger">Maximal length is {{ maxLength.requiredLength }}.</small>
+          }
         }
+      </div>
+    }
 
-        @if (errors['maxlength']; as maxLength) {
-          <small class="text-danger">Maximal length is {{ maxLength.requiredLength }}.</small>
+    @if (createBoardForm.description; as description) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="description"
+        >
+          Description
+        </label>
+
+        <textarea
+          id="description"
+          class="form-control"
+          autoResize
+          [formControl]="description"
+        ></textarea>
+
+        @if (description.touched && description.errors; as errors) {
+          @if (errors['required']) {
+            <small class="text-danger">Description required.</small>
+          }
+
+          @if (errors['maxLength']; as maxLength) {
+            <small class="text-danger">Maximal length is {{ maxLength.requiredLength }}.</small>
+          }
         }
-      }
-    </div>
-
-    <div class="mb-3">
-      <label
-        class="mb-2 text-muted"
-        for="description"
-        >Description</label
-      >
-
-      <textarea
-        id="description"
-        class="form-control"
-        autoResize
-        formControlName="description"
-      ></textarea>
-
-      @if (createBoardForm.title | validationErrors; as errors) {
-        @if (errors['required']) {
-          <small class="text-danger">Title required.</small>
-        }
-
-        @if (errors['maxLength']; as maxLength) {
-          <small class="text-danger">Maximal length is {{ maxLength.requiredLength }}.</small>
-        }
-      }
-    </div>
+      </div>
+    }
   </form>
 </div>
 
