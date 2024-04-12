@@ -39,6 +39,8 @@
           [thread]="thread"
           (deleteThread)="deleteThread(thread.id)"
         ></app-thread>
+      } @empty {
+        <!-- TODO: Display text 'There are no threads' -->
       }
     }
   </div>

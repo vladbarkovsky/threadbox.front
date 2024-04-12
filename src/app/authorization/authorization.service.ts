@@ -23,7 +23,7 @@ export class AuthorizationService {
     );
   }
 
-  get token$(): Observable<string | undefined> {
+  get accessToken$(): Observable<string | undefined> {
     return this.user$.pipe(map(x => x?.access_token));
   }
 
@@ -38,7 +38,7 @@ export class AuthorizationService {
   // null means that we don't know yet.
   private readonly user$ = new BehaviorSubject<User | undefined | null>(null);
 
-  private userManager = new UserManager({
+  private readonly userManager = new UserManager({
     authority: environment.apiBaseUrl,
     client_id: 'angular_client',
 
@@ -54,7 +54,32 @@ export class AuthorizationService {
     automaticSilentRenew: true,
   });
 
-  authorize() {
+  constructor() {
+    // Write OIDC client logs to console.
+    // import { Log } from 'oidc-client';
+    // Log.logger = console;
+
+    this.userManager = new UserManager({
+      authority: environment.apiBaseUrl,
+      client_id: 'angular_client',
+
+      // Check Startup.cs on server for more information about commented scope.
+      // Search string 'IdentityServerConstants.StandardScopes.OfflineAccess'.
+      // offline_access
+      scope: 'openid profile threadbox_api.access',
+
+      response_type: 'code',
+      redirect_uri: this.document.baseURI + 'authorization/sign-in-redirect-callback',
+      silent_redirect_uri: this.document.baseURI + 'assets/authorization/sign-in-silent-callback.html',
+      post_logout_redirect_uri: this.document.baseURI + 'authorization/sign-out-redirect-callback',
+      automaticSilentRenew: true,
+    });
+
+    this.userManager.events.addUserLoaded(user => {
+      this.log('User loaded.');
+      this.setUser(user);
+    });
+
     this.authorized$
       .pipe(
         filter(x => x),
@@ -65,10 +90,12 @@ export class AuthorizationService {
         // TODO: Error handling.
         error: error => {},
       });
+  }
 
-    // Write OIDC client logs to console.
-    // import { Log } from 'oidc-client';
-    // Log.logger = console;
+  checkAuthorization(): void {
+    if (this.user$.value !== null) {
+      return;
+    }
 
     from(this.userManager.querySessionStatus()).subscribe({
       next: sessionStatus => {
@@ -86,11 +113,6 @@ export class AuthorizationService {
         this.log('Unable to get session status - user is unauthorized.');
         this.setUser(undefined);
       },
-    });
-
-    this.userManager.events.addUserLoaded(user => {
-      this.log('User loaded.');
-      this.setUser(user);
     });
   }
 
@@ -131,8 +153,6 @@ export class AuthorizationService {
   }
 
   private signInSilent(): void {
-    this.saveLastUrl();
-
     from(this.userManager.signinSilent()).subscribe({
       error: error => {
         this.log('Sign in silent error:', error);

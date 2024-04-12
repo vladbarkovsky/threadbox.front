@@ -11,7 +11,6 @@ import { FormsModule } from '@angular/forms';
 import { CreateThreadComponent } from './create-thread/create-thread.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationModalComponent } from '../common/confirmation-modal/confirmation-modal.component';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-board',
@@ -50,6 +49,7 @@ export class BoardComponent implements OnInit {
           this.threadsListState.query.boardId = board.id;
           this.getThreads();
         },
+        // TODO: Show error.
         error: () => console.log('Unable to get board data'),
       });
   }

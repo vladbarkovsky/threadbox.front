@@ -31,7 +31,7 @@ export class ShellComponent implements OnInit {
   availableLanguages = this.translocoService.getAvailableLangs() as string[];
 
   ngOnInit(): void {
-    this.authorizationService.authorize();
+    this.authorizationService.checkAuthorization();
 
     this.translocoService.langChanges$
       .pipe(takeUntilDestroyed(this.destroyRef))

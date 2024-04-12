@@ -6,7 +6,7 @@ import { AuthorizationService } from './authorization.service';
 export const authorizationInterceptor: HttpInterceptorFn = (req, next) => {
   const authorizationService = inject(AuthorizationService);
 
-  return authorizationService.token$.pipe(
+  return authorizationService.accessToken$.pipe(
     switchMap(token => {
       if (!token) {
         return next(req.clone());
