@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ViewEncapsulation, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateBoardModalComponent } from './create-board-modal/create-board-modal.component';
 import { UpdateBoardModalComponent } from './update-board-modal/update-board-modal.component';
@@ -10,7 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { ToastService } from '../common/toast/toast.service';
 import { BoardsPermissions, SectionsPermissions } from '../../../api-permissions';
-import { BoardsClient, SectionsClient } from '../../../api-client';
+import { BoardsClient, SectionsClient, SwaggerException } from '../../../api-client';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { CreateSectionModalComponent } from './create-section-modal/create-section-modal.component';
 
@@ -41,7 +41,7 @@ export class HomeComponent {
       .subscribe({
         next: sections => this.homePageState.setSections(sections),
         // TODO: Set error in sign in state (error must be displayed in component)
-        error: error => console.log(error),
+        error: (error: SwaggerException) => console.error(error.response),
       });
   }
 
