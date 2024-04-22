@@ -39,6 +39,9 @@ export class ImagesUploadComponent {
     const fileInput = $event.target as HTMLInputElement;
     let files = Array.from(fileInput.files!);
 
+    // Clearing file input.
+    fileInput.value = '';
+
     files.forEach((file, i) => {
       if (this.imagesUploadState.base64Files.find(x => x.file.name === file.name)) {
         files.splice(i, 1);
@@ -70,9 +73,6 @@ export class ImagesUploadComponent {
         reader.readAsDataURL(file);
       });
     }
-
-    // Clearing file input.
-    fileInput.value = '';
   }
 
   deleteFile(fileName: string): void {
