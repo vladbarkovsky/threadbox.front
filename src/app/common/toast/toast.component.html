@@ -1,15 +1,16 @@
-<!-- https://ng-bootstrap.github.io/#/components/toast/overview#toast-service -->
-
-@for (toast of toasts; track $index) {
-  <ngb-toast
-    class="text-light"
-    [ngClass]="toast.class"
-    [autohide]="true"
-    [delay]="toast.delayMilliseconds"
-    (hidden)="removeToast(toast)"
-    (click)="removeToast(toast)"
-    role="status"
-  >
-    <div class="toast-text">{{ toast.text }}</div>
-  </ngb-toast>
-}
+<ng-container *transloco="let translate">
+  @for (toast of toasts; track $index) {
+    <ngb-toast
+      class="border-0 text-light fs-6 fw-bold"
+      [ngClass]="toast.status | toastClass"
+      [class.mb-2]="!$last"
+      [autohide]="true"
+      [delay]="delayMilliseconds"
+      (hidden)="removeToast(toast)"
+      (click)="removeToast(toast)"
+      role="status"
+    >
+      {{ translate(toast.text, toast.translationParams) }}
+    </ngb-toast>
+  }
+</ng-container>

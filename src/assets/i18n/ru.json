@@ -1,5 +1,10 @@
 {
-  "AUTHORIZED_AS": "Авторизован как",
-  "SIGN_IN": "Войти",
-  "SIGN_OUT": "Выйти"
+  "AUTHORIZATION": {
+    "ACCESS_DENIED": "Access denied"
+  },
+  "SHELL": {
+    "AUTHORIZED_AS": "Авторизован как",
+    "SIGN_IN": "Войти",
+    "SIGN_OUT": "Выйти"
+  }
 }

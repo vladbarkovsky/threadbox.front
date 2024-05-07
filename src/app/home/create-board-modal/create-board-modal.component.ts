@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BoardsClient } from '../../../../api-client';
+import { ToastStatus } from '../../common/toast/toast-status';
 
 @Component({
   selector: 'app-create-board-modal',
@@ -29,7 +30,7 @@ export class CreateBoardModalComponent {
       .subscribe({
         next: () => {
           this.ngbActiveModal.close();
-          this.toastService.showSuccessToast('Board created');
+          this.toastService.showToast({ text: 'Board created', status: ToastStatus.Success });
         },
         // TODO: Set error in sign in state (error must be displayed in component)
         error: error => console.log(error),

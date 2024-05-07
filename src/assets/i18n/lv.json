@@ -1,5 +1,10 @@
 {
-  "AUTHORIZED_AS": "Autorizēts kā",
-  "SIGN_IN": "Ienākt",
-  "SIGN_OUT": "Iziet"
+  "AUTHORIZATION": {
+    "ACCESS_DENIED": "Access denied"
+  },
+  "SHELL": {
+    "AUTHORIZED_AS": "Autorizēts kā",
+    "SIGN_IN": "Ienākt",
+    "SIGN_OUT": "Iziet"
+  }
 }

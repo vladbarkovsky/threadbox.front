@@ -1,34 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Toast } from './toast';
 
-// TODO: Translate toast messages.
 @Injectable({ providedIn: 'root' })
 export class ToastService {
   toasts: Toast[] = [];
-  readonly defaultDelayMilliseconds: number = 10000;
 
-  showSuccessToast(text: string, delayMilliseconds: number = this.defaultDelayMilliseconds) {
-    this.toasts.push({
-      text: text,
-      class: 'bg-success',
-      delayMilliseconds: delayMilliseconds,
-    });
-  }
-
-  showErrorToast(text: string, delayMilliseconds: number = this.defaultDelayMilliseconds) {
-    this.toasts.push({
-      text: text,
-      class: 'bg-danger',
-      delayMilliseconds: delayMilliseconds,
-    });
-  }
-
-  showWarningToast(text: string, delayMilliseconds: number = this.defaultDelayMilliseconds) {
-    this.toasts.push({
-      text: text,
-      class: 'bg-warning',
-      delayMilliseconds: delayMilliseconds,
-    });
+  showToast(toast: Toast): void {
+    this.toasts.push(toast);
   }
 
   removeToast(toast: Toast): void {

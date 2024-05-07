@@ -1,4 +1,4 @@
-<ng-container *transloco="let translate">
+<ng-container *transloco="let translate; read: 'SHELL'">
   @if ({ value: authorized$ | async }; as authorized) {
     @if (authorized.value !== null) {
       <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">

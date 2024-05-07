@@ -1,5 +1,15 @@
 {
-  "AUTHORIZED_AS": "Authorized as",
-  "SIGN_IN": "Sign in",
-  "SIGN_OUT": "Sign out"
+  "AUTHORIZATION": {
+    "ACCESS_DENIED": "Access denied"
+  },
+  "COMMON": {
+    "IMAGES_UPLOAD": {
+      "FILE_ALREADY_ADDED": "File with name {{ fileName }} is already added"
+    }
+  },
+  "SHELL": {
+    "AUTHORIZED_AS": "Authorized as",
+    "SIGN_IN": "Sign in",
+    "SIGN_OUT": "Sign out"
+  }
 }

@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ValidationErrorsPipe } from '../../common/pipes/validation-errors.pipe';
 import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ToastStatus } from '../../common/toast/toast-status';
 
 @Component({
   selector: 'app-update-board-modal',
@@ -35,7 +36,7 @@ export class UpdateBoardModalComponent implements OnInit {
       .subscribe({
         next: () => {
           this.ngbActiveModal.close();
-          this.toastService.showSuccessToast('Board updated');
+          this.toastService.showToast({ text: 'Board updated', status: ToastStatus.Success });
         },
         // TODO: Set error in sign in state (error must be displayed in component)
         error: error => console.log(error),

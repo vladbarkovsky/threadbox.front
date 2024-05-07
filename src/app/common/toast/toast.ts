@@ -1,5 +1,8 @@
+import { HashMap } from '@ngneat/transloco';
+import { ToastStatus } from './toast-status';
+
 export interface Toast {
   text: string;
-  class: string;
-  delayMilliseconds: number;
+  translationParams?: HashMap | undefined;
+  status: ToastStatus;
 }

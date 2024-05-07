@@ -13,6 +13,7 @@ import { BoardsPermissions, SectionsPermissions } from '../../../api-permissions
 import { BoardsClient, SectionsClient, SwaggerException } from '../../../api-client';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { CreateSectionModalComponent } from './create-section-modal/create-section-modal.component';
+import { ToastStatus } from '../common/toast/toast-status';
 
 @Component({
   selector: 'app-home',
@@ -80,8 +81,8 @@ export class HomeComponent {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-        next: () => this.toastService.showSuccessToast('Board deleted'),
-        error: () => this.toastService.showErrorToast('Unable to delete board'),
+        next: () => this.toastService.showToast({ text: 'Board deleted', status: ToastStatus.Success }),
+        error: () => this.toastService.showToast({ text: 'Unable to delete board', status: ToastStatus.Error }),
       });
   }
 }

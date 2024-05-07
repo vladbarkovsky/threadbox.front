@@ -6,6 +6,7 @@ import { Base64File } from './base64-file';
 import { Observable } from 'rxjs';
 import { ImagesUploadState } from './images-upload.state';
 import { AsyncPipe } from '@angular/common';
+import { ToastStatus } from '../toast/toast-status';
 
 @Component({
   selector: 'app-images-upload',
@@ -45,18 +46,27 @@ export class ImagesUploadComponent {
     files.forEach((file, i) => {
       if (this.imagesUploadState.base64Files.find(x => x.file.name === file.name)) {
         files.splice(i, 1);
-        this.toastService.showWarningToast(`File with name ${file.name} is already added.`);
+
+        this.toastService.showToast({
+          text: 'COMMON.IMAGES_UPLOAD.FILE_ALREADY_ADDED',
+          translationParams: { fileName: file.name },
+          status: ToastStatus.Warning,
+        });
       }
 
       if (!this.allowedFormats.includes(file.type)) {
         files.splice(i, 1);
-        this.toastService.showWarningToast(`File ${file.name} is not supported and was excluded from selection.`);
+
+        this.toastService.showToast({
+          text: `File ${file.name} is not supported and was excluded from selection.`,
+          status: ToastStatus.Warning,
+        });
       }
     });
 
     if (this.imagesUploadState.base64Files.length + files.length > this.maxCount) {
       files = files.slice(0, this.maxCount - this.imagesUploadState.base64Files.length);
-      this.toastService.showWarningToast(`Maximum allowed number of files is ${this.maxCount}.`);
+      this.toastService.showToast({ text: `Maximum allowed number of files is ${this.maxCount}.`, status: ToastStatus.Warning });
     }
 
     if (files.length) {
