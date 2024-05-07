@@ -1,47 +1,49 @@
-@if (board) {
-  <div class="d-flex justify-content-between mb-3">
-    <h3>{{ board.title }}</h3>
+<ng-container *transloco="let translate; read: 'BOARD'">
+  @if (board) {
+    <div class="d-flex justify-content-between mb-3">
+      <h3>{{ board.title }}</h3>
 
-    <div class="input-group ms-3 search-block">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Search in threads and posts"
-        [(ngModel)]="searchText"
-        (blur)="onSearchInputBlur()"
-      />
+      <div class="input-group ms-3 search-block">
+        <input
+          type="text"
+          class="form-control"
+          [placeholder]="translate('SEARCH_PLACEHOLDER')"
+          [(ngModel)]="searchText"
+          (blur)="onSearchInputBlur()"
+        />
 
-      <button
-        class="btn btn-secondary"
-        (click)="searchThreads()"
-        [disabled]="!searchText"
-      >
-        <i class="icomoon-icon search"></i>
-      </button>
+        <button
+          class="btn btn-secondary"
+          (click)="searchThreads()"
+          [disabled]="!searchText"
+        >
+          <i class="icomoon-icon search"></i>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <p>{{ board.description }}</p>
+    <p>{{ board.description }}</p>
 
-  <div
-    scroll-tracking
-    (thresholdPassed)="onThresholdPassed()"
-  >
-    <app-create-thread
-      [boardId]="board.id"
-      (threadCreated)="onThreadCreated()"
-    ></app-create-thread>
-    <hr />
+    <div
+      scroll-tracking
+      (thresholdPassed)="onThresholdPassed()"
+    >
+      <app-create-thread
+        [boardId]="board.id"
+        (threadCreated)="onThreadCreated()"
+      ></app-create-thread>
+      <hr />
 
-    @if (threads) {
-      @for (thread of threads; track thread.id) {
-        <app-thread
-          [thread]="thread"
-          (deleteThread)="deleteThread(thread.id)"
-        ></app-thread>
-      } @empty {
-        <!-- TODO: Display text 'There are no threads' -->
+      @if (threads) {
+        @for (thread of threads; track thread.id) {
+          <app-thread
+            [thread]="thread"
+            (deleteThread)="deleteThread(thread.id)"
+          ></app-thread>
+        } @empty {
+          <!-- TODO: Display text 'There are no threads' -->
+        }
       }
-    }
-  </div>
-}
+    </div>
+  }
+</ng-container>

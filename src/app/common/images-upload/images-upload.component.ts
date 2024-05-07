@@ -1,19 +1,19 @@
 import { Component, Input, inject } from '@angular/core';
 import { ToastService } from '../toast/toast.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { JoinPipe } from '../pipes/join.pipe';
 import { Base64File } from './base64-file';
 import { Observable } from 'rxjs';
 import { ImagesUploadState } from './images-upload.state';
 import { AsyncPipe } from '@angular/common';
 import { ToastStatus } from '../toast/toast-status';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-images-upload',
   templateUrl: './images-upload.component.html',
   styleUrls: ['./images-upload.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, JoinPipe, AsyncPipe],
+  imports: [ReactiveFormsModule, AsyncPipe, TranslocoDirective],
 })
 export class ImagesUploadComponent {
   private readonly toastService = inject(ToastService);

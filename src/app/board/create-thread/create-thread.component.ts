@@ -8,13 +8,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { first, switchMap } from 'rxjs';
 import { convertToNSwagFileParameter } from '../../common/file-operations';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-create-thread',
   templateUrl: './create-thread.component.html',
   styleUrl: './create-thread.component.scss',
   standalone: true,
-  imports: [NgbCollapseModule, ImagesUploadComponent, ReactiveFormsModule],
+  imports: [NgbCollapseModule, ImagesUploadComponent, ReactiveFormsModule, TranslocoDirective],
   providers: [ImagesUploadState],
 })
 export class CreateThreadComponent {

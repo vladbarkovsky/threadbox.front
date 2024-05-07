@@ -152,14 +152,13 @@ export class AuthorizationService {
     }
   }
 
-  // TODO: Last URL service?
+  // TODO: Session service?
   private saveLastUrl(): void {
     const lastUrl = this.location.path();
     this.log('Set last URL:', lastUrl);
     window.sessionStorage.setItem('lastUrl', lastUrl);
   }
 
-  // TODO: Last URL service?
   private navigateToLastUrl(): void {
     const lastUrl = window.sessionStorage.getItem('lastUrl');
 

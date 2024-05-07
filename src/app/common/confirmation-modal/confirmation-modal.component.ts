@@ -1,23 +1,25 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-modal.component.html',
-  styleUrls: ['./confirmation-modal.component.scss'],
+  styleUrl: './confirmation-modal.component.scss',
   standalone: true,
+  imports: [TranslocoDirective],
 })
 export class ConfirmationModalComponent {
+  private readonly ngbActiveModal = inject(NgbActiveModal);
+
   @Input() readonly title?: string;
   @Input() readonly text!: string;
 
-  constructor(private activeModal: NgbActiveModal) {}
-
   close() {
-    this.activeModal.close();
+    this.ngbActiveModal.close();
   }
 
   dismiss() {
-    this.activeModal.dismiss();
+    this.ngbActiveModal.dismiss();
   }
 }

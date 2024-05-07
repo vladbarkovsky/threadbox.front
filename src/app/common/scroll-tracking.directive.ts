@@ -15,6 +15,7 @@ export class ScrollTrackingDirective {
   private lastScrollPosition = 0;
 
   // TODO: Threshold 500 don't work sometimes. Investigate.
+  // Possible solution: use relative threshold.
   private readonly threshold = 0;
 
   private readonly scrolling = new Subject<void>();

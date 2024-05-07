@@ -1,9 +1,52 @@
 {
+  "DAYS": {
+    "Sunday": "Sunday",
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday"
+  },
   "AUTHORIZATION": {
     "ACCESS_DENIED": "Access denied"
   },
+  "BOARD": {
+    "SEARCH_PLACEHOLDER": "Search in threads and posts",
+    "CREATE_POST_MODAL": {
+      "CREATE_POST": "Create post",
+      "TEXT_LABEL": "Text",
+      "TEXT_VALIDATION_REQUIRED": "Text is required",
+      "TRIPCODE_LABEL": "Tripcode",
+      "TRIPCODE_VALIDATION_PATTERN": "Tripcode format is invalid",
+      "SUBMIT": "Submit"
+    },
+    "CREATE_THREAD": {
+      "CREATE_THREAD": "Create thread",
+      "TITLE_LABEL": "Title",
+      "TITLE_VALIDATION_REQUIRED": "Title is required",
+      "TEXT_LABEL": "Text",
+      "TEXT_VALIDATION_REQUIRED": "Text is required",
+      "TRIPCODE_LABEL": "Tripcode",
+      "TRIPCODE_VALIDATION_PATTERN": "Tripcode format is invalid",
+      "SUBMIT": "Submit"
+    },
+    "THREAD": {
+      "ANONYMOUS": "Anonymous",
+      "DOWNLOAD_IMAGES": "Download images",
+      "DOWNLOAD_IMAGE": "Download image"
+    }
+  },
   "COMMON": {
+    "CONFIRMATION_MODAL": {
+      "CONFIRM_ACTION": "Confirm action",
+      "CONFIRM": "Confirm",
+      "CANCEL": "Cancel"
+    },
     "IMAGES_UPLOAD": {
+      "ADD_IMAGES": "Add images",
+      "DELETE ALL IMAGES": "Delete all images",
+      "DELETE_IMAGE": "Delete image",
       "FILE_ALREADY_ADDED": "File with name {{ fileName }} is already added"
     }
   },

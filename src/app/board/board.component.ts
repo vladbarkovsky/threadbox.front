@@ -11,13 +11,14 @@ import { FormsModule } from '@angular/forms';
 import { CreateThreadComponent } from './create-thread/create-thread.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationModalComponent } from '../common/confirmation-modal/confirmation-modal.component';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
   standalone: true,
-  imports: [AsyncPipe, ScrollTrackingDirective, ThreadComponent, FormsModule, CreateThreadComponent, JsonPipe],
+  imports: [AsyncPipe, ScrollTrackingDirective, ThreadComponent, FormsModule, CreateThreadComponent, TranslocoDirective],
   providers: [ThreadsListState],
 })
 export class BoardComponent implements OnInit {

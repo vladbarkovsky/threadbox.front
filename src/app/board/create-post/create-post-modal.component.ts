@@ -8,13 +8,14 @@ import { first, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { convertToNSwagFileParameter } from '../../common/file-operations';
 import { ImagesUploadComponent } from '../../common/images-upload/images-upload.component';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-create-post-modal',
   templateUrl: './create-post-modal.component.html',
   styleUrl: './create-post-modal.component.scss',
   standalone: true,
-  imports: [ReactiveFormsModule, ImagesUploadComponent],
+  imports: [ReactiveFormsModule, ImagesUploadComponent, TranslocoDirective],
   providers: [ImagesUploadState],
 })
 // TODO: Create non-modal window.

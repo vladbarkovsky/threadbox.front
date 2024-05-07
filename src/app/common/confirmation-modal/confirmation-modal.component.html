@@ -1,29 +1,31 @@
-<div class="modal-header">
-  <h4 class="modal-title">{{ title ?? 'Confirm action' }}</h4>
+<ng-container *transloco="let translate">
+  <div class="modal-header">
+    <h4 class="modal-title">{{ translate(title ?? 'COMMON.CONFIRMATION_MODAL.CONFIRM_ACTION') }}</h4>
 
-  <button
-    type="button"
-    class="btn-close"
-    (click)="dismiss()"
-  ></button>
-</div>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="dismiss()"
+    ></button>
+  </div>
 
-<div class="modal-body">{{ text }}</div>
+  <div class="modal-body">{{ translate(text) }}</div>
 
-<div class="modal-footer justify-content-start">
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    (click)="close()"
-  >
-    Confirm
-  </button>
+  <div class="modal-footer justify-content-start">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="close()"
+    >
+      {{ translate('COMMON.CONFIRMATION_MODAL.CONFIRM') }}
+    </button>
 
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    (click)="dismiss()"
-  >
-    Decline
-  </button>
-</div>
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="dismiss()"
+    >
+      {{ translate('COMMON.CONFIRMATION_MODAL.CANCEL') }}
+    </button>
+  </div>
+</ng-container>

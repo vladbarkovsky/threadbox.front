@@ -1,6 +1,54 @@
 {
+  "DAYS": {
+    "Sunday": "Воскресенье",
+    "Monday": "Понедельник",
+    "Tuesday": "Вторник",
+    "Wednesday": "Среда",
+    "Thursday": "Четверг",
+    "Friday": "Пятница",
+    "Saturday": "Суббота"
+  },
   "AUTHORIZATION": {
-    "ACCESS_DENIED": "Access denied"
+    "ACCESS_DENIED": "Доступ запрещён"
+  },
+  "BOARD": {
+    "SEARCH_PLACEHOLDER": "Поиск в тредах и постах",
+    "CREATE_POST_MODAL": {
+      "CREATE_POST": "Создать пост",
+      "TEXT_LABEL": "Текст",
+      "TEXT_VALIDATION_REQUIRED": "Текст обязателен",
+      "TRIPCODE_LABEL": "Трипкод",
+      "TRIPCODE_VALIDATION_PATTERN": "Формат трипкода неверный",
+      "SUBMIT": "Отправить"
+    },
+    "CREATE_THREAD": {
+      "CREATE_THREAD": "Создать тред",
+      "TITLE_LABEL": "Название",
+      "TITLE_VALIDATION_REQUIRED": "Название обязательно",
+      "TEXT_LABEL": "Текст",
+      "TEXT_VALIDATION_REQUIRED": "Текст обязателен",
+      "TRIPCODE_LABEL": "Трипкод",
+      "TRIPCODE_VALIDATION_PATTERN": "Формат трипкода неверный",
+      "SUBMIT": "Отправить"
+    },
+    "THREAD": {
+      "ANONYMOUS": "Анонимный",
+      "DOWNLOAD_IMAGES": "Скачать изображения",
+      "DOWNLOAD_IMAGE": "Скачать изображение"
+    }
+  },
+  "COMMON": {
+    "CONFIRMATION_MODAL": {
+      "CONFIRM_ACTION": "Подтвердите действие",
+      "CONFIRM": "Confirm",
+      "CANCEL": "Отменить"
+    },
+    "IMAGES_UPLOAD": {
+      "ADD_IMAGES": "Добавить изображения",
+      "DELETE ALL IMAGES": "Удалить все изображения",
+      "DELETE_IMAGE": "Удалить изображение",
+      "FILE_ALREADY_ADDED": "Файл с именем {{ fileName }} уже добавлен"
+    }
   },
   "SHELL": {
     "AUTHORIZED_AS": "Авторизован как",

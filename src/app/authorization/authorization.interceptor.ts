@@ -27,7 +27,6 @@ export const authorizationInterceptor: HttpInterceptorFn = (req, next) => {
                 authorizationService.signOutRedirect();
                 break;
               case HttpStatusCode.Forbidden:
-                // TODO: Redirect to page 403.
                 toastService.showToast({ text: 'AUTHORIZATION.ACCESS_DENIED', status: ToastStatus.Warning });
                 break;
             }

@@ -1,53 +1,55 @@
-@if ({ value: base64Files$ | async }; as base64Files) {
-  @if (base64Files.value !== null) {
-    <div class="form-group file-input">
-      <!-- TODO: Check if disabled attribute can be moved to label from input. -->
-      <label
-        [for]="fileInputId"
-        class="btn btn-secondary"
-        [class.disabled]="base64Files.value.length === maxCount"
+<ng-container *transloco="let translate; read: 'COMMON.IMAGES_UPLOAD'">
+  @if ({ value: base64Files$ | async }; as base64Files) {
+    @if (base64Files.value !== null) {
+      <div class="form-group file-input">
+        <!-- TODO: Check if disabled attribute can be moved to label from input. -->
+        <label
+          [for]="fileInputId"
+          class="btn btn-secondary"
+          [class.disabled]="base64Files.value.length === maxCount"
+        >
+          {{ translate('ADD IMAGES') }}
+        </label>
+
+        <i
+          class="icomoon-icon trash trash-icon align-middle ms-2"
+          (click)="deleteFiles()"
+          role="button"
+          [title]="translate('DELETE ALL IMAGES')"
+        ></i>
+
+        <input
+          [id]="fileInputId"
+          type="file"
+          hidden
+          multiple
+          [accept]="allowedFormats"
+          (change)="onFileInputChange($event)"
+          [disabled]="base64Files.value.length === maxCount"
+        />
+      </div>
+
+      <div
+        class="row"
+        [class.mt-2]="base64Files.value.length"
       >
-        Add images
-      </label>
+        @for (base64File of base64Files.value; track base64File.file.name) {
+          <div class="col-auto image-col">
+            <i
+              class="icomoon-icon trash trash-icon"
+              (click)="deleteFile(base64File.file.name)"
+              role="button"
+              [title]="translate('DELETE_IMAGE')"
+            ></i>
 
-      <i
-        class="icomoon-icon trash trash-icon align-middle ms-2"
-        (click)="deleteFiles()"
-        role="button"
-        title="Delete all images"
-      ></i>
-
-      <!-- TODO: JoinPipe is not required - accept attribute can process string arrays. -->
-      <input
-        [id]="fileInputId"
-        type="file"
-        hidden
-        multiple
-        [accept]="allowedFormats | join"
-        (change)="onFileInputChange($event)"
-        [disabled]="base64Files.value.length === maxCount"
-      />
-    </div>
-
-    <div
-      class="row"
-      [class.mt-2]="base64Files.value.length"
-    >
-      @for (base64File of base64Files.value; track base64File.file.name) {
-        <div class="col-auto image-col">
-          <i
-            class="icomoon-icon trash trash-icon"
-            (click)="deleteFile(base64File.file.name)"
-            role="button"
-          ></i>
-
-          <img
-            [src]="base64File.base64"
-            [alt]="base64File.file.name"
-            class="img-thumbnail image img-responsive"
-          />
-        </div>
-      }
-    </div>
+            <img
+              [src]="base64File.base64"
+              [alt]="base64File.file.name"
+              class="img-thumbnail image img-responsive"
+            />
+          </div>
+        }
+      </div>
+    }
   }
-}
+</ng-container>

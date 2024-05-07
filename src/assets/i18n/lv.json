@@ -1,6 +1,54 @@
 {
+  "DAYS": {
+    "Sunday": "Svētdiena",
+    "Monday": "Pirmdiena",
+    "Tuesday": "Otrdiena",
+    "Wednesday": "Trešdiena",
+    "Thursday": "Ceturtdiena",
+    "Friday": "Piektdiena",
+    "Saturday": "Sestdiena"
+  },
   "AUTHORIZATION": {
-    "ACCESS_DENIED": "Access denied"
+    "ACCESS_DENIED": "Piekļuve ir aizliegta"
+  },
+  "BOARD": {
+    "SEARCH_PLACEHOLDER": "Meklēšana joslās un ierakstos",
+    "CREATE_POST_MODAL": {
+      "CREATE_POST": "Izveidot ierakstu",
+      "TEXT_LABEL": "Teksts",
+      "TEXT_VALIDATION_REQUIRED": "Teksts ir obligāts",
+      "TRIPCODE_LABEL": "Cēļojuma kods",
+      "TRIPCODE_VALIDATION_PATTERN": "Cēļojuma koda formāts ir nederīgs",
+      "SUBMIT": "Iesniegt"
+    },
+    "CREATE_THREAD": {
+      "CREATE_THREAD": "Izveidot joslu",
+      "TITLE_LABEL": "Nosaukums",
+      "TITLE_VALIDATION_REQUIRED": "Nosaukums ir obligāts",
+      "TEXT_LABEL": "Teksts",
+      "TEXT_VALIDATION_REQUIRED": "Teksts ir obligāts",
+      "TRIPCODE_LABEL": "Tripcode",
+      "TRIPCODE_VALIDATION_PATTERN": "Tripcode format is invalid",
+      "SUBMIT": "Iesniegt"
+    },
+    "THREAD": {
+      "ANONYMOUS": "Anonīmais",
+      "DOWNLOAD_IMAGES": "Lejupielādēt attēlus",
+      "DOWNLOAD_IMAGE": "Lejupielādēt attēlu"
+    }
+  },
+  "COMMON": {
+    "CONFIRMATION_MODAL": {
+      "CONFIRM_ACTION": "Apstipriniet darbību",
+      "CONFIRM": "Apstiprināt",
+      "CANCEL": "Atcelt"
+    },
+    "IMAGES_UPLOAD": {
+      "ADD_IMAGES": "Pievienot attēlus",
+      "DELETE ALL IMAGES": "Dzēst visus attēlus",
+      "DELETE_IMAGE": "Dzēst attēlu",
+      "FILE_ALREADY_ADDED": "Datne ar nosaukumu {{ fileName }} jau ir pievienota"
+    }
   },
   "SHELL": {
     "AUTHORIZED_AS": "Autorizēts kā",

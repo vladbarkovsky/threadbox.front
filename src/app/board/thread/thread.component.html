@@ -1,103 +1,115 @@
-<div class="card border-dark my-2">
-  <div class="card-header thread-header">
-    <span class="fw-bold">{{ thread.title }}</span>
-    <span>{{ thread.tripcodeKey ?? 'Anonymous' }}</span>
-    <span>{{ thread.createdAt | date: 'dd.MM.yy EEEE HH:mm:ss' }}</span>
+<ng-container *transloco="let translate">
+  <div class="card border-dark my-2">
+    <div class="card-header thread-header">
+      <span class="fw-bold">{{ thread.title }}</span>
+      <span>{{ thread.tripcodeKey ?? translate('BOARD.THREAD.ANONYMOUS') }}</span>
 
-    <i
-      class="icomoon-icon plus align-middle"
-      (click)="openCreatePostModal()"
-      role="button"
-    ></i>
+      <span>
+        {{ thread.createdAt | date: 'dd.MM.yy' }}
+        {{ translate('DAYS.' + (thread.createdAt | date: 'EEEE')) }}
+        {{ thread.createdAt | date: 'HH:mm:ss' }}
+      </span>
 
-    <i
-      *ngxPermissionsOnly="threadPermissions.delete"
-      class="icomoon-icon trash align-middle"
-      (click)="emitDeleteThreadEvent()"
-      role="button"
-    ></i>
-  </div>
+      <i
+        class="icomoon-icon plus align-middle"
+        (click)="openCreatePostModal()"
+        role="button"
+      ></i>
 
-  <div class="card-body">
-    <p class="card-text">{{ thread.text }}</p>
+      <i
+        *ngxPermissionsOnly="threadPermissions.delete"
+        class="icomoon-icon trash align-middle"
+        (click)="emitDeleteThreadEvent()"
+        role="button"
+      ></i>
+    </div>
 
-    <div class="row mb-2">
-      @for (image of thread.threadImages; track $index) {
-        <div class="col-auto p-1">
-          <img
-            [lazyLoad]="image.url!"
-            src="assets/image-placeholder.gif"
-            alt="Thread image"
-            class="img-thumbnail image"
-          />
+    <div class="card-body">
+      <p class="card-text">{{ thread.text }}</p>
+
+      <div class="row mb-2">
+        @for (image of thread.threadImages; track $index) {
+          <div class="col-auto p-1">
+            <img
+              [lazyLoad]="image.url!"
+              src="assets/image-placeholder.gif"
+              alt="Thread image"
+              class="img-thumbnail image"
+            />
+          </div>
+        }
+      </div>
+
+      @if (thread.threadImages?.length; as length) {
+        <div>
+          <button
+            class="btn btn-secondary mb-2"
+            (click)="downloadThreadImages()"
+          >
+            {{ translate(length > 1 ? 'BOARD.THREAD.DOWNLOAD_IMAGES' : 'BOARD.THREAD.DOWNLOAD_IMAGE') }}
+          </button>
         </div>
+      }
+
+      @if (thread.hasMorePosts) {
+        <i
+          class="icomoon-icon align-middle"
+          [ngClass]="{ up: allPostsLoaded, down: !allPostsLoaded }"
+          (click)="togglePosts()"
+          role="button"
+        ></i>
+      }
+
+      @if (posts$ | async; as posts) {
+        @for (post of posts; track post.id) {
+          <div class="card my-2">
+            <div class="card-header post-header">
+              <span>{{ post.tripcodeKey ?? translate('BOARD.THREAD.ANONYMOUS') }}</span>
+
+              <span>
+                {{ thread.createdAt | date: 'dd.MM.yy' }}
+                {{ translate('DAYS.' + (thread.createdAt | date: 'EEEE')) }}
+                {{ thread.createdAt | date: 'HH:mm:ss' }}
+              </span>
+
+              <i
+                *ngxPermissionsOnly="postPermissions.delete"
+                class="icomoon-icon trash align-middle"
+                (click)="('javascript:;')"
+                role="button"
+              ></i>
+            </div>
+
+            <div class="card-body">
+              <p class="card-text">{{ post.text }}</p>
+
+              <div class="row mb-2">
+                @for (image of post.postImages; track $index) {
+                  <div class="col-auto p-1">
+                    <img
+                      [lazyLoad]="image.url!"
+                      src="assets/image-placeholder.gif"
+                      alt="Post image"
+                      class="img-thumbnail image"
+                    />
+                  </div>
+                }
+              </div>
+
+              @if (post.postImages?.length; as length) {
+                <button
+                  class="btn btn-secondary mb-2"
+                  (click)="downloadPostImages(post)"
+                >
+                  {{ translate(length > 1 ? 'BOARD.THREAD.DOWNLOAD_IMAGES' : 'BOARD.THREAD.DOWNLOAD_IMAGE') }}
+                </button>
+              }
+            </div>
+          </div>
+        }
       }
     </div>
 
-    @if (thread.threadImages?.length; as length) {
-      <div>
-        <button
-          class="btn btn-secondary mb-2"
-          (click)="downloadThreadImages()"
-        >
-          {{ length > 1 ? 'Download images' : 'Download image' }}
-        </button>
-      </div>
-    }
-
-    @if (thread.hasMorePosts) {
-      <i
-        class="icomoon-icon align-middle"
-        [ngClass]="{ up: allPostsLoaded, down: !allPostsLoaded }"
-        (click)="togglePosts()"
-        role="button"
-      ></i>
-    }
-
-    @if (posts$ | async; as posts) {
-      @for (post of posts; track post.id) {
-        <div class="card my-2">
-          <div class="card-header post-header">
-            <span>{{ post.tripcodeKey ?? 'Anonymous' }}</span>
-            <span>{{ post.createdAt | date: 'dd.MM.yy EEEE HH:mm:ss' }}</span>
-
-            <i
-              *ngxPermissionsOnly="postPermissions.delete"
-              class="icomoon-icon trash align-middle"
-              (click)="('javascript:;')"
-              role="button"
-            ></i>
-          </div>
-
-          <div class="card-body">
-            <p class="card-text">{{ post.text }}</p>
-
-            <div class="row mb-2">
-              @for (image of post.postImages; track $index) {
-                <div class="col-auto p-1">
-                  <img
-                    [lazyLoad]="image.url!"
-                    src="assets/image-placeholder.gif"
-                    alt="Post image"
-                    class="img-thumbnail image"
-                  />
-                </div>
-              }
-            </div>
-
-            @if (post.postImages?.length; as length) {
-              <button
-                class="btn btn-secondary mb-2"
-                (click)="downloadPostImages(post)"
-              >
-                {{ length > 1 ? 'Download images' : 'Download image' }}
-              </button>
-            }
-          </div>
-        </div>
-      }
-    }
+    <!-- <div class="card-footer"></div> -->
   </div>
-
-  <!-- <div class="card-footer"></div> -->
-</div>
+</ng-container>
