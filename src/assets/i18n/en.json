@@ -45,7 +45,7 @@
     },
     "IMAGES_UPLOAD": {
       "ADD_IMAGES": "Add images",
-      "DELETE ALL IMAGES": "Delete all images",
+      "DELETE_ALL_IMAGES": "Delete all images",
       "DELETE_IMAGE": "Delete image",
       "FILE_ALREADY_ADDED": "File with name {{ fileName }} is already added"
     }

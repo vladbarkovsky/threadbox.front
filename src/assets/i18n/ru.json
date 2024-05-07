@@ -45,7 +45,7 @@
     },
     "IMAGES_UPLOAD": {
       "ADD_IMAGES": "Добавить изображения",
-      "DELETE ALL IMAGES": "Удалить все изображения",
+      "DELETE_ALL_IMAGES": "Удалить все изображения",
       "DELETE_IMAGE": "Удалить изображение",
       "FILE_ALREADY_ADDED": "Файл с именем {{ fileName }} уже добавлен"
     }

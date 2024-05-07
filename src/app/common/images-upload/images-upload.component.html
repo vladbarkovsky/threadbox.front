@@ -8,14 +8,14 @@
           class="btn btn-secondary"
           [class.disabled]="base64Files.value.length === maxCount"
         >
-          {{ translate('ADD IMAGES') }}
+          {{ translate('ADD_IMAGES') }}
         </label>
 
         <i
           class="icomoon-icon trash trash-icon align-middle ms-2"
           (click)="deleteFiles()"
           role="button"
-          [title]="translate('DELETE ALL IMAGES')"
+          [title]="translate('DELETE_ALL_IMAGES')"
         ></i>
 
         <input

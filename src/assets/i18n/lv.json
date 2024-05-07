@@ -45,7 +45,7 @@
     },
     "IMAGES_UPLOAD": {
       "ADD_IMAGES": "Pievienot attēlus",
-      "DELETE ALL IMAGES": "Dzēst visus attēlus",
+      "DELETE_ALL_IMAGES": "Dzēst visus attēlus",
       "DELETE_IMAGE": "Dzēst attēlu",
       "FILE_ALREADY_ADDED": "Datne ar nosaukumu {{ fileName }} jau ir pievienota"
     }
