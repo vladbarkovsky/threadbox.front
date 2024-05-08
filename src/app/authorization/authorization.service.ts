@@ -7,6 +7,7 @@ import { filter, finalize, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { IdentityClient } from '../../../api-client';
+import { SessionStorageFacade } from '../common/session-storage-facade';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
@@ -152,15 +153,14 @@ export class AuthorizationService {
     }
   }
 
-  // TODO: Session service?
   private saveLastUrl(): void {
     const lastUrl = this.location.path();
     this.log('Set last URL:', lastUrl);
-    window.sessionStorage.setItem('lastUrl', lastUrl);
+    SessionStorageFacade.lastUrl = lastUrl;
   }
 
   private navigateToLastUrl(): void {
-    const lastUrl = window.sessionStorage.getItem('lastUrl');
+    const lastUrl = SessionStorageFacade.lastUrl;
 
     if (!lastUrl) {
       this.log('Last URL not found - unable to perform redirect.');

@@ -1,5 +1,5 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthorizationService } from '../authorization/authorization.service';
 import { NgbCollapse, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
@@ -18,14 +18,12 @@ export class ShellComponent implements OnInit {
   private readonly authorizationService = inject(AuthorizationService);
   private readonly translocoService = inject(TranslocoService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   navbarCollapsed: boolean = true;
 
   authorized$: Observable<boolean> = this.authorizationService.authorized$;
   userName$: Observable<string> = this.authorizationService.userName$;
-
-  // TODO: Store last selected language in cookies or local storage.
-  // For registered users store language in database.
   selectedLanguage: string = this.translocoService.getActiveLang();
 
   availableLanguages = this.translocoService.getAvailableLangs() as string[];
@@ -47,6 +45,11 @@ export class ShellComponent implements OnInit {
   }
 
   changeLanguage(language: string): void {
-    this.translocoService.setActiveLang(language);
+    const url = this.router.url.split('/').filter(x => x);
+
+    // First URL segment is language code.
+    url[0] = language;
+
+    this.router.navigate(url, { replaceUrl: true });
   }
 }
