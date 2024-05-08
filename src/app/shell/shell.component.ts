@@ -50,6 +50,6 @@ export class ShellComponent implements OnInit {
     // First URL segment is language code.
     url[0] = language;
 
-    this.router.navigate(url, { replaceUrl: true });
+    this.router.navigateByUrl(url.join('/'), { replaceUrl: true });
   }
 }

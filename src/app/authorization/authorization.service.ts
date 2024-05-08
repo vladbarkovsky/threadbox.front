@@ -159,9 +159,6 @@ export class AuthorizationService {
     SessionStorageFacade.lastUrl = lastUrl;
   }
 
-  // FIXME: Don't work.
-  // Possible caus: error in console:
-  // Refused to load the script 'https://localhost:5000/_vs/browserLink' because it violates the following Content Security Policy directive
   private navigateToLastUrl(): void {
     const lastUrl = SessionStorageFacade.lastUrl;
 
@@ -171,7 +168,7 @@ export class AuthorizationService {
     }
 
     this.log('Performing redirect to the last URL:', lastUrl);
-    this.router.navigateByUrl(lastUrl);
+    this.router.navigateByUrl(lastUrl, { replaceUrl: true });
   }
 
   private log(message?: any, ...optionalParams: any[]): void {

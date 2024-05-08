@@ -1,10 +1,11 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ToastComponent } from './common/toast/toast.component';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { TranslocoService } from '@ngneat/transloco';
 import { filter, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageFacade } from './common/local-storage-facade';
+import { APP_ROUTES } from './app.routes';
 
 @Component({
   selector: 'app-root',
@@ -19,9 +20,11 @@ export class AppComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.translocoService.langChanges$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(language => (LocalStorageFacade.language = language));
+    const language = LocalStorageFacade.language;
+
+    if (language) {
+      this.translocoService.setActiveLang(language);
+    }
 
     this.processLanguageSegment();
   }
@@ -29,27 +32,44 @@ export class AppComponent implements OnInit {
   private processLanguageSegment(): void {
     this.router.events
       .pipe(
-        // We need NavigationEnd event, because it has full URL after redirects.
-        filter(x => x instanceof NavigationEnd),
-        map(x => x as NavigationEnd),
+        filter(x => x instanceof NavigationStart),
+        map(x => x as NavigationStart),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(event => {
-        const url = event.urlAfterRedirects.split('/').filter(x => x);
+        const url = event.url.split('/').filter(x => x);
+        const firstSegment = url[0];
 
-        // First URL segment is language code.
-        const languageSegment = url[0];
-
-        if (this.translocoService.isLang(languageSegment)) {
-          this.translocoService.setActiveLang(languageSegment);
-        } else {
-          // If we don't know such language, we replace it by saved one or default and navigate,
-          // which will bring us back to this subscribe.
-
-          const language = LocalStorageFacade.language ?? this.translocoService.getDefaultLang();
-          url[0] = language;
-          this.router.navigate(url, { replaceUrl: true });
+        console.log(this.translocoService.getActiveLang());
+        if (firstSegment === this.translocoService.getActiveLang()) {
+          return;
         }
+
+        if (this.translocoService.isLang(firstSegment)) {
+          this.translocoService.setActiveLang(firstSegment);
+          LocalStorageFacade.language = firstSegment;
+          return;
+        }
+
+        // If we don't know such language code, we check if first segment matches
+        // with one of registered routes.
+
+        const routingPaths = APP_ROUTES.find(x => x.path === ':language')!
+          .children!.filter(x => x.path && x.path !== '**')!
+          .map(x => x.path!);
+
+        const language = LocalStorageFacade.language ?? this.translocoService.getDefaultLang();
+
+        // If we found matching route, we add language code before it.
+        if (routingPaths.includes(firstSegment)) {
+          url.unshift(language);
+        }
+        // Else we replace first segment with language code.
+        else {
+          url[0] = language;
+        }
+
+        this.router.navigateByUrl(url.join('/'), { replaceUrl: true });
       });
   }
 }
