@@ -1,10 +1,8 @@
 import { Routes } from '@angular/router';
-import { LanguageComponent } from './language/language.component';
 
 export const APP_ROUTES: Routes = [
   {
     path: ':language',
-    component: LanguageComponent,
     children: [
       { path: 'shell', loadChildren: () => import('./shell/shell.routes').then(x => x.SHELL_ROUTES) },
       {
