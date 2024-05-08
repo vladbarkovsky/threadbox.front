@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { defaultLanguage } from './app.config';
+import { LocalStorageFacade } from './common/local-storage-facade';
 
 export const APP_ROUTES: Routes = [
   {
@@ -13,6 +15,5 @@ export const APP_ROUTES: Routes = [
       { path: '**', redirectTo: 'shell' },
     ],
   },
-  // We must assign a non-existent language so that the AppComponent can assign it itself.
-  { path: '', redirectTo: 'non-existent-language', pathMatch: 'full' },
+  { path: '', redirectTo: LocalStorageFacade.language ?? defaultLanguage, pathMatch: 'full' },
 ];

@@ -9,14 +9,16 @@ import { environment } from '../environments/environment';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { authorizationInterceptor } from './authorization/authorization.interceptor';
 
+export const defaultLanguage = 'en';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(APP_ROUTES),
     provideHttpClient(withInterceptors([authorizationInterceptor])),
     provideTransloco({
       config: {
-        availableLangs: ['en', 'lv', 'ru'],
-        defaultLang: 'en',
+        availableLangs: [defaultLanguage, 'lv', 'ru'],
+        defaultLang: defaultLanguage,
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
       },
