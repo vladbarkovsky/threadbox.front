@@ -51,16 +51,16 @@ export class AppComponent implements OnInit {
         }
 
         // If we don't know such language code, we check if first segment matches
-        // with one of registered routes.
+        // with one of registered route paths.
 
-        const routingPaths = APP_ROUTES.find(x => x.path === ':language')!
+        const routePaths = APP_ROUTES.find(x => x.path === ':language')!
           .children!.filter(x => x.path && x.path !== '**')!
           .map(x => x.path!);
 
         const language = LocalStorageFacade.language ?? this.translocoService.getDefaultLang();
 
         // If we found matching route, we add language code before it.
-        if (routingPaths.includes(firstSegment)) {
+        if (routePaths.includes(firstSegment)) {
           url.unshift(language);
         }
         // Else we replace first segment with language code.
