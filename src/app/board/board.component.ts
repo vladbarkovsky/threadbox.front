@@ -16,7 +16,7 @@ import { TranslocoDirective } from '@ngneat/transloco';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.scss'],
+  styleUrl: './board.component.scss',
   standalone: true,
   imports: [AsyncPipe, ScrollTrackingDirective, ThreadComponent, FormsModule, CreateThreadComponent, TranslocoDirective],
   providers: [ThreadsListState],

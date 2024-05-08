@@ -9,7 +9,7 @@ import { NgClass } from '@angular/common';
 @Component({
   selector: 'app-toast',
   templateUrl: './toast.component.html',
-  styleUrls: ['./toast.component.scss'],
+  styleUrl: './toast.component.scss',
   standalone: true,
   imports: [NgbToast, NgClass, TranslocoDirective, ToastClassPipe],
 })

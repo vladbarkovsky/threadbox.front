@@ -7,7 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-create-section-modal',
   templateUrl: './create-section-modal.component.html',
-  styleUrls: ['./create-section-modal.component.scss'],
+  styleUrl: './create-section-modal.component.scss',
   standalone: true,
   imports: [],
 })

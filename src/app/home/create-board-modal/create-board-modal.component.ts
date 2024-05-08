@@ -11,7 +11,7 @@ import { ToastStatus } from '../../common/toast/toast-status';
 @Component({
   selector: 'app-create-board-modal',
   templateUrl: './create-board-modal.component.html',
-  styleUrls: ['./create-board-modal.component.scss'],
+  styleUrl: './create-board-modal.component.scss',
   standalone: true,
   imports: [ReactiveFormsModule, ValidationErrorsPipe],
 })

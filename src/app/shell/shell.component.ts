@@ -10,7 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-shell',
   templateUrl: './shell.component.html',
-  styleUrls: ['./shell.component.scss'],
+  styleUrl: './shell.component.scss',
   standalone: true,
   imports: [RouterOutlet, RouterLink, NgbCollapse, AsyncPipe, TranslocoDirective, NgbDropdownModule, UpperCasePipe],
 })

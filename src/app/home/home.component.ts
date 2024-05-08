@@ -18,7 +18,7 @@ import { ToastStatus } from '../common/toast/toast-status';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  styleUrl: './home.component.scss',
   standalone: true,
   imports: [RouterLink, AsyncPipe, NgxPermissionsModule],
 })

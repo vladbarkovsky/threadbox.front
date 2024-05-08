@@ -11,7 +11,7 @@ import { TranslocoDirective } from '@ngneat/transloco';
 @Component({
   selector: 'app-images-upload',
   templateUrl: './images-upload.component.html',
-  styleUrls: ['./images-upload.component.scss'],
+  styleUrl: './images-upload.component.scss',
   standalone: true,
   imports: [ReactiveFormsModule, AsyncPipe, TranslocoDirective],
 })
