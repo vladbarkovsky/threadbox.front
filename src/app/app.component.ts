@@ -40,7 +40,6 @@ export class AppComponent implements OnInit {
         const url = event.url.split('/').filter(x => x);
         const firstSegment = url[0];
 
-        console.log(this.translocoService.getActiveLang());
         if (firstSegment === this.translocoService.getActiveLang()) {
           return;
         }
