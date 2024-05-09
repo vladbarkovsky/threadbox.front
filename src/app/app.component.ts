@@ -6,6 +6,7 @@ import { filter, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageFacade } from './common/local-storage-facade';
 import { APP_ROUTES } from './app.routes';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ export class AppComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly translocoService = inject(TranslocoService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
 
   ngOnInit(): void {
     const language = LocalStorageFacade.language;
@@ -26,10 +28,10 @@ export class AppComponent implements OnInit {
       this.translocoService.setActiveLang(language);
     }
 
-    this.processLanguageSegment();
+    this.processLanguageRoutePath();
   }
 
-  private processLanguageSegment(): void {
+  private processLanguageRoutePath(): void {
     this.router.events
       .pipe(
         filter(x => x instanceof NavigationStart),
@@ -37,8 +39,10 @@ export class AppComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(event => {
-        const url = event.url.split('/').filter(x => x);
-        const firstSegment = url[0];
+        const url = new URL(event.url, this.document.baseURI);
+
+        const urlPath = url.pathname.split('/').slice(1);
+        const firstSegment = urlPath[0];
 
         if (firstSegment === this.translocoService.getActiveLang()) {
           return;
@@ -58,17 +62,18 @@ export class AppComponent implements OnInit {
           .map(x => x.path!);
 
         const language = LocalStorageFacade.language ?? this.translocoService.getDefaultLang();
+        const eventUrl = event.url.split('/').slice(1);
 
         // If we found matching route, we add language code before it.
         if (routePaths.includes(firstSegment)) {
-          url.unshift(language);
+          eventUrl.unshift(language);
         }
         // Else we replace first segment with language code.
         else {
-          url[0] = language;
+          eventUrl[0] = language;
         }
 
-        this.router.navigateByUrl(url.join('/'), { replaceUrl: true });
+        this.router.navigateByUrl('/' + eventUrl.join('/'), { replaceUrl: true });
       });
   }
 }
