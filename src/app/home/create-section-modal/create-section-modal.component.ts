@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SectionsClient } from '../../../../api-client';
-import { CreateSectionForm } from '../create-board-modal/create-section.form';
+import { CreateSectionForm } from './create-section.form';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({

@@ -50,6 +50,19 @@
       "FILE_ALREADY_ADDED": "Файл с именем {{ fileName }} уже добавлен"
     }
   },
+  "HOME": {
+    "CREATE_SECTION": "Создать раздел",
+    "CREATE_BOARD_MODAL": {
+      "CREATE_BOARD": "Создать доску",
+      "TITLE_LABEL": "Название",
+      "TITLE_VALIDATION_REQUIRED": "Название обязательно",
+      "TITLE_VALIDATION_MAX_LENGTH": "Максимальная длина названия",
+      "DESCRIPTION_LABEL": "Описание",
+      "DESCRIPTION_VALIDATION_REQUIRED": "Описание обязательно",
+      "DESCRIPTION_VALIDATION_MAX_LENGTH": "Максимальная длина описания",
+      "SUBMIT": "Отправить"
+    }
+  },
   "SHELL": {
     "AUTHORIZED_AS": "Авторизован как",
     "SIGN_IN": "Войти",

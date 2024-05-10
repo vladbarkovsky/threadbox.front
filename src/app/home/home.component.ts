@@ -14,13 +14,14 @@ import { BoardsClient, SectionsClient, SwaggerException } from '../../../api-cli
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { CreateSectionModalComponent } from './create-section-modal/create-section-modal.component';
 import { ToastStatus } from '../common/toast/toast-status';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [RouterLink, AsyncPipe, NgxPermissionsModule],
+  imports: [RouterLink, AsyncPipe, NgxPermissionsModule, TranslocoDirective],
 })
 export class HomeComponent {
   private readonly destroyRef = inject(DestroyRef);

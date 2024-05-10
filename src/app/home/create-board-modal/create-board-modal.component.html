@@ -1,81 +1,89 @@
-<div class="modal-header">
-  <h4 class="modal-title">Create board</h4>
+<ng-container *transloco="let translate; read: 'HOME.CREATE_BOARD_MODAL'">
+  <div class="modal-header">
+    <h4 class="modal-title">{{ translate('CREATE_BOARD') }}</h4>
 
-  <button
-    class="btn-close"
-    (click)="cancel()"
-  ></button>
-</div>
+    <button
+      class="btn-close"
+      (click)="cancel()"
+    ></button>
+  </div>
 
-<div class="modal-body">
-  <form
-    [formGroup]="createBoardForm"
-    (ngSubmit)="onSubmit()"
-  >
-    @if (createBoardForm.title; as title) {
-      <div class="mb-3">
-        <label
-          class="mb-2 text-muted"
-          for="title"
-        >
-          Title
-        </label>
+  <div class="modal-body">
+    <form
+      [formGroup]="createBoardForm"
+      (ngSubmit)="onSubmit()"
+    >
+      @if (createBoardForm.title; as title) {
+        <div class="mb-3">
+          <label
+            class="mb-2 text-muted"
+            for="title"
+          >
+            {{ translate('TITLE_LABEL') }}
+          </label>
 
-        <input
-          id="title"
-          class="form-control"
-          [formControl]="title"
-          type="text"
-        />
+          <input
+            id="title"
+            class="form-control"
+            [formControl]="title"
+            type="text"
+          />
 
-        @if (title.touched && title.errors; as errors) {
-          @if (errors['required']) {
-            <small class="text-danger">Title required.</small>
+          @if (title.touched && title.errors; as errors) {
+            @if (errors['required']) {
+              <small class="text-danger">{{ translate('TITLE_VALIDATION_REQUIRED') }}</small>
+            }
+
+            @if (errors['maxlength']; as maxLength) {
+              <small class="text-danger">
+                {{ translate('TITLE_VALIDATION_MAX_LENGTH') }}
+                {{ maxLength.requiredLength }}
+              </small>
+            }
           }
+        </div>
+      }
 
-          @if (errors['maxlength']; as maxLength) {
-            <small class="text-danger">Maximal length is {{ maxLength.requiredLength }}.</small>
+      @if (createBoardForm.description; as description) {
+        <div class="mb-3">
+          <label
+            class="mb-2 text-muted"
+            for="description"
+          >
+            {{ translate('DESCRIPTION_LABEL') }}
+          </label>
+
+          <textarea
+            id="description"
+            class="form-control"
+            autoResize
+            [formControl]="description"
+          ></textarea>
+
+          @if (description.touched && description.errors; as errors) {
+            @if (errors['required']) {
+              <small class="text-danger">{{ translate('DESCRIPTION_VALIDATION_REQUIRED') }}</small>
+            }
+
+            @if (errors['maxLength']; as maxLength) {
+              <small class="text-danger">
+                {{ translate('DESCRIPTION_VALIDATION_MAX_LENGTH') }}
+                {{ maxLength.requiredLength }}
+              </small>
+            }
           }
-        }
-      </div>
-    }
+        </div>
+      }
+    </form>
+  </div>
 
-    @if (createBoardForm.description; as description) {
-      <div class="mb-3">
-        <label
-          class="mb-2 text-muted"
-          for="description"
-        >
-          Description
-        </label>
-
-        <textarea
-          id="description"
-          class="form-control"
-          autoResize
-          [formControl]="description"
-        ></textarea>
-
-        @if (description.touched && description.errors; as errors) {
-          @if (errors['required']) {
-            <small class="text-danger">Description required.</small>
-          }
-
-          @if (errors['maxLength']; as maxLength) {
-            <small class="text-danger">Maximal length is {{ maxLength.requiredLength }}.</small>
-          }
-        }
-      </div>
-    }
-  </form>
-</div>
-
-<div class="modal-footer">
-  <button
-    class="btn btn-outline-secondary"
-    type="submit"
-    [disabled]="createBoardForm.invalid"
-  >
-    Create board
-  </button>
-</div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-outline-secondary"
+      type="submit"
+      [disabled]="createBoardForm.invalid"
+    >
+      {{ translate('SUBMIT') }}
+    </button>
+  </div>
+</ng-container>

@@ -50,6 +50,19 @@
       "FILE_ALREADY_ADDED": "Datne ar nosaukumu {{ fileName }} jau ir pievienota"
     }
   },
+  "HOME": {
+    "CREATE_SECTION": "Izveidot sadaļu",
+    "CREATE_BOARD_MODAL": {
+      "CREATE_BOARD": "Izveidot tāfeli",
+      "TITLE_LABEL": "Nosaukums",
+      "TITLE_VALIDATION_REQUIRED": "Nosaukums ir obligāts",
+      "TITLE_VALIDATION_MAX_LENGTH": "Nosaukuma maksimālais garums ir",
+      "DESCRIPTION_LABEL": "Apraksts",
+      "DESCRIPTION_VALIDATION_REQUIRED": "Apraksts ir obligāts",
+      "DESCRIPTION_VALIDATION_MAX_LENGTH": "Apraksta maksimālais garums ir",
+      "SUBMIT": "Iesniegt"
+    }
+  },
   "SHELL": {
     "AUTHORIZED_AS": "Autorizēts kā",
     "SIGN_IN": "Ienākt",

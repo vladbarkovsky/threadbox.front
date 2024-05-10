@@ -50,6 +50,19 @@
       "FILE_ALREADY_ADDED": "File with name {{ fileName }} is already added"
     }
   },
+  "HOME": {
+    "CREATE_SECTION": "Create section",
+    "CREATE_BOARD_MODAL": {
+      "CREATE_BOARD": "Create board",
+      "TITLE_LABEL": "Title",
+      "TITLE_VALIDATION_REQUIRED": "Title is required",
+      "TITLE_VALIDATION_MAX_LENGTH": "Title maximal length is",
+      "DESCRIPTION_LABEL": "Description",
+      "DESCRIPTION_VALIDATION_REQUIRED": "Description is required",
+      "DESCRIPTION_VALIDATION_MAX_LENGTH": "Description maximal length is",
+      "SUBMIT": "Submit"
+    }
+  },
   "SHELL": {
     "AUTHORIZED_AS": "Authorized as",
     "SIGN_IN": "Sign in",

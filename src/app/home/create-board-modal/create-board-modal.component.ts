@@ -1,19 +1,19 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateBoardForm } from './create-board.form';
-import { ValidationErrorsPipe } from '../../common/pipes/validation-errors.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BoardsClient } from '../../../../api-client';
 import { ToastStatus } from '../../common/toast/toast-status';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-create-board-modal',
   templateUrl: './create-board-modal.component.html',
   styleUrl: './create-board-modal.component.scss',
   standalone: true,
-  imports: [ReactiveFormsModule, ValidationErrorsPipe],
+  imports: [ReactiveFormsModule, TranslocoDirective],
 })
 export class CreateBoardModalComponent {
   private readonly destroyRef = inject(DestroyRef);
