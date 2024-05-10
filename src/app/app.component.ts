@@ -1,12 +1,11 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ToastComponent } from './common/toast/toast.component';
-import { NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { NavigationStart, PRIMARY_OUTLET, Router, RouterOutlet, UrlSerializer } from '@angular/router';
 import { TranslocoService } from '@ngneat/transloco';
 import { filter, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageFacade } from './common/local-storage-facade';
 import { APP_ROUTES } from './app.routes';
-import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +18,7 @@ export class AppComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly translocoService = inject(TranslocoService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly document = inject(DOCUMENT);
+  private readonly urlSerializer = inject(UrlSerializer);
 
   ngOnInit(): void {
     const language = LocalStorageFacade.language;
@@ -39,22 +38,21 @@ export class AppComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(event => {
-        const url = new URL(event.url, this.document.baseURI);
+        // We need to get first URL path segment without anything else like query params or fragments.
+        // See: https://angular.io/api/router/UrlTree#usage-notes
+        const firstPathSegment = this.urlSerializer.parse(event.url).root.children[PRIMARY_OUTLET].segments[0].path;
 
-        const urlPath = url.pathname.split('/').slice(1);
-        const firstSegment = urlPath[0];
-
-        if (firstSegment === this.translocoService.getActiveLang()) {
+        if (firstPathSegment === this.translocoService.getActiveLang()) {
           return;
         }
 
-        if (this.translocoService.isLang(firstSegment)) {
-          this.translocoService.setActiveLang(firstSegment);
-          LocalStorageFacade.language = firstSegment;
+        if (this.translocoService.isLang(firstPathSegment)) {
+          this.translocoService.setActiveLang(firstPathSegment);
+          LocalStorageFacade.language = firstPathSegment;
           return;
         }
 
-        // If we don't know such language code, we check if first segment matches
+        // If we don't know such language code, we will check if first path segment matches
         // with one of registered route paths.
 
         const routePaths = APP_ROUTES.find(x => x.path === ':language')!
@@ -62,13 +60,15 @@ export class AppComponent implements OnInit {
           .map(x => x.path!);
 
         const language = LocalStorageFacade.language ?? this.translocoService.getDefaultLang();
+
+        // We will modify raw URL with query params, fragments, etc. and paste it all to router.
         const eventUrl = event.url.split('/').slice(1);
 
-        // If we found matching route, we add language code before it.
-        if (routePaths.includes(firstSegment)) {
+        // If we found matching route path, we add language code before.
+        if (routePaths.includes(firstPathSegment)) {
           eventUrl.unshift(language);
         }
-        // Else we replace first segment with language code.
+        // Else we replace first path segment with language code.
         else {
           eventUrl[0] = language;
         }

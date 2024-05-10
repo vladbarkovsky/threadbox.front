@@ -15,6 +15,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(APP_ROUTES),
     provideHttpClient(withInterceptors([authorizationInterceptor])),
+    { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl },
     provideTransloco({
       config: {
         availableLangs: [defaultLanguage, 'lv', 'ru'],
@@ -25,6 +26,5 @@ export const appConfig: ApplicationConfig = {
       loader: TranslocoHttpLoader,
     }),
     importProvidersFrom(NgxPermissionsModule.forRoot()),
-    { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl },
   ],
 };
