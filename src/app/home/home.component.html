@@ -21,13 +21,13 @@
               <div *ngxPermissionsOnly="sectionsPermissions.manage">
                 <i
                   class="icomoon-icon edit action-icon"
-                  (click)="openUpdateBoardModal(section.id)"
+                  (click)="openUpdateBoardModal(board.id)"
                   role="button"
                 ></i>
 
                 <i
                   class="icomoon-icon trash action-icon"
-                  (click)="openDeleteConfirmationModal(section.id)"
+                  (click)="openDeleteBoardConfirmationModal(board.id)"
                   role="button"
                 ></i>
               </div>

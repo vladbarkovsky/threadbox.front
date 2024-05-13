@@ -14,7 +14,7 @@ import { BoardsClient, SectionsClient, SwaggerException } from '../../../api-cli
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { CreateSectionModalComponent } from './create-section-modal/create-section-modal.component';
 import { ToastStatus } from '../common/toast/toast-status';
-import { TranslocoDirective } from '@ngneat/transloco';
+import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-home',
@@ -30,6 +30,7 @@ export class HomeComponent {
   private readonly homePageState = inject(HomeState);
   private readonly ngbModal = inject(NgbModal);
   private readonly toastService = inject(ToastService);
+  private readonly translocoService = inject(TranslocoService);
 
   sectionsPermissions = SectionsPermissions;
   boardsPermissions = BoardsPermissions;
@@ -73,8 +74,9 @@ export class HomeComponent {
       });
   }
 
-  openDeleteConfirmationModal(boardId: string): void {
+  openDeleteBoardConfirmationModal(boardId: string): void {
     const modal = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', keyboard: false, scrollable: true });
+    modal.componentInstance.text = 'Delete board';
 
     modal.closed
       .pipe(

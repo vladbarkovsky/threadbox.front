@@ -52,8 +52,9 @@
   },
   "HOME": {
     "CREATE_SECTION": "Создать раздел",
-    "CREATE_BOARD_MODAL": {
+    "BOARD_MODALS": {
       "CREATE_BOARD": "Создать доску",
+      "UPDATE_BOARD": "Изменить доску",
       "TITLE_LABEL": "Название",
       "TITLE_VALIDATION_REQUIRED": "Название обязательно",
       "TITLE_VALIDATION_MAX_LENGTH": "Максимальная длина названия",

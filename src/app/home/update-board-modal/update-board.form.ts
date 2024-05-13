@@ -1,4 +1,4 @@
-import { AbstractControl, Validators, FormControl } from '@angular/forms';
+import { Validators, FormControl } from '@angular/forms';
 import { BoardDto, UpdateBoardCommand } from '../../../../api-client';
 import { GenericFormGroup } from '../../common/generic-form-group';
 
@@ -11,12 +11,12 @@ export class UpdateBoardForm extends GenericFormGroup<UpdateBoardCommand> {
     });
   }
 
-  get title(): AbstractControl {
-    return this.controls['title'];
+  get title(): FormControl<string> {
+    return this.controls['title'] as FormControl<string>;
   }
 
-  get description(): AbstractControl {
-    return this.controls['description'];
+  get description(): FormControl<string> {
+    return this.controls['description'] as FormControl<string>;
   }
 
   private id: string;

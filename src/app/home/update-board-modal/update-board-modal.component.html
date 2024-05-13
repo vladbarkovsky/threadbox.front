@@ -1,81 +1,89 @@
-<div class="modal-header">
-  <h4 class="modal-title">Update board</h4>
+<ng-container *transloco="let translate; read: 'HOME.BOARD_MODALS'">
+  <div class="modal-header">
+    <h4 class="modal-title">{{ translate('UPDATE_BOARD') }}</h4>
 
-  <button
-    type="button"
-    class="close"
-    aria-label="Close"
-    (click)="cancel()"
-  >
-    <!-- TODO: Replace with icomoon icon -->
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
+    <button
+      class="btn-close"
+      (click)="cancel()"
+    ></button>
+  </div>
 
-<div class="modal-body">
-  <form [formGroup]="updateBoardForm">
-    <div class="mb-3">
-      <label
-        class="mb-2 text-muted"
-        for="title"
-        >Title</label
-      >
+  <div class="modal-body">
+    <form
+      [formGroup]="updateBoardForm"
+      (ngSubmit)="onSubmit()"
+    >
+      @if (updateBoardForm.title; as title) {
+        <div class="mb-3">
+          <label
+            class="mb-2 text-muted"
+            for="title"
+          >
+            {{ translate('TITLE_LABEL') }}
+          </label>
 
-      <input
-        id="title"
-        class="form-control"
-        formControlName="title"
-        type="text"
-      />
+          <input
+            id="title"
+            class="form-control"
+            [formControl]="title"
+            type="text"
+          />
 
-      @if (updateBoardForm.title | validationErrors; as errors) {
-        <small class="text-danger">
-          @if (errors['required']) {
-            Title required.
+          @if (title.touched && title.errors; as errors) {
+            @if (errors['required']) {
+              <small class="text-danger">{{ translate('TITLE_VALIDATION_REQUIRED') }}</small>
+            }
+
+            @if (errors['maxlength']; as maxLength) {
+              <small class="text-danger">
+                {{ translate('TITLE_VALIDATION_MAX_LENGTH') }}
+                {{ maxLength.requiredLength }}
+              </small>
+            }
           }
-
-          @if (errors['maxlength']; as maxLength) {
-            Maximal length is {{ maxLength.requiredLength }}.
-          }
-        </small>
+        </div>
       }
-    </div>
 
-    <div class="mb-3">
-      <label
-        class="mb-2 text-muted"
-        for="description"
-        >Description</label
-      >
+      @if (updateBoardForm.description; as description) {
+        <div class="mb-3">
+          <label
+            class="mb-2 text-muted"
+            for="description"
+          >
+            {{ translate('DESCRIPTION_LABEL') }}
+          </label>
 
-      <textarea
-        id="description"
-        class="form-control"
-        autoResize
-        formControlName="description"
-      ></textarea>
+          <textarea
+            id="description"
+            class="form-control"
+            autoResize
+            [formControl]="description"
+          ></textarea>
 
-      @if (updateBoardForm.description | validationErrors; as errors) {
-        <small class="text-danger">
-          @if (errors['required']) {
-            Title required.
+          @if (description.touched && description.errors; as errors) {
+            @if (errors['required']) {
+              <small class="text-danger">{{ translate('DESCRIPTION_VALIDATION_REQUIRED') }}</small>
+            }
+
+            @if (errors['maxLength']; as maxLength) {
+              <small class="text-danger">
+                {{ translate('DESCRIPTION_VALIDATION_MAX_LENGTH') }}
+                {{ maxLength.requiredLength }}
+              </small>
+            }
           }
-
-          @if (errors['maxlength']; as maxLength) {
-            Maximal length is {{ maxLength.requiredLength }}.
-          }
-        </small>
+        </div>
       }
-    </div>
-  </form>
-</div>
+    </form>
+  </div>
 
-<div class="modal-footer">
-  <button
-    class="btn btn-outline-secondary"
-    type="button"
-    [disabled]="updateBoardForm.invalid"
-  >
-    Update board
-  </button>
-</div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-outline-secondary"
+      type="submit"
+      [disabled]="updateBoardForm.invalid"
+    >
+      {{ translate('SUBMIT') }}
+    </button>
+  </div>
+</ng-container>

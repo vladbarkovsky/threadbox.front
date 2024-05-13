@@ -52,8 +52,9 @@
   },
   "HOME": {
     "CREATE_SECTION": "Izveidot sadaļu",
-    "CREATE_BOARD_MODAL": {
+    "BOARD_MODALS": {
       "CREATE_BOARD": "Izveidot tāfeli",
+      "UPDATE_BOARD": "Atjaunot tāfeli",
       "TITLE_LABEL": "Nosaukums",
       "TITLE_VALIDATION_REQUIRED": "Nosaukums ir obligāts",
       "TITLE_VALIDATION_MAX_LENGTH": "Nosaukuma maksimālais garums ir",

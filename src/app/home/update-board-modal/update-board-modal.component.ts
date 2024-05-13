@@ -3,17 +3,17 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UpdateBoardForm } from './update-board.form';
 import { BoardDto, BoardsClient } from '../../../../api-client';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ValidationErrorsPipe } from '../../common/pipes/validation-errors.pipe';
 import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ToastStatus } from '../../common/toast/toast-status';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-update-board-modal',
   templateUrl: './update-board-modal.component.html',
   styleUrl: './update-board-modal.component.scss',
   standalone: true,
-  imports: [ReactiveFormsModule, ValidationErrorsPipe],
+  imports: [ReactiveFormsModule, TranslocoDirective],
 })
 export class UpdateBoardModalComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);

@@ -52,8 +52,9 @@
   },
   "HOME": {
     "CREATE_SECTION": "Create section",
-    "CREATE_BOARD_MODAL": {
+    "BOARD_MODALS": {
       "CREATE_BOARD": "Create board",
+      "UPDATE_BOARD": "Update board",
       "TITLE_LABEL": "Title",
       "TITLE_VALIDATION_REQUIRED": "Title is required",
       "TITLE_VALIDATION_MAX_LENGTH": "Title maximal length is",
