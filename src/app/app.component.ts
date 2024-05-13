@@ -27,6 +27,8 @@ export class AppComponent implements OnInit {
       this.translocoService.setActiveLang(language);
     }
 
+    // TODO: Investigate https://github.com/Greentube/localize-router.
+    // Maybe we can use this package instead of manual implementation.
     this.processLanguageRoutePath();
   }
 
