@@ -58,7 +58,8 @@ export class ImagesUploadComponent {
         files.splice(i, 1);
 
         this.toastService.showToast({
-          text: `File ${file.name} is not supported and was excluded from selection.`,
+          text: 'COMMON.IMAGES_UPLOAD.FILE_NOT_SUPPORTED',
+          translationParams: { fileName: file.name },
           status: ToastStatus.Warning,
         });
       }
@@ -66,7 +67,11 @@ export class ImagesUploadComponent {
 
     if (this.imagesUploadState.base64Files.length + files.length > this.maxCount) {
       files = files.slice(0, this.maxCount - this.imagesUploadState.base64Files.length);
-      this.toastService.showToast({ text: `Maximum allowed number of files is ${this.maxCount}.`, status: ToastStatus.Warning });
+      this.toastService.showToast({
+        text: 'COMMON.IMAGES_UPLOAD.MAX_COUNT',
+        translationParams: { maxCount: this.maxCount },
+        status: ToastStatus.Warning,
+      });
     }
 
     if (files.length) {

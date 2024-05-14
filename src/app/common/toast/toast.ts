@@ -1,8 +1,6 @@
-import { HashMap } from '@ngneat/transloco';
 import { ToastStatus } from './toast-status';
+import { Translatable } from '../translatable';
 
-export interface Toast {
-  text: string;
-  translationParams?: HashMap | undefined;
+export interface Toast extends Translatable {
   status: ToastStatus;
 }

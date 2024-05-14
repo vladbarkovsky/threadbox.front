@@ -29,27 +29,26 @@
         />
       </div>
 
-      <div
-        class="row"
-        [class.mt-2]="base64Files.value.length"
-      >
-        @for (base64File of base64Files.value; track base64File.file.name) {
-          <div class="col-auto image-col">
-            <i
-              class="icomoon-icon trash trash-icon"
-              (click)="deleteFile(base64File.file.name)"
-              role="button"
-              [title]="translate('DELETE_IMAGE')"
-            ></i>
+      @if (base64Files.value.length) {
+        <div class="row mt-3">
+          @for (base64File of base64Files.value; track base64File.file.name) {
+            <div class="col-auto image-col">
+              <i
+                class="icomoon-icon trash trash-icon"
+                (click)="deleteFile(base64File.file.name)"
+                role="button"
+                [title]="translate('DELETE_IMAGE')"
+              ></i>
 
-            <img
-              [src]="base64File.base64"
-              [alt]="base64File.file.name"
-              class="img-thumbnail image img-responsive"
-            />
-          </div>
-        }
-      </div>
+              <img
+                [src]="base64File.base64"
+                [alt]="base64File.file.name"
+                class="img-thumbnail image img-responsive"
+              />
+            </div>
+          }
+        </div>
+      }
     }
   }
 </ng-container>

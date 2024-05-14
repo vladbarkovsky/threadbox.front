@@ -2,20 +2,23 @@ import { Component, DestroyRef, EventEmitter, Input, Output, ViewChild, inject }
 import { NgbCollapse, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { ImagesUploadComponent } from '../../common/images-upload/images-upload.component';
 import { CreateThreadForm } from './create-thread.form';
-import { ThreadsClient } from '../../../../api-client';
+import { SwaggerException, ThreadsClient } from '../../../../api-client';
 import { ImagesUploadState } from '../../common/images-upload/images-upload.state';
 import { ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { first, switchMap } from 'rxjs';
 import { convertToNSwagFileParameter } from '../../common/file-operations';
 import { TranslocoDirective } from '@ngneat/transloco';
+import { Message } from '../../common/message/message';
+import { MessageComponent } from '../../common/message/message.component';
+import { MessageStatus } from '../../common/message/message-status';
 
 @Component({
   selector: 'app-create-thread',
   templateUrl: './create-thread.component.html',
   styleUrl: './create-thread.component.scss',
   standalone: true,
-  imports: [NgbCollapseModule, ImagesUploadComponent, ReactiveFormsModule, TranslocoDirective],
+  imports: [NgbCollapseModule, ImagesUploadComponent, ReactiveFormsModule, TranslocoDirective, MessageComponent],
   providers: [ImagesUploadState],
 })
 export class CreateThreadComponent {
@@ -26,6 +29,8 @@ export class CreateThreadComponent {
   @Input() boardId!: string;
   @Output() readonly threadCreated = new EventEmitter<void>();
   @ViewChild('collapse') ngbCollapse!: NgbCollapse;
+
+  message: Message | undefined = undefined;
 
   formCollapsed = true;
   createThreadForm = new CreateThreadForm();
@@ -39,6 +44,8 @@ export class CreateThreadComponent {
   }
 
   onSubmit(): void {
+    this.message = undefined;
+
     this.imagesUploadState
       .getFiles()
       .pipe(
@@ -60,8 +67,11 @@ export class CreateThreadComponent {
           this.reset();
           this.threadCreated.emit();
         },
-        error: error => {
-          console.log(error);
+        error: (error: SwaggerException) => {
+          this.message = {
+            text: error.response,
+            status: MessageStatus.Error,
+          };
         },
       });
   }

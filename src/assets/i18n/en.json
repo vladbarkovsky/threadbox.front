@@ -47,7 +47,9 @@
       "ADD_IMAGES": "Add images",
       "DELETE_ALL_IMAGES": "Delete all images",
       "DELETE_IMAGE": "Delete image",
-      "FILE_ALREADY_ADDED": "File with name {{ fileName }} is already added"
+      "FILE_ALREADY_ADDED": "File with name {{ fileName }} is already added",
+      "FILE_NOT_SUPPORTED": "File {{ fileName }} is not supported and was excluded from selection",
+      "MAX_COUNT": "Maximum allowed number of files is {{ maxCount }}"
     }
   },
   "HOME": {

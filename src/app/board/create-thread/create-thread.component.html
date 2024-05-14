@@ -11,6 +11,12 @@
     #collapse="ngbCollapse"
     [(ngbCollapse)]="formCollapsed"
   >
+    @if (message) {
+      <div class="mb-3">
+        <app-message [message]="message"></app-message>
+      </div>
+    }
+
     <form
       [formGroup]="createThreadForm"
       (ngSubmit)="onSubmit()"

@@ -1,0 +1,9 @@
+<ng-container *transloco="let translate">
+  <div
+    class="alert"
+    [ngClass]="message.status | messageClass"
+    role="alert"
+  >
+    {{ translate(message.text) }}
+  </div>
+</ng-container>

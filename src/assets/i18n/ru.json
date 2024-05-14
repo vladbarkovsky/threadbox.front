@@ -47,7 +47,9 @@
       "ADD_IMAGES": "Добавить изображения",
       "DELETE_ALL_IMAGES": "Удалить все изображения",
       "DELETE_IMAGE": "Удалить изображение",
-      "FILE_ALREADY_ADDED": "Файл с именем {{ fileName }} уже добавлен"
+      "FILE_ALREADY_ADDED": "Файл с именем {{ fileName }} уже добавлен",
+      "FILE_NOT_SUPPORTED": "Файл {{ fileName }} не поддерживается и был исключён из выборки",
+      "MAX_COUNT": "Максимальное разрешённое количество файлов {{ maxCount }}"
     }
   },
   "HOME": {
