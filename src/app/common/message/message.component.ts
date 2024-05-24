@@ -3,6 +3,7 @@ import { Message } from './message';
 import { TranslocoDirective } from '@ngneat/transloco';
 import { MessageClassPipe } from './message-class.pipe';
 import { NgClass } from '@angular/common';
+import { MessageStatus } from './message-status';
 
 @Component({
   selector: 'app-message',
@@ -13,4 +14,6 @@ import { NgClass } from '@angular/common';
 })
 export class MessageComponent {
   @Input() message!: Message;
+
+  readonly messageStatusEnum = MessageStatus;
 }

@@ -38,6 +38,7 @@
     }
   },
   "COMMON": {
+    "DEFAULT_ERROR_MESSAGE": "Произошла ошибка. Пожалуйста, обратитесь в службу поддержки.",
     "CONFIRMATION_MODAL": {
       "CONFIRM_ACTION": "Подтвердите действие",
       "CONFIRM": "Confirm",

@@ -6,9 +6,9 @@ import { PostsClient } from '../../../../api-client';
 import { CreatePostForm } from './create-post.form';
 import { first, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { convertToNSwagFileParameter } from '../../common/file-operations';
 import { ImagesUploadComponent } from '../../common/images-upload/images-upload.component';
 import { TranslocoDirective } from '@ngneat/transloco';
+import { convertToNSwagFileParameter } from '../../common/nswag-operations';
 
 @Component({
   selector: 'app-create-post-modal',

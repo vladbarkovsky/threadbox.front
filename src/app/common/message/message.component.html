@@ -4,6 +4,10 @@
     [ngClass]="message.status | messageClass"
     role="alert"
   >
-    {{ translate(message.text) }}
+    @if (message.status === messageStatusEnum.Error) {
+      {{ translate(message.text || 'COMMON.DEFAULT_ERROR_MESSAGE') }}
+    } @else {
+      {{ translate(message.text) }}
+    }
   </div>
 </ng-container>

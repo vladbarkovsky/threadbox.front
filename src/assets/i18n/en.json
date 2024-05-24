@@ -38,6 +38,7 @@
     }
   },
   "COMMON": {
+    "DEFAULT_ERROR_MESSAGE": "An error occurred. Please contact support.",
     "CONFIRMATION_MODAL": {
       "CONFIRM_ACTION": "Confirm action",
       "CONFIRM": "Confirm",

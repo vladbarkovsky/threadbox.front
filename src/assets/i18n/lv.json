@@ -38,6 +38,7 @@
     }
   },
   "COMMON": {
+    "DEFAULT_ERROR_MESSAGE": "Ir notikusi kļūda. Lūdzu, sazinieties ar atbalsta dienestu.",
     "CONFIRMATION_MODAL": {
       "CONFIRM_ACTION": "Apstipriniet darbību",
       "CONFIRM": "Apstiprināt",

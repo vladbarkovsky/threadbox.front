@@ -2,16 +2,16 @@ import { Component, DestroyRef, EventEmitter, Input, Output, ViewChild, inject }
 import { NgbCollapse, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { ImagesUploadComponent } from '../../common/images-upload/images-upload.component';
 import { CreateThreadForm } from './create-thread.form';
-import { SwaggerException, ThreadsClient } from '../../../../api-client';
+import { ThreadsClient } from '../../../../api-client';
 import { ImagesUploadState } from '../../common/images-upload/images-upload.state';
 import { ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { first, switchMap } from 'rxjs';
-import { convertToNSwagFileParameter } from '../../common/file-operations';
 import { TranslocoDirective } from '@ngneat/transloco';
 import { Message } from '../../common/message/message';
 import { MessageComponent } from '../../common/message/message.component';
 import { MessageStatus } from '../../common/message/message-status';
+import { convertToNSwagFileParameter, getResponseBody } from '../../common/nswag-operations';
 
 @Component({
   selector: 'app-create-thread',
@@ -67,11 +67,8 @@ export class CreateThreadComponent {
           this.reset();
           this.threadCreated.emit();
         },
-        error: (error: SwaggerException) => {
-          this.message = {
-            text: error.response,
-            status: MessageStatus.Error,
-          };
+        error: error => {
+          this.message = { text: getResponseBody(error), status: MessageStatus.Error };
         },
       });
   }
