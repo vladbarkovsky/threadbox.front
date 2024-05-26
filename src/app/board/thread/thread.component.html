@@ -60,53 +60,51 @@
         ></i>
       }
 
-      @if (posts$ | async; as posts) {
-        @for (post of posts; track post.id) {
-          <div class="card my-2">
-            <div class="card-header post-header">
-              <span>{{ post.tripcodeKey ?? translate('BOARD.THREAD.ANONYMOUS') }}</span>
+      @for (post of posts; track post.id) {
+        <div class="card my-2">
+          <div class="card-header post-header">
+            <span>{{ post.tripcodeKey ?? translate('BOARD.THREAD.ANONYMOUS') }}</span>
 
-              <span>
-                {{ thread.createdAt | date: 'dd.MM.yy' }}
-                {{ translate('DAYS.' + (thread.createdAt | date: 'EEEE')) }}
-                {{ thread.createdAt | date: 'HH:mm:ss' }}
-              </span>
+            <span>
+              {{ thread.createdAt | date: 'dd.MM.yy' }}
+              {{ translate('DAYS.' + (thread.createdAt | date: 'EEEE')) }}
+              {{ thread.createdAt | date: 'HH:mm:ss' }}
+            </span>
 
-              <i
-                *ngxPermissionsOnly="postPermissions.delete"
-                class="icomoon-icon trash align-middle"
-                (click)="('javascript:;')"
-                role="button"
-              ></i>
-            </div>
+            <i
+              *ngxPermissionsOnly="postPermissions.delete"
+              class="icomoon-icon trash align-middle"
+              (click)="openDeletePostModal(post.id)"
+              role="button"
+            ></i>
+          </div>
 
-            <div class="card-body">
-              <p class="card-text">{{ post.text }}</p>
+          <div class="card-body">
+            <p class="card-text">{{ post.text }}</p>
 
-              <div class="row mb-2">
-                @for (image of post.postImages; track $index) {
-                  <div class="col-auto p-1">
-                    <img
-                      [lazyLoad]="image.url!"
-                      src="assets/image-placeholder.gif"
-                      alt="Post image"
-                      class="img-thumbnail image"
-                    />
-                  </div>
-                }
-              </div>
-
-              @if (post.postImages?.length; as length) {
-                <button
-                  class="btn btn-secondary mb-2"
-                  (click)="downloadPostImages(post)"
-                >
-                  {{ translate(length > 1 ? 'BOARD.THREAD.DOWNLOAD_IMAGES' : 'BOARD.THREAD.DOWNLOAD_IMAGE') }}
-                </button>
+            <div class="row mb-2">
+              @for (image of post.postImages; track $index) {
+                <div class="col-auto p-1">
+                  <img
+                    [lazyLoad]="image.url!"
+                    src="assets/image-placeholder.gif"
+                    alt="Post image"
+                    class="img-thumbnail image"
+                  />
+                </div>
               }
             </div>
+
+            @if (post.postImages?.length; as length) {
+              <button
+                class="btn btn-secondary mb-2"
+                (click)="downloadPostImages(post)"
+              >
+                {{ translate(length > 1 ? 'BOARD.THREAD.DOWNLOAD_IMAGES' : 'BOARD.THREAD.DOWNLOAD_IMAGE') }}
+              </button>
+            }
           </div>
-        }
+        </div>
       }
     </div>
 

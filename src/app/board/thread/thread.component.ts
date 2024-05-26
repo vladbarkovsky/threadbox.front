@@ -1,16 +1,16 @@
 import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { ThreadState } from './thread.state';
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { FilesClient, PostDto, PostsClient, ThreadDto } from '../../../../api-client';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, first, switchMap } from 'rxjs';
+import { first, switchMap } from 'rxjs';
 import { downloadFile } from '../../common/file-operations';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePostModalComponent } from '../create-post/create-post-modal.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { PostsPermissions, ThreadsPermissions } from '../../../../api-permissions';
 import { TranslocoDirective } from '@ngneat/transloco';
+import { ConfirmationModalComponent } from '../../common/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-thread',
@@ -18,11 +18,9 @@ import { TranslocoDirective } from '@ngneat/transloco';
   styleUrl: './thread.component.scss',
   standalone: true,
   imports: [LazyLoadImageModule, AsyncPipe, NgClass, DatePipe, NgxPermissionsModule, TranslocoDirective],
-  providers: [ThreadState],
 })
 export class ThreadComponent implements OnInit {
   private readonly postsClient = inject(PostsClient);
-  private readonly threadState = inject(ThreadState);
   private readonly destroyRef = inject(DestroyRef);
   private readonly filesClient = inject(FilesClient);
   private readonly ngbModal = inject(NgbModal);
@@ -32,12 +30,13 @@ export class ThreadComponent implements OnInit {
 
   @Input() thread!: ThreadDto;
   @Output() readonly deleteThread = new EventEmitter<void>();
-  posts$: Observable<PostDto[]> = this.threadState.getPosts();
+
+  posts: PostDto[] = [];
   allPostsLoaded = false;
 
   ngOnInit(): void {
+    this.posts = this.thread.posts!;
     this.allPostsLoaded = !this.thread.hasMorePosts;
-    this.threadState.setPosts(this.thread.posts!);
   }
 
   emitDeleteThreadEvent(): void {
@@ -51,13 +50,13 @@ export class ThreadComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: posts => {
-            this.threadState.setPosts(posts);
+            this.posts = posts;
             this.allPostsLoaded = true;
           },
           error: error => console.log(error),
         });
     } else {
-      this.threadState.hidePosts();
+      this.posts = this.posts.slice(0, 3);
       this.allPostsLoaded = false;
     }
   }
@@ -73,7 +72,24 @@ export class ThreadComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-        next: posts => this.threadState.setPosts(posts),
+        next: posts => (this.posts = posts),
+        error: error => console.log(error),
+      });
+  }
+
+  openDeletePostModal(postId: string): void {
+    const ngbModalRef = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', centered: true });
+    ngbModalRef.componentInstance.text = 'Delete post.';
+
+    ngbModalRef.closed
+      .pipe(
+        first(),
+        switchMap(() => this.postsClient.deletePost(postId)),
+        switchMap(() => this.postsClient.getPosts(this.thread.id, this.allPostsLoaded)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: posts => (this.posts = posts),
         error: error => console.log(error),
       });
   }
