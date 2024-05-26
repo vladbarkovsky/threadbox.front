@@ -8,8 +8,7 @@ import { API_BASE_URL } from '../../api-client';
 import { environment } from '../environments/environment';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { authorizationInterceptor } from './authorization/authorization.interceptor';
-
-export const defaultLanguage = 'en';
+import { defaultLanguage } from './default-language';
 
 export const appConfig: ApplicationConfig = {
   providers: [

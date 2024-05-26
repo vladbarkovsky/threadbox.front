@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { defaultLanguage } from './app.config';
 import { LocalStorageFacade } from './common/local-storage-facade';
+import { defaultLanguage } from './default-language';
 
 export const APP_ROUTES: Routes = [
   {
