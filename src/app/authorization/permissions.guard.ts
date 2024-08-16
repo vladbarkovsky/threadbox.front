@@ -1,3 +1,6 @@
+// TODO: Can be replaced with NgxPermissionsGuard.
+// See https://github.com/AlexKhymenko/ngx-permissions/wiki/Usage-with-routes
+
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
