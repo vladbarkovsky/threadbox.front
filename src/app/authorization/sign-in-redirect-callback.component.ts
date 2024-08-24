@@ -7,7 +7,7 @@ import { AuthorizationService } from './authorization.service';
   standalone: true,
 })
 export class SignInRedirectCallbackComponent implements OnInit {
-  constructor(private authorizationService: AuthorizationService) {}
+  constructor(private readonly authorizationService: AuthorizationService) {}
 
   ngOnInit(): void {
     this.authorizationService.signInRedirectCallback();

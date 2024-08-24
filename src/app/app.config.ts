@@ -9,11 +9,12 @@ import { environment } from '../environments/environment';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { authorizationInterceptor } from './authorization/authorization.interceptor';
 import { defaultLanguage } from './default-language';
+import { languageInterceptor } from './common/localization/language.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(APP_ROUTES),
-    provideHttpClient(withInterceptors([authorizationInterceptor])),
+    provideHttpClient(withInterceptors([authorizationInterceptor, languageInterceptor])),
     { provide: API_BASE_URL, useFactory: () => environment.apiBaseUrl },
     provideTransloco({
       config: {
