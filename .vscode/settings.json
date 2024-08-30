@@ -1,6 +1,14 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.format.enable": true,
+  "stylelint.enable": true,
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
-  "editor.codeLens": true
+  "editor.codeLens": true,
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
