@@ -11,6 +11,8 @@
     "kohler.path-intellisense",
     "gruntfuggly.todo-tree",
     "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
     "ms-vscode.vs-keybindings"
   ]
 }
