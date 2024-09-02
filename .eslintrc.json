@@ -4,11 +4,15 @@
   "overrides": [
     {
       "files": ["*.ts"],
+      "parser": "@typescript-eslint/parser",
       "parserOptions": {
-        "project": "./tsconfig.json"
+        "project": "./tsconfig.json",
+        "ecmaVersion": 2022,
+        "sourceType": "module"
       },
       "extends": [
         "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:@angular-eslint/recommended",
@@ -16,7 +20,7 @@
         "prettier",
         "plugin:prettier/recommended"
       ],
-      "plugins": ["prettier"],
+      "plugins": ["@typescript-eslint"],
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
@@ -40,7 +44,15 @@
     {
       "files": ["*.html"],
       "extends": ["plugin:@angular-eslint/template/recommended", "plugin:@angular-eslint/template/accessibility"],
-      "rules": {}
+      "plugins": ["html"]
+    },
+    {
+      "files": ["*.json"],
+      "extends": ["plugin:json/recommended-legacy"]
+    },
+    {
+      "files": ["*.md"],
+      "extends": ["plugin:markdown/recommended-legacy"]
     }
   ]
 }
