@@ -11,6 +11,13 @@
     "kohler.path-intellisense",
     "gruntfuggly.todo-tree",
     "esbenp.prettier-vscode",
-    "ms-vscode.vs-keybindings"
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
+    "ms-vscode.vs-keybindings",
+    "christian-kohler.path-intellisense",
+    "pranaygp.vscode-css-peek",
+    "kisstkondoros.vscode-gutter-preview",
+    "wix.vscode-import-cost",
+    "postman.postman-for-vscode"
   ]
 }
