@@ -18,9 +18,13 @@
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
         "prettier",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:jsdoc/recommended",
+        "plugin:@eslint-community/eslint-comments/recommended",
+        "plugin:promise/recommended",
+        "plugin:redos/recommended"
       ],
-      "plugins": ["@typescript-eslint"],
+      "plugins": ["@typescript-eslint", "no-constructor-bind", "sort-keys-fix", "this"],
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
@@ -38,7 +42,11 @@
             "style": "kebab-case"
           }
         ],
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "no-constructor-bind/no-constructor-bind": "error",
+        "no-constructor-bind/no-constructor-state": "error",
+        "sort-keys-fix/sort-keys-fix": "warn",
+        "this/no-this": 2
       }
     },
     {
