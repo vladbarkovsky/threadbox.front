@@ -1,3 +1,8 @@
+// TODO: Update to eslint.config.js.
+// Packages that works only with new config format:
+// https://github.com/freaktechnik/eslint-plugin-array-func
+// https://github.com/ota-meshi/eslint-plugin-regexp
+
 {
   "root": true,
   "ignorePatterns": ["projects/**/*"],
@@ -46,7 +51,8 @@
         "no-constructor-bind/no-constructor-bind": "error",
         "no-constructor-bind/no-constructor-state": "error",
         "sort-keys-fix/sort-keys-fix": "warn",
-        "this/no-this": 2
+        "this/no-this": 2,
+        "no-constructor-return": "error"
       }
     },
     {
@@ -56,7 +62,11 @@
     },
     {
       "files": ["*.json"],
-      "extends": ["plugin:json/recommended-legacy"]
+      "extends": ["plugin:json/recommended-legacy"],
+      "plugins": ["json"],
+      "rules": {
+        "json/*": ["error", { "allowComments": true }]
+      }
     },
     {
       "files": ["*.md"],
