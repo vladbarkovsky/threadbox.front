@@ -1,6 +1,13 @@
 {
+  "prettier.enable": true,
+  "eslint.enable": true,
+  "stylelint.enable": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "editor.tabSize": 2,
-  "editor.codeLens": true
+  "eslint.format.enable": true,
+  "stylelint.validate": ["scss"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  }
 }

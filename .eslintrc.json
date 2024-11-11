@@ -1,0 +1,75 @@
+// TODO: Update to eslint.config.js.
+// Packages that works only with new config format:
+// https://github.com/freaktechnik/eslint-plugin-array-func
+// https://github.com/ota-meshi/eslint-plugin-regexp
+
+{
+  "root": true,
+  "ignorePatterns": ["projects/**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": "./tsconfig.json",
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      },
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "prettier",
+        "plugin:prettier/recommended",
+        "plugin:jsdoc/recommended",
+        "plugin:@eslint-community/eslint-comments/recommended",
+        "plugin:promise/recommended",
+        "plugin:redos/recommended"
+      ],
+      "plugins": ["@typescript-eslint", "no-constructor-bind", "sort-keys-fix", "this"],
+      "rules": {
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "app",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "app",
+            "style": "kebab-case"
+          }
+        ],
+        "prettier/prettier": "error",
+        "no-constructor-bind/no-constructor-bind": "error",
+        "no-constructor-bind/no-constructor-state": "error",
+        "sort-keys-fix/sort-keys-fix": "warn",
+        "this/no-this": 2
+      }
+    },
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended", "plugin:@angular-eslint/template/accessibility"],
+      "plugins": ["html"]
+    },
+    {
+      "files": ["*.json"],
+      "extends": ["plugin:json/recommended-legacy"],
+      "plugins": ["json"],
+      "rules": {
+        "json/*": ["error", { "allowComments": true }]
+      }
+    },
+    {
+      "files": ["*.md"],
+      "extends": ["plugin:markdown/recommended-legacy"]
+    }
+  ]
+}
