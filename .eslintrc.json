@@ -51,8 +51,7 @@
         "no-constructor-bind/no-constructor-bind": "error",
         "no-constructor-bind/no-constructor-state": "error",
         "sort-keys-fix/sort-keys-fix": "warn",
-        "this/no-this": 2,
-        "no-constructor-return": "error"
+        "this/no-this": 2
       }
     },
     {
