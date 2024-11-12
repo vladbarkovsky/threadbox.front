@@ -29,7 +29,7 @@
         "plugin:promise/recommended",
         "plugin:redos/recommended"
       ],
-      "plugins": ["@typescript-eslint", "no-constructor-bind", "sort-keys-fix", "this"],
+      "plugins": ["@typescript-eslint", "no-constructor-bind", "sort-keys-fix"],
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
@@ -50,8 +50,7 @@
         "prettier/prettier": "error",
         "no-constructor-bind/no-constructor-bind": "error",
         "no-constructor-bind/no-constructor-state": "error",
-        "sort-keys-fix/sort-keys-fix": "warn",
-        "this/no-this": 2
+        "sort-keys-fix/sort-keys-fix": "warn"
       }
     },
     {
