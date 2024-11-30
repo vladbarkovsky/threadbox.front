@@ -75,6 +75,7 @@
     "stylelint-high-performance-animation": "^1.10.0",
     "stylelint-no-indistinguishable-colors": "^2.3.0",
     "stylelint-prettier": "^5.0.2",
+    "stylelint-use-nesting": "^6.0.0",
     "typescript": "~5.2.2"
   }
 }

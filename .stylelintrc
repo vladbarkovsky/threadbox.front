@@ -5,9 +5,10 @@
     "stylelint-prettier/recommended",
     "stylelint-8-point-grid"
   ],
-  "plugins": ["stylelint-high-performance-animation", "stylelint-no-indistinguishable-colors"],
+  "plugins": ["stylelint-high-performance-animation", "stylelint-no-indistinguishable-colors", "stylelint-use-nesting"],
   "rules": {
     "plugin/no-low-performance-animation-properties": true,
-    "plugin/stylelint-no-indistinguishable-colors": true
+    "plugin/stylelint-no-indistinguishable-colors": true,
+    "csstools/use-nesting": ["always", { "syntax": "scss" }]
   }
 }
