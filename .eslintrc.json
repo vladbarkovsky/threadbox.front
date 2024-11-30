@@ -1,6 +1,5 @@
-// TODO: Update to eslint.config.js.
+// TODO: Update to new config format.
 // Packages that works only with new config format:
-// https://github.com/freaktechnik/eslint-plugin-array-func
 // https://github.com/ota-meshi/eslint-plugin-regexp
 
 {
@@ -27,7 +26,10 @@
         "plugin:jsdoc/recommended",
         "plugin:@eslint-community/eslint-comments/recommended",
         "plugin:promise/recommended",
-        "plugin:redos/recommended"
+        "plugin:redos/recommended",
+        "plugin:array-func/recommended",
+        "plugin:eqeqeq-fix/recommended",
+        "plugin:rxjs/recommended"
       ],
       "plugins": ["@typescript-eslint", "no-constructor-bind", "sort-keys-fix"],
       "rules": {
@@ -50,7 +52,8 @@
         "prettier/prettier": "error",
         "no-constructor-bind/no-constructor-bind": "error",
         "no-constructor-bind/no-constructor-state": "error",
-        "sort-keys-fix/sort-keys-fix": "warn"
+        "sort-keys-fix/sort-keys-fix": "warn",
+        "rxjs/no-implicit-any-catch": "off"
       }
     },
     {
