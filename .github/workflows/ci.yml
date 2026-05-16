@@ -1,0 +1,32 @@
+name: CI
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.9.0'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build -- --configuration production
+      - name: Create archive
+        run: |
+          SHA=${GITHUB_SHA}
+          RELEASE_DIR="/var/www/releases"
+          TMP_DIR="/tmp/threadbox-front-$SHA"
+
+          rm -rf $TMP_DIR
+          mkdir -p $TMP_DIR
+
+          cp -r dist/threadbox-front/* $TMP_DIR/
+
+          mkdir -p $RELEASE_DIR
+          cd $TMP_DIR
+          zip -r "$RELEASE_DIR/threadbox-front-$SHA.zip" .
