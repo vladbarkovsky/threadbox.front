@@ -21,7 +21,7 @@ jobs:
           SHA=${GITHUB_SHA}
           RELEASE_DIR="/var/www/releases"
           TMP_DIR="/tmp/threadbox-front-$SHA"
-š          rm -rf $TMP_DIR
+          rm -rf $TMP_DIR
           mkdir -p $TMP_DIR
           cp -r dist/threadbox/browser/* $TMP_DIR/
           mkdir -p $RELEASE_DIR

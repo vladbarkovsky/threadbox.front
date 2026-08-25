@@ -1,0 +1,38 @@
+name: CD
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: "Commit SHA"
+        required: true
+jobs:
+  deploy:
+    runs-on: self-hosted
+    env:
+      COMMIT_SHA: ${{ inputs.commit_sha }}
+      RELEASE_DIR: /var/www/releases
+      DEPLOY_DIR: /var/www/threadbox-front
+    steps:
+      - name: Deploy archive
+        run: |
+          ARCHIVE="$RELEASE_DIR/threadbox-front-$COMMIT_SHA.zip"
+          if [ ! -f "$ARCHIVE" ]; then
+            echo "Archive not found: $ARCHIVE"
+            exit 1
+          fi
+          mkdir -p "$DEPLOY_DIR"
+          find "$DEPLOY_DIR" -mindepth 1 -delete
+          unzip -o "$ARCHIVE" -d "$DEPLOY_DIR"
+      - name: Health check
+        run: |
+          for i in {1..10}; do
+            if curl -f http://localhost:8080/index.html; then
+              echo "Application is healthy."
+              exit 0
+            else
+              echo "Waiting..."
+              sleep 5
+            fi
+          done
+          echo "Health check failed."
+          exit 1
