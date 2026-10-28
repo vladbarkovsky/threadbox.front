@@ -1,177 +1,106 @@
-import { DOCUMENT, Location } from '@angular/common';
-import { Injectable, inject } from '@angular/core';
+import { Location } from '@angular/common';
+import type { EffectCleanupRegisterFn, Signal, WritableSignal } from '@angular/core';
+import { Injectable, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { User, UserManager } from 'oidc-client';
-import { BehaviorSubject, Observable, from } from 'rxjs';
-import { filter, finalize, map, switchMap } from 'rxjs/operators';
+import type { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { NgxPermissionsService } from 'ngx-permissions';
+import type { UserSession } from '../../../api-client';
 import { IdentityClient } from '../../../api-client';
-import { SessionStorageFacade } from '../common/session-storage-facade';
+import { SessionStorageService } from '../common/session-storage-service';
+import { AuthorizationState } from './authorization-state.enum';
+import type { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
-  private readonly document = inject(DOCUMENT);
-  private readonly location = inject(Location);
-  private readonly router = inject(Router);
-  private readonly identityClient = inject(IdentityClient);
-  private readonly permissionsService = inject(NgxPermissionsService);
+	private readonly location: Location = inject(Location);
+	private readonly router: Router = inject(Router);
+	private readonly identityClient: IdentityClient = inject(IdentityClient);
+	private readonly permissionsService: NgxPermissionsService = inject(NgxPermissionsService);
+	private readonly sessionStorageService: SessionStorageService = inject(SessionStorageService);
 
-  get authorized$(): Observable<boolean> {
-    return this.user$.pipe(
-      filter(x => x !== null),
-      map(x => !!x)
-    );
-  }
+	private readonly _state: WritableSignal<AuthorizationState> = signal<AuthorizationState>(AuthorizationState.Unknown);
+	private readonly _session: WritableSignal<UserSession | undefined> = signal<UserSession | undefined>(undefined);
 
-  get accessToken$(): Observable<string | undefined> {
-    return this.user$.pipe(map(x => x?.access_token));
-  }
+	get state(): Signal<AuthorizationState> {
+		return this._state.asReadonly();
+	}
 
-  get userName$(): Observable<string> {
-    return this.user$.pipe(
-      filter(x => !!x),
-      map(x => x!.profile.name!)
-    );
-  }
+	get session(): Signal<UserSession | undefined> {
+		return this._session.asReadonly();
+	}
 
-  // undefined means that there are no authorized user.
-  // null means that we don't know yet.
-  private readonly user$ = new BehaviorSubject<User | undefined | null>(null);
+	constructor() {
+		effect((onCleanup: EffectCleanupRegisterFn): void => {
+			if (this._state() !== AuthorizationState.Authenticated) {
+				return;
+			}
 
-  private readonly userManager = new UserManager({
-    authority: environment.apiBaseUrl,
-    client_id: 'angular_client',
+			const subscription: Subscription = this.identityClient.getUserPermissions().subscribe({
+				next: (permissions: string[]): void => {
+					this.permissionsService.loadPermissions(permissions);
+				},
+				error: (error: HttpErrorResponse): void => {
+					console.error(error);
+				},
+			});
 
-    // Check Startup.cs on server for more information about commented scope.
-    // Search string 'IdentityServerConstants.StandardScopes.OfflineAccess'.
-    // offline_access
-    scope: 'openid profile threadbox_api.access',
+			onCleanup((): void => {
+				subscription.unsubscribe();
+			});
+		});
+	}
 
-    response_type: 'code',
-    redirect_uri: this.document.baseURI + 'authorization/sign-in-redirect-callback',
-    silent_redirect_uri: this.document.baseURI + 'assets/authorization/sign-in-silent-callback.html',
-    post_logout_redirect_uri: this.document.baseURI + 'authorization/sign-out-redirect-callback',
-    automaticSilentRenew: true,
-  });
+	checkAuthorization(): void {
+		if (this._state() !== AuthorizationState.Unknown) {
+			return;
+		}
 
-  constructor() {
-    // Write OIDC client logs to console.
-    // import { Log } from 'oidc-client';
-    // Log.logger = console;
+		this.identityClient.getUserSession().subscribe({
+			next: (session: UserSession): void => {
+				this.setState(AuthorizationState.Authenticated, session);
+				this.navigateToLastUrl();
+			},
+			error: (error: HttpErrorResponse): void => {
+				this.setState(AuthorizationState.Anonymous);
+				console.error(error);
+			},
+		});
+	}
 
-    this.userManager.events.addUserLoaded(user => {
-      this.log('User loaded.');
-      this.setUser(user);
-    });
+	executeSignInRedirect(): void {
+		this.saveLastUrl();
+		window.location.href = `${environment.apiBaseUrl}/bff/login`;
+	}
 
-    this.authorized$
-      .pipe(
-        filter(x => x),
-        switchMap(() => this.identityClient.getUserPermissions())
-      )
-      .subscribe({
-        next: permissions => this.permissionsService.loadPermissions(permissions),
-        // TODO: Error handling.
-        error: error => {},
-      });
-  }
+	executeSignOutRedirect(): void {
+		this.saveLastUrl();
+		this.clearSession();
+		window.location.href = `${environment.apiBaseUrl}/bff/logout`;
+	}
 
-  checkAuthorization(): void {
-    this.user$
-      .pipe(
-        filter(x => x === null),
-        switchMap(() => from(this.userManager.querySessionStatus()))
-      )
-      .subscribe({
-        next: sessionStatus => {
-          if (sessionStatus) {
-            this.log('Session status received - performing silent sign in...');
+	clearSession(): void {
+		this.permissionsService.flushPermissions();
+		this.setState(AuthorizationState.Anonymous);
+	}
 
-            // If we received session status, it means that user is authorized;
-            // therefore we perform silent sign in to restore session data.
-            // It is necessary for cases when authorized user opens application in new tab
-            // or uses offline access (authorization saving after closing the browser).
-            this.signInSilent();
-          }
-        },
-        error: () => {
-          this.log('Unable to get session status - user is unauthorized.');
-          this.setUser(undefined);
-        },
-      });
-  }
+	private setState(state: AuthorizationState, session?: UserSession): void {
+		this._session.set(session);
+		this._state.set(state);
+	}
 
-  signInRedirect(): void {
-    this.saveLastUrl();
+	private saveLastUrl(): void {
+		this.sessionStorageService.lastUrl = this.location.path();
+	}
 
-    from(this.userManager.signinRedirect()).subscribe({
-      error: error => this.log('Sign in redirect error:', error),
-    });
-  }
+	private navigateToLastUrl(): void {
+		const lastUrl: string | null = this.sessionStorageService.lastUrl;
 
-  signInRedirectCallback(): void {
-    from(this.userManager.signinRedirectCallback())
-      .pipe(finalize(() => this.navigateToLastUrl()))
-      .subscribe({
-        error: error => {
-          this.log('Sign in redirect callback error:', error.message);
-          this.setUser(undefined);
-        },
-      });
-  }
+		if (lastUrl === null || lastUrl === '') {
+			return;
+		}
 
-  signOutRedirect(): void {
-    this.saveLastUrl();
-
-    from(this.userManager.signoutRedirect()).subscribe({
-      error: error => this.log('Sign out redirect error:', error.message),
-    });
-  }
-
-  signOutRedirectCallback(): void {
-    from(this.userManager.signoutRedirectCallback())
-      .pipe(finalize(() => this.navigateToLastUrl()))
-      .subscribe({
-        next: () => this.permissionsService.flushPermissions(),
-        error: error => this.log('Sign out redirect callback error:', error),
-      });
-  }
-
-  private signInSilent(): void {
-    from(this.userManager.signinSilent()).subscribe({
-      error: error => {
-        this.log('Sign in silent error:', error);
-        this.setUser(undefined);
-      },
-    });
-  }
-
-  private setUser(user: User | undefined) {
-    if (user !== this.user$.value) {
-      this.user$.next(user);
-    }
-  }
-
-  private saveLastUrl(): void {
-    const lastUrl = this.location.path();
-    this.log('Set last URL:', lastUrl);
-    SessionStorageFacade.lastUrl = lastUrl;
-  }
-
-  private navigateToLastUrl(): void {
-    const lastUrl = SessionStorageFacade.lastUrl;
-
-    if (!lastUrl) {
-      this.log('Last URL not found - unable to perform redirect.');
-      return;
-    }
-
-    this.log('Performing redirect to the last URL:', lastUrl);
-    this.router.navigateByUrl(lastUrl, { replaceUrl: true });
-  }
-
-  private log(message?: any, ...optionalParams: any[]): void {
-    console.log(`[AUTH] ${message}`, ...optionalParams);
-  }
+		this.sessionStorageService.removeLastUrl();
+		void this.router.navigateByUrl(lastUrl, { replaceUrl: true });
+	}
 }

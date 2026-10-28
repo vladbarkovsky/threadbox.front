@@ -1,13 +1,17 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import type { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { TranslocoService } from '@ngneat/transloco';
+import { LocalizationService } from './localization.service';
+import type { Observable } from 'rxjs';
 
-export const languageInterceptor: HttpInterceptorFn = (req, next) => {
-  const translocoService = inject(TranslocoService);
+export const languageInterceptor: HttpInterceptorFn = (
+	request: HttpRequest<unknown>,
+	next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> => {
+	const localizationService: LocalizationService = inject(LocalizationService);
 
-  const clonedReq = req.clone({
-    headers: req.headers.set('Accept-Language', translocoService.getActiveLang()),
-  });
+	const clonedRequest: HttpRequest<unknown> = request.clone({
+		headers: request.headers.set('Accept-Language', localizationService.activeLanguage()),
+	});
 
-  return next(clonedReq);
+	return next(clonedRequest);
 };

@@ -1,20 +1,9 @@
 {
-  "arrowParens": "avoid",
-  "bracketSameLine": false,
-  "bracketSpacing": true,
-  "cursorOffset": -1,
-  "embeddedLanguageFormatting": "auto",
-  "endOfLine": "crlf",
-  "htmlWhitespaceSensitivity": "css",
-  "overrides": [],
-  "printWidth": 130,
-  "proseWrap": "never",
-  "quoteProps": "as-needed",
-  "semi": true,
-  "singleAttributePerLine": true,
-  "requirePragma": false,
-  "singleQuote": true,
-  "tabWidth": 2,
-  "trailingComma": "es5",
-  "useTabs": false
+	"printWidth": 130,
+	"tabWidth": 2,
+	"useTabs": true,
+	"singleQuote": true,
+	"arrowParens": "always",
+	"bracketSameLine": false,
+	"trailingComma": "es5"
 }

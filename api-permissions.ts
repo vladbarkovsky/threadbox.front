@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 export class BoardsPermissions {
   static readonly manage: string = 'Boards.Manage';
 }

@@ -1,6 +1,7 @@
-import { HashMap } from '@ngneat/transloco';
+import type { InterpolationParameter } from './localization/interpolation-parameter.type';
+import type { TranslationKey } from './localization/translation-key.enum';
 
 export interface Translatable {
-  text: string;
-  translationParams?: HashMap | undefined;
+	translationKey: TranslationKey;
+	interpolationParameters?: InterpolationParameter[];
 }

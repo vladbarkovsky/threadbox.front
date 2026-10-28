@@ -1,55 +1,55 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import type { OnInit, Signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthorizationService } from '../authorization/authorization.service';
+import { AuthorizationState } from '../authorization/authorization-state.enum';
 import { NgbCollapse, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { AsyncPipe, UpperCasePipe } from '@angular/common';
-import { Observable } from 'rxjs';
-import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgOptimizedImage, UpperCasePipe } from '@angular/common';
+import { TranslatePipe } from '../common/localization/translate.pipe';
+import { LocalizationService } from '../common/localization/localization.service';
+import { TranslationKey } from '../common/localization/translation-key.enum';
+import { Language } from '../common/localization/language.enum';
 
 @Component({
-  selector: 'app-shell',
-  templateUrl: './shell.component.html',
-  styleUrl: './shell.component.scss',
-  standalone: true,
-  imports: [RouterOutlet, RouterLink, NgbCollapse, AsyncPipe, TranslocoDirective, NgbDropdownModule, UpperCasePipe],
+	selector: 'app-shell',
+	templateUrl: './shell.component.html',
+	styleUrls: ['./shell.component.scss'],
+	standalone: true,
+	imports: [RouterOutlet, RouterLink, NgbCollapse, TranslatePipe, NgbDropdownModule, UpperCasePipe, NgOptimizedImage],
 })
 export class ShellComponent implements OnInit {
-  private readonly authorizationService = inject(AuthorizationService);
-  private readonly translocoService = inject(TranslocoService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
+	private readonly authorizationService: AuthorizationService = inject(AuthorizationService);
+	private readonly localizationService: LocalizationService = inject(LocalizationService);
 
-  navbarCollapsed: boolean = true;
+	navbarCollapsed: boolean = true;
 
-  authorized$: Observable<boolean> = this.authorizationService.authorized$;
-  userName$: Observable<string> = this.authorizationService.userName$;
-  selectedLanguage: string = this.translocoService.getActiveLang();
+	state: Signal<AuthorizationState> = this.authorizationService.state;
+	userName: Signal<string | undefined> = computed((): string | undefined => this.authorizationService.session()?.userName);
+	readonly authorizationState = AuthorizationState;
+	protected activeLanguage: Signal<Language> = this.localizationService.activeLanguage;
+	protected availableLanguages: Language[] = Object.values(Language);
 
-  availableLanguages = this.translocoService.getAvailableLangs() as string[];
+	languageDisplayNames: Record<Language, string> = {
+		[Language.English]: 'EN',
+		[Language.Latvian]: 'LV',
+		[Language.Russian]: 'RU',
+	};
 
-  ngOnInit(): void {
-    this.authorizationService.checkAuthorization();
+	readonly translationKey = TranslationKey;
 
-    this.translocoService.langChanges$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(language => (this.selectedLanguage = language));
-  }
+	ngOnInit(): void {
+		this.authorizationService.checkAuthorization();
+	}
 
-  signIn(): void {
-    this.authorizationService.signInRedirect();
-  }
+	signIn(): void {
+		this.authorizationService.executeSignInRedirect();
+	}
 
-  signOut(): void {
-    this.authorizationService.signOutRedirect();
-  }
+	signOut(): void {
+		this.authorizationService.executeSignOutRedirect();
+	}
 
-  changeLanguage(language: string): void {
-    const url = this.router.url.split('/').filter(x => x);
-
-    // First URL segment is language code.
-    url[0] = language;
-
-    this.router.navigateByUrl(url.join('/'), { replaceUrl: true });
-  }
+	changeLanguage(language: Language): void {
+		this.localizationService.changeLanguage(language);
+	}
 }

@@ -1,89 +1,75 @@
-<ng-container *transloco="let translate; read: 'HOME.BOARD_MODALS'">
-  <div class="modal-header">
-    <h4 class="modal-title">{{ translate('CREATE_BOARD') }}</h4>
-
-    <button
-      class="btn-close"
-      (click)="cancel()"
-    ></button>
-  </div>
-
-  <div class="modal-body">
-    <form
-      [formGroup]="createBoardForm"
-      (ngSubmit)="onSubmit()"
-    >
-      @if (createBoardForm.title; as title) {
-        <div class="mb-3">
-          <label
-            class="mb-2 text-muted"
-            for="title"
-          >
-            {{ translate('TITLE_LABEL') }}
-          </label>
-
-          <input
-            id="title"
-            class="form-control"
-            [formControl]="title"
-            type="text"
-          />
-
-          @if (title.touched && title.errors; as errors) {
-            @if (errors['required']) {
-              <small class="text-danger">{{ translate('TITLE_VALIDATION_REQUIRED') }}</small>
-            }
-
-            @if (errors['maxlength']; as maxLength) {
-              <small class="text-danger">
-                {{ translate('TITLE_VALIDATION_MAX_LENGTH') }}
-                {{ maxLength.requiredLength }}
-              </small>
-            }
+<div class="modal-header">
+  <h4 class="modal-title">{{ translationKey.Home_BoardModals_CreateBoard | translate }}</h4>
+  <button
+    class="btn-close"
+    (click)="cancel()"
+  ></button>
+</div>
+<div class="modal-body">
+  <form
+    [formGroup]="createBoardForm"
+    (ngSubmit)="onSubmit()"
+  >
+    @if (createBoardForm.title; as title) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="title"
+        >
+          {{ translationKey.Home_BoardModals_TitleLabel | translate }}
+        </label>
+        <input
+          id="title"
+          class="form-control"
+          [formControl]="title"
+          type="text"
+        />
+        @if (title.touched && title.errors; as errors) {
+          @if (errors['required']) {
+            <small class="text-danger">{{ translationKey.Home_BoardModals_TitleValidationRequired | translate }}</small>
           }
-        </div>
-      }
-
-      @if (createBoardForm.description; as description) {
-        <div class="mb-3">
-          <label
-            class="mb-2 text-muted"
-            for="description"
-          >
-            {{ translate('DESCRIPTION_LABEL') }}
-          </label>
-
-          <textarea
-            id="description"
-            class="form-control"
-            autoResize
-            [formControl]="description"
-          ></textarea>
-
-          @if (description.touched && description.errors; as errors) {
-            @if (errors['required']) {
-              <small class="text-danger">{{ translate('DESCRIPTION_VALIDATION_REQUIRED') }}</small>
-            }
-
-            @if (errors['maxLength']; as maxLength) {
-              <small class="text-danger">
-                {{ translate('DESCRIPTION_VALIDATION_MAX_LENGTH') }}
-                {{ maxLength.requiredLength }}
-              </small>
-            }
+          @if (errors['maxlength']; as maxLength) {
+            <small class="text-danger">
+              {{ translationKey.Home_BoardModals_TitleValidationMaxLength | translate: [maxLength.requiredLength] }}
+            </small>
           }
-        </div>
-      }
-    </form>
-  </div>
-
-  <div class="modal-footer">
-    <button
-      class="btn btn-outline-secondary"
-      type="submit"
-      [disabled]="createBoardForm.invalid"
-    >
-      {{ translate('SUBMIT') }}
-    </button>
-  </div>
-</ng-container>
+        }
+      </div>
+    }
+    @if (createBoardForm.description; as description) {
+      <div class="mb-3">
+        <label
+          class="mb-2 text-muted"
+          for="description"
+        >
+          {{ translationKey.Home_BoardModals_DescriptionLabel | translate }}
+        </label>
+        <textarea
+          id="description"
+          class="form-control"
+          autoResize
+          [formControl]="description"
+        ></textarea>
+        @if (description.touched && description.errors; as errors) {
+          @if (errors['required']) {
+            <small class="text-danger">{{ translationKey.Home_BoardModals_DescriptionValidationRequired | translate }}</small>
+          }
+          @if (errors['maxLength']; as maxLength) {
+            <small class="text-danger">
+              {{ translationKey.Home_BoardModals_DescriptionValidationMaxLength | translate: [maxLength.requiredLength] }}
+            </small>
+          }
+        }
+      </div>
+    }
+  </form>
+</div>
+<div class="modal-footer">
+  <button
+    class="btn btn-outline-secondary"
+    type="submit"
+    [disabled]="createBoardForm.invalid"
+  >
+    {{ translationKey.Home_BoardModals_Submit | translate }}
+  </button>
+</div>

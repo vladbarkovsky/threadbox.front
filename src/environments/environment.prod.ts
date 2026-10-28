@@ -1,4 +1,4 @@
 export const environment = {
-  apiBaseUrl: 'https://192.168.8.2/threadbox-api',
-  production: true,
+	production: true,
+	apiBaseUrl: 'https://api.thread-box.com',
 };

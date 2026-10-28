@@ -1,117 +1,75 @@
-<ng-container *transloco="let translate; read: 'BOARD.CREATE_THREAD'">
-  <button
-    class="btn btn-secondary"
-    (click)="toggleCollapse()"
-  >
-    {{ translate('CREATE_THREAD') }}
-  </button>
+<button class="btn btn-secondary" (click)="toggleCollapse()" type="button">
+	{{ translationKey.Board_CreateThread_CreateThread | translate }}
+</button>
 
-  <div
-    class="mt-3"
-    #collapse="ngbCollapse"
-    [(ngbCollapse)]="formCollapsed"
-  >
-    @if (message) {
-      <div class="mb-3">
-        <app-message [message]="message"></app-message>
-      </div>
-    }
+<div class="mt-3" #collapse="ngbCollapse" [(ngbCollapse)]="formCollapsed">
+	@if (message) {
+		<div class="mb-3">
+			<app-message [message]="message"></app-message>
+		</div>
+	}
 
-    <form
-      [formGroup]="createThreadForm"
-      (ngSubmit)="onSubmit()"
-    >
-      @if (createThreadForm.title; as title) {
-        <div class="mb-3">
-          <label
-            class="mb-2 text-muted"
-            for="title"
-          >
-            {{ translate('TITLE_LABEL') }}
-          </label>
+	<form [formGroup]="createThreadForm" (ngSubmit)="onSubmit()">
+		@if (createThreadForm.title; as title) {
+			<div class="mb-3">
+				<label class="mb-2 text-muted" for="title">
+					{{ translationKey.Board_CreateThread_TitleLabel | translate }}
+				</label>
 
-          <input
-            id="title"
-            class="form-control"
-            [formControl]="title"
-            type="text"
-          />
+				<input id="title" class="form-control" [formControl]="title" type="text" />
 
-          @if (title.touched && title.errors; as errors) {
-            @if (errors['required']) {
-              <small class="text-danger">{{ translate('TITLE_VALIDATION_REQUIRED') }}</small>
-            }
+				@if (title.touched && title.errors; as errors) {
+					@if (errors['required']) {
+						<small class="text-danger">{{ translationKey.Board_CreateThread_TitleValidationRequired | translate }}</small>
+					}
 
-            <!-- TODO: Max length validation error -->
-          }
-        </div>
-      }
+					<!-- TODO: Max length validation error -->
+				}
+			</div>
+		}
 
-      @if (createThreadForm.text; as text) {
-        <div class="mb-3">
-          <label
-            class="mb-2 text-muted"
-            for="text"
-          >
-            {{ translate('TEXT_LABEL') }}
-          </label>
+		@if (createThreadForm.text; as text) {
+			<div class="mb-3">
+				<label class="mb-2 text-muted" for="text">
+					{{ translationKey.Board_CreateThread_TextLabel | translate }}
+				</label>
 
-          <textarea
-            id="text"
-            class="form-control"
-            [formControl]="text"
-          ></textarea>
+				<textarea id="text" class="form-control" [formControl]="text"></textarea>
 
-          @if (text.touched && text.errors; as errors) {
-            @if (errors['required']) {
-              <small class="text-danger">{{ translate('TEXT_VALIDATION_REQUIRED') }}</small>
-            }
+				@if (text.touched && text.errors; as errors) {
+					@if (errors['required']) {
+						<small class="text-danger">{{ translationKey.Board_CreateThread_TextValidationRequired | translate }}</small>
+					}
 
-            <!-- TODO: Max length validation error -->
-          }
-        </div>
-      }
+					<!-- TODO: Max length validation error -->
+				}
+			</div>
+		}
 
-      @if (createThreadForm.tripcodeString; as tripcodeString) {
-        <div class="mb-3">
-          <label
-            class="mb-2 text-muted"
-            for="tripcodeString"
-          >
-            {{ translate('TRIPCODE_LABEL') }}
-          </label>
+		@if (createThreadForm.tripcodeString; as tripcodeString) {
+			<div class="mb-3">
+				<label class="mb-2 text-muted" for="tripcodeString">
+					{{ translationKey.Board_CreateThread_TripcodeLabel | translate }}
+				</label>
 
-          <input
-            id="tripcodeString"
-            class="form-control"
-            [formControl]="tripcodeString"
-          />
+				<input id="tripcodeString" class="form-control" [formControl]="tripcodeString" />
 
-          @if (tripcodeString.touched && tripcodeString.errors; as errors) {
-            @if (errors['pattern']) {
-              <small class="text-danger">{{ translate('TRIPCODE_VALIDATION_PATTERN') }}</small>
-            }
+				@if (tripcodeString.touched && tripcodeString.errors; as errors) {
+					@if (errors['pattern']) {
+						<small class="text-danger">{{ translationKey.Board_CreateThread_TripcodeValidationPattern | translate }}</small>
+					}
 
-            <!-- TODO: Tripcode pattern description -->
-          }
-        </div>
-      }
+					<!-- TODO: Tripcode pattern description -->
+				}
+			</div>
+		}
 
-      <div>
-        <app-images-upload
-          [imagesUploadState]="imagesUploadState"
-          [maxCount]="5"
-          [fileInputId]="boardId"
-        ></app-images-upload>
-      </div>
+		<div>
+			<app-images-upload [imagesUploadState]="imagesUploadState" [maxCount]="5" [fileInputId]="boardId"></app-images-upload>
+		</div>
 
-      <button
-        class="btn btn-outline-secondary mt-3"
-        type="submit"
-        [disabled]="createThreadForm.invalid"
-      >
-        {{ translate('SUBMIT') }}
-      </button>
-    </form>
-  </div>
-</ng-container>
+		<button class="btn btn-outline-secondary mt-3" type="submit" [disabled]="createThreadForm.invalid">
+			{{ translationKey.Board_CreateThread_Submit | translate }}
+		</button>
+	</form>
+</div>

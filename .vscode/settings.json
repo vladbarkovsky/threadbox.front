@@ -1,13 +1,19 @@
 {
-  "prettier.enable": true,
-  "eslint.enable": true,
-  "stylelint.enable": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "eslint.format.enable": true,
-  "stylelint.validate": ["scss"],
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
-  }
+	"prettier.enable": true,
+	"eslint.enable": true,
+	"stylelint.enable": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"eslint.format.enable": false,
+	"stylelint.validate": ["scss"],
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.fixAll.stylelint": "explicit"
+	},
+	"cSpell.words": ["browserslist", "imageboard", "ngsrc", "tabindex", "Threadbox", "Tripcode"],
+	// For ESLint @typescript-eslint/consistent-type-imports
+	"js/ts.preferences.preferTypeOnlyAutoImports": true,
+	"files.associations": {
+		"nswag.json": "jsonc"
+	}
 }

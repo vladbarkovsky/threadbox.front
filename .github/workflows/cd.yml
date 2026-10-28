@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       commit_sha:
-        description: "Commit SHA"
+        description: 'Commit SHA'
         required: true
 jobs:
   deploy:
@@ -23,16 +23,3 @@ jobs:
           mkdir -p "$DEPLOY_DIR"
           find "$DEPLOY_DIR" -mindepth 1 -delete
           unzip -o "$ARCHIVE" -d "$DEPLOY_DIR"
-      - name: Health check
-        run: |
-          for i in {1..10}; do
-            if curl -f http://localhost:8080/threadbox-front/index.html; then
-              echo "Application is healthy."
-              exit 0
-            else
-              echo "Waiting..."
-              sleep 5
-            fi
-          done
-          echo "Health check failed."
-          exit 1

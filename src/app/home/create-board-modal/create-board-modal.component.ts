@@ -6,38 +6,40 @@ import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BoardsClient } from '../../../../api-client';
 import { ToastStatus } from '../../common/toast/toast-status';
-import { TranslocoDirective } from '@ngneat/transloco';
+import { TranslatePipe } from '../../common/localization/translate.pipe';
+import { TranslationKey } from '../../common/localization/translation-key.enum';
 
 @Component({
-  selector: 'app-create-board-modal',
-  templateUrl: './create-board-modal.component.html',
-  styleUrl: './create-board-modal.component.scss',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoDirective],
+	selector: 'app-create-board-modal',
+	templateUrl: './create-board-modal.component.html',
+	styleUrl: './create-board-modal.component.scss',
+	standalone: true,
+	imports: [ReactiveFormsModule, TranslatePipe],
 })
 export class CreateBoardModalComponent {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly boardsClient = inject(BoardsClient);
-  private readonly toastService = inject(ToastService);
-  private readonly ngbActiveModal = inject(NgbActiveModal);
+	private readonly destroyRef = inject(DestroyRef);
+	private readonly boardsClient = inject(BoardsClient);
+	private readonly toastService = inject(ToastService);
+	private readonly ngbActiveModal = inject(NgbActiveModal);
 
-  readonly createBoardForm = new CreateBoardForm();
+	readonly createBoardForm = new CreateBoardForm();
+	readonly translationKey = TranslationKey;
 
-  onSubmit(): void {
-    this.boardsClient
-      .createBoard(this.createBoardForm.data)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.ngbActiveModal.close();
-          this.toastService.showToast({ text: 'Board created', status: ToastStatus.Success });
-        },
-        // TODO: Set error in sign in state (error must be displayed in component)
-        error: error => console.log(error),
-      });
-  }
+	onSubmit(): void {
+		this.boardsClient
+			.createBoard(this.createBoardForm.data)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: () => {
+					this.ngbActiveModal.close();
+					this.toastService.showToast({ translationKey: TranslationKey.Home_BoardCreated, status: ToastStatus.Success });
+				},
+				// TODO: Set error in sign in state (error must be displayed in component)
+				error: (error) => console.log(error),
+			});
+	}
 
-  cancel(): void {
-    this.ngbActiveModal.dismiss();
-  }
+	cancel(): void {
+		this.ngbActiveModal.dismiss();
+	}
 }

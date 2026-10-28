@@ -1,54 +1,48 @@
-<ng-container *transloco="let translate; read: 'COMMON.IMAGES_UPLOAD'">
-  @if ({ value: base64Files$ | async }; as base64Files) {
-    @if (base64Files.value !== null) {
-      <div class="form-group file-input">
-        <!-- TODO: Check if disabled attribute can be moved to label from input. -->
-        <label
-          [for]="fileInputId"
-          class="btn btn-secondary"
-          [class.disabled]="base64Files.value.length === maxCount"
-        >
-          {{ translate('ADD_IMAGES') }}
-        </label>
+@if ({ value: base64Files$ | async }; as base64Files) {
+	@if (base64Files.value !== null) {
+		<div class="form-group file-input">
+			<!-- TODO: Check if disabled attribute can be moved to label from input. -->
+			<label [for]="fileInputId" class="btn btn-secondary" [class.disabled]="base64Files.value.length === maxCount">
+				{{ translationKey.Common_ImagesUpload_AddImages | translate }}
+			</label>
 
-        <i
-          class="icomoon-icon trash trash-icon align-middle ms-2"
-          (click)="deleteFiles()"
-          role="button"
-          [title]="translate('DELETE_ALL_IMAGES')"
-        ></i>
+			<i
+				class="icomoon-icon trash trash-icon align-middle ms-2"
+				(click)="deleteFiles()"
+				(keydown)="deleteFiles()"
+				role="button"
+				[title]="translationKey.Common_ImagesUpload_DeleteAllImages | translate"
+				tabindex="0"
+			></i>
 
-        <input
-          [id]="fileInputId"
-          type="file"
-          hidden
-          multiple
-          [accept]="allowedFormats"
-          (change)="onFileInputChange($event)"
-          [disabled]="base64Files.value.length === maxCount"
-        />
-      </div>
+			<input
+				[id]="fileInputId"
+				type="file"
+				hidden
+				multiple
+				[accept]="allowedFormats"
+				(change)="onFileInputChange($event)"
+				[disabled]="base64Files.value.length === maxCount"
+			/>
+		</div>
 
-      @if (base64Files.value.length) {
-        <div class="row mt-3">
-          @for (base64File of base64Files.value; track base64File.file.name) {
-            <div class="col-auto image-col">
-              <i
-                class="icomoon-icon trash trash-icon"
-                (click)="deleteFile(base64File.file.name)"
-                role="button"
-                [title]="translate('DELETE_IMAGE')"
-              ></i>
+		@if (base64Files.value.length) {
+			<div class="row mt-3">
+				@for (base64File of base64Files.value; track base64File.file.name) {
+					<div class="col-auto image-col">
+						<i
+							class="icomoon-icon trash trash-icon"
+							(click)="deleteFile(base64File.file.name)"
+							(keydown)="deleteFile(base64File.file.name)"
+							role="button"
+							[title]="translationKey.Common_ImagesUpload_DeleteImage | translate"
+							tabindex="0"
+						></i>
 
-              <img
-                [src]="base64File.base64"
-                [alt]="base64File.file.name"
-                class="img-thumbnail image img-responsive"
-              />
-            </div>
-          }
-        </div>
-      }
-    }
-  }
-</ng-container>
+						<img [src]="base64File.base64" [alt]="base64File.file.name" class="img-thumbnail image img-responsive" />
+					</div>
+				}
+			</div>
+		}
+	}
+}

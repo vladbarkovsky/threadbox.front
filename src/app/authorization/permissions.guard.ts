@@ -1,20 +1,23 @@
-// TODO: Can be replaced with NgxPermissionsGuard.
-// See https://github.com/AlexKhymenko/ngx-permissions/wiki/Usage-with-routes
-
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import type { CanActivateFn, UrlSegment } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
 
-export const permissionsGuard: CanActivateFn = route => {
-  const routePermission = route.data['permission'];
+export const permissionsGuard: CanActivateFn = (route): Promise<boolean> => {
+	const routePermission: unknown = route.data['permission'];
+	const url = '/' + route.url.map((segment: UrlSegment): string => segment.path).join('/');
 
-  if (!routePermission) {
-    const url = '/' + route.url.map(x => x.path).join('/');
-    throw new Error(`No permission specified for guarded route '${url}'.`);
-  }
+	if (typeof routePermission !== 'string') {
+		throw new Error(
+			`Invalid permission for guarded route '${url}': expected a string, but received ${typeof routePermission}: ${String(
+				routePermission
+			)}.`
+		);
+	}
 
-  const permissionsService = inject(NgxPermissionsService);
-  const permission = permissionsService.getPermission(routePermission);
+	if (routePermission === '') {
+		throw new Error(`No permission specified for guarded route '${url}'.`);
+	}
 
-  return !!permission;
+	const permissionsService = inject(NgxPermissionsService);
+	return permissionsService.hasPermission(routePermission);
 };

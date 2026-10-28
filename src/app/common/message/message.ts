@@ -1,6 +1,7 @@
-import { Translatable } from '../translatable';
 import { MessageStatus } from './message-status';
 
-export interface Message extends Translatable {
+export interface Message {
+
+  text: string;
   status: MessageStatus;
 }

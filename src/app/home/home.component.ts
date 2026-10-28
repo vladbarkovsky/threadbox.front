@@ -14,78 +14,81 @@ import { BoardsClient, SectionsClient, SwaggerException } from '../../../api-cli
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { CreateSectionModalComponent } from './create-section-modal/create-section-modal.component';
 import { ToastStatus } from '../common/toast/toast-status';
-import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
+import { TranslatePipe } from '../common/localization/translate.pipe';
+import { TranslationKey } from '../common/localization/translation-key.enum';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
-  standalone: true,
-  imports: [RouterLink, AsyncPipe, NgxPermissionsModule, TranslocoDirective],
+	selector: 'app-home',
+	templateUrl: './home.component.html',
+	styleUrl: './home.component.scss',
+	standalone: true,
+	imports: [RouterLink, AsyncPipe, NgxPermissionsModule, TranslatePipe],
 })
 export class HomeComponent {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly sectionsClient = inject(SectionsClient);
-  private readonly boardsClient = inject(BoardsClient);
-  private readonly homePageState = inject(HomeState);
-  private readonly ngbModal = inject(NgbModal);
-  private readonly toastService = inject(ToastService);
-  private readonly translocoService = inject(TranslocoService);
+	private readonly destroyRef = inject(DestroyRef);
+	private readonly sectionsClient = inject(SectionsClient);
+	private readonly boardsClient = inject(BoardsClient);
+	private readonly homePageState = inject(HomeState);
+	private readonly ngbModal = inject(NgbModal);
+	private readonly toastService = inject(ToastService);
 
-  sectionsPermissions = SectionsPermissions;
-  boardsPermissions = BoardsPermissions;
+	sectionsPermissions = SectionsPermissions;
+	boardsPermissions = BoardsPermissions;
+	readonly translationKey = TranslationKey;
 
-  sections$ = this.homePageState.getSections();
+	sections$ = this.homePageState.getSections();
 
-  ngOnInit(): void {
-    this.sectionsClient
-      .getSections()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: sections => this.homePageState.setSections(sections),
-        // TODO: Set error in sign in state (error must be displayed in component)
-        error: (error: SwaggerException) => console.error(error.response),
-      });
-  }
+	ngOnInit(): void {
+		this.sectionsClient
+			.getSections()
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: (sections) => this.homePageState.setSections(sections),
+				// TODO: Set error in sign in state (error must be displayed in component)
+				error: (error: SwaggerException) => console.error(error.response),
+			});
+	}
 
-  openCreateSectionModal(): void {
-    this.ngbModal.open(CreateSectionModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
-  }
+	openCreateSectionModal(): void {
+		this.ngbModal.open(CreateSectionModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
+	}
 
-  openCreateBoardModal(): void {
-    this.ngbModal.open(CreateBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
-  }
+	openCreateBoardModal(): void {
+		this.ngbModal.open(CreateBoardModalComponent, { backdrop: 'static', keyboard: false, scrollable: true, size: 'lg' });
+	}
 
-  openUpdateBoardModal(boardId: string): void {
-    this.boardsClient
-      .getBoard(boardId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: boardDto => {
-          const modal = this.ngbModal.open(UpdateBoardModalComponent, {
-            backdrop: 'static',
-            keyboard: false,
-            scrollable: true,
-            size: 'lg',
-          });
+	openUpdateBoardModal(boardId: string): void {
+		this.boardsClient
+			.getBoard(boardId)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: (boardDto) => {
+					const modal = this.ngbModal.open(UpdateBoardModalComponent, {
+						backdrop: 'static',
+						keyboard: false,
+						scrollable: true,
+						size: 'lg',
+					});
 
-          modal.componentInstance.boardDto = boardDto;
-        },
-      });
-  }
+					modal.componentInstance.boardDto = boardDto;
+				},
+			});
+	}
 
-  openDeleteBoardConfirmationModal(boardId: string): void {
-    const modal = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', keyboard: false, scrollable: true });
-    modal.componentInstance.text = 'Delete board';
+	openDeleteBoardConfirmationModal(boardId: string): void {
+		const modal = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', keyboard: false, scrollable: true });
+		modal.componentInstance.text = TranslationKey.Home_DeleteBoard;
 
-    modal.closed
-      .pipe(
-        switchMap(() => this.boardsClient.deleteBoard(boardId)),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe({
-        next: () => this.toastService.showToast({ text: 'Board deleted', status: ToastStatus.Success }),
-        error: () => this.toastService.showToast({ text: 'Unable to delete board', status: ToastStatus.Error }),
-      });
-  }
+		modal.closed
+			.pipe(
+				switchMap(() => this.boardsClient.deleteBoard(boardId)),
+				takeUntilDestroyed(this.destroyRef)
+			)
+			.subscribe({
+				next: () =>
+					this.toastService.showToast({ translationKey: TranslationKey.Home_BoardDeleted, status: ToastStatus.Success }),
+				error: () =>
+					this.toastService.showToast({ translationKey: TranslationKey.Home_UnableToDeleteBoard, status: ToastStatus.Error }),
+			});
+	}
 }

@@ -1,28 +1,28 @@
 import { Component, inject } from '@angular/core';
-import { Toast } from './toast';
+import type { Toast } from './toast';
 import { ToastService } from './toast.service';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
-import { TranslocoDirective } from '@ngneat/transloco';
+import { TranslatePipe } from '../localization/translate.pipe';
 import { ToastClassPipe } from './toast-class.pipe';
 import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-toast',
-  templateUrl: './toast.component.html',
-  styleUrl: './toast.component.scss',
-  standalone: true,
-  imports: [NgbToast, NgClass, TranslocoDirective, ToastClassPipe],
+	selector: 'app-toast',
+	templateUrl: './toast.component.html',
+	styleUrls: ['./toast.component.scss'],
+	standalone: true,
+	imports: [NgbToast, NgClass, TranslatePipe, ToastClassPipe],
 })
 export class ToastComponent {
-  private toastService = inject(ToastService);
+	private readonly toastService = inject(ToastService);
 
-  readonly delayMilliseconds = 10000;
+	readonly delayMilliseconds = 10000;
 
-  get toasts(): Toast[] {
-    return this.toastService.toasts;
-  }
+	get toasts(): Toast[] {
+		return this.toastService.toasts;
+	}
 
-  removeToast(toast: Toast) {
-    this.toastService.removeToast(toast);
-  }
+	removeToast(toast: Toast): void {
+		this.toastService.removeToast(toast);
+	}
 }

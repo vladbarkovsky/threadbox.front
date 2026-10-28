@@ -1,134 +1,175 @@
-import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
+import type { OnInit } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, Output, inject } from '@angular/core';
+import { DatePipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { FilesClient, PostDto, PostsClient, ThreadDto } from '../../../../api-client';
+import type { FileResponse, PostDto, ThreadDto } from '../../../../api-client';
+import { FilesClient, PostsClient } from '../../../../api-client';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { first, switchMap } from 'rxjs';
+import { first, switchMap, type Observable } from 'rxjs';
 import { downloadFile } from '../../common/file-operations';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePostModalComponent } from '../create-post/create-post-modal.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { PostsPermissions, ThreadsPermissions } from '../../../../api-permissions';
-import { TranslocoDirective } from '@ngneat/transloco';
+import { TranslatePipe } from '../../common/localization/translate.pipe';
 import { ConfirmationModalComponent } from '../../common/confirmation-modal/confirmation-modal.component';
+import { TranslationKey } from '../../common/localization/translation-key.enum';
+import type { HttpErrorResponse } from '@angular/common/http';
+import { LocalizeDatePipe } from '../../common/localization/translate-date.pipe';
 
 @Component({
-  selector: 'app-thread',
-  templateUrl: './thread.component.html',
-  styleUrl: './thread.component.scss',
-  standalone: true,
-  imports: [LazyLoadImageModule, AsyncPipe, NgClass, DatePipe, NgxPermissionsModule, TranslocoDirective],
+	selector: 'app-thread',
+	templateUrl: './thread.component.html',
+	styleUrls: ['./thread.component.scss'],
+	standalone: true,
+	imports: [LazyLoadImageModule, NgClass, DatePipe, NgxPermissionsModule, TranslatePipe, LocalizeDatePipe, NgOptimizedImage],
 })
 export class ThreadComponent implements OnInit {
-  private readonly postsClient = inject(PostsClient);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly filesClient = inject(FilesClient);
-  private readonly ngbModal = inject(NgbModal);
+	protected readonly dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+		weekday: 'long',
+		hour: '2-digit',
+		minute: '2-digit',
+		second: '2-digit',
+		hour12: false,
+	};
 
-  threadPermissions = ThreadsPermissions;
-  postPermissions = PostsPermissions;
+	private readonly postsClient = inject(PostsClient);
+	private readonly destroyRef = inject(DestroyRef);
+	private readonly filesClient = inject(FilesClient);
+	private readonly ngbModal = inject(NgbModal);
 
-  @Input() thread!: ThreadDto;
-  @Output() readonly deleteThread = new EventEmitter<void>();
+	threadPermissions = ThreadsPermissions;
+	postPermissions = PostsPermissions;
+	readonly translationKey = TranslationKey;
 
-  posts: PostDto[] = [];
-  allPostsLoaded = false;
+	@Input() thread!: ThreadDto;
+	@Output() readonly deleteThread: EventEmitter<void> = new EventEmitter<void>();
 
-  ngOnInit(): void {
-    this.posts = this.thread.posts!;
-    this.allPostsLoaded = !this.thread.hasMorePosts;
-  }
+	posts: PostDto[] = [];
+	allPostsLoaded = false;
 
-  emitDeleteThreadEvent(): void {
-    this.deleteThread.emit();
-  }
+	ngOnInit(): void {
+		this.posts = this.thread.posts!;
+		this.allPostsLoaded = !this.thread.hasMorePosts;
+	}
 
-  togglePosts(): void {
-    if (!this.allPostsLoaded) {
-      this.postsClient
-        .getPosts(this.thread.id, true)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: posts => {
-            this.posts = posts;
-            this.allPostsLoaded = true;
-          },
-          error: error => console.log(error),
-        });
-    } else {
-      this.posts = this.posts.slice(0, 3);
-      this.allPostsLoaded = false;
-    }
-  }
+	emitDeleteThreadEvent(): void {
+		this.deleteThread.emit();
+	}
 
-  openCreatePostModal(): void {
-    const ngbModalRef = this.ngbModal.open(CreatePostModalComponent, { backdrop: 'static', centered: true, size: 'xl' });
-    ngbModalRef.componentInstance.threadId = this.thread.id;
+	togglePosts(): void {
+		if (!this.allPostsLoaded) {
+			this.postsClient
+				.getPosts(this.thread.id, true)
+				.pipe(takeUntilDestroyed(this.destroyRef))
+				.subscribe({
+					next: (posts: PostDto[]): void => {
+						this.posts = posts;
+						this.allPostsLoaded = true;
+					},
+					error: (error: HttpErrorResponse): void => {
+						console.log(error);
+					},
+				});
+		} else {
+			this.posts = this.posts.slice(0, 3);
+			this.allPostsLoaded = false;
+		}
+	}
 
-    ngbModalRef.closed
-      .pipe(
-        first(),
-        switchMap(() => this.postsClient.getPosts(this.thread.id, this.allPostsLoaded)),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe({
-        next: posts => (this.posts = posts),
-        error: error => console.log(error),
-      });
-  }
+	openCreatePostModal(): void {
+		const ngbModalRef = this.ngbModal.open(CreatePostModalComponent, { backdrop: 'static', centered: true, size: 'xl' });
+		const component: CreatePostModalComponent = ngbModalRef.componentInstance as CreatePostModalComponent;
+		component.threadId = this.thread.id;
 
-  openDeletePostModal(postId: string): void {
-    const ngbModalRef = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', centered: true });
-    ngbModalRef.componentInstance.text = 'Delete post.';
+		ngbModalRef.closed
+			.pipe(
+				first(),
+				switchMap((): Observable<PostDto[]> => this.postsClient.getPosts(this.thread.id, this.allPostsLoaded)),
+				takeUntilDestroyed(this.destroyRef)
+			)
+			.subscribe({
+				next: (posts: PostDto[]): void => {
+					this.posts = posts;
+				},
+				error: (error: HttpErrorResponse): void => {
+					console.log(error);
+				},
+			});
+	}
 
-    ngbModalRef.closed
-      .pipe(
-        first(),
-        switchMap(() => this.postsClient.deletePost(postId)),
-        switchMap(() => this.postsClient.getPosts(this.thread.id, this.allPostsLoaded)),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe({
-        next: posts => (this.posts = posts),
-        error: error => console.log(error),
-      });
-  }
+	openDeletePostModal(postId: string): void {
+		const ngbModalRef = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', centered: true });
+		const component: ConfirmationModalComponent = ngbModalRef.componentInstance as ConfirmationModalComponent;
+		component.text = TranslationKey.Board_DeletePost;
 
-  downloadThreadImages(): void {
-    if (this.thread.threadImages?.length === 1) {
-      this.downloadImage(this.thread.threadImages[0].fileInfoId);
-    } else {
-      this.filesClient
-        .getThreadImagesZip(this.thread.id)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: fileResponse => downloadFile(fileResponse.data, fileResponse.fileName!),
-          error: error => console.log(error),
-        });
-    }
-  }
+		ngbModalRef.closed
+			.pipe(
+				first(),
+				switchMap((): Observable<FileResponse> => this.postsClient.deletePost(postId)),
+				switchMap((): Observable<PostDto[]> => this.postsClient.getPosts(this.thread.id, this.allPostsLoaded)),
+				takeUntilDestroyed(this.destroyRef)
+			)
+			.subscribe({
+				next: (posts: PostDto[]): void => {
+					this.posts = posts;
+				},
+				error: (error: HttpErrorResponse): void => {
+					console.log(error);
+				},
+			});
+	}
 
-  downloadPostImages(post: PostDto): void {
-    if (post.postImages?.length === 1) {
-      this.downloadImage(post.postImages[0].fileInfoId);
-    } else {
-      this.filesClient
-        .getPostImagesZip(post.id)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: fileResponse => downloadFile(fileResponse.data, fileResponse.fileName!),
-          error: error => console.log(error),
-        });
-    }
-  }
+	downloadThreadImages(): void {
+		if (this.thread.threadImages?.length === 1) {
+			this.downloadImage(this.thread.threadImages[0]!.fileInfoId);
+		} else {
+			this.filesClient
+				.getThreadImagesZip(this.thread.id)
+				.pipe(takeUntilDestroyed(this.destroyRef))
+				.subscribe({
+					next: (fileResponse: FileResponse): void => {
+						downloadFile(fileResponse.data, fileResponse.fileName!);
+					},
+					error: (error: HttpErrorResponse): void => {
+						console.log(error);
+					},
+				});
+		}
+	}
 
-  private downloadImage(fileInfoId: string): void {
-    this.filesClient
-      .getFile(fileInfoId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: fileResponse => downloadFile(fileResponse.data, fileResponse.fileName!),
-        error: error => console.log(error),
-      });
-  }
+	downloadPostImages(post: PostDto): void {
+		if (post.postImages?.length === 1) {
+			this.downloadImage(post.postImages[0]!.fileInfoId);
+		} else {
+			this.filesClient
+				.getPostImagesZip(post.id)
+				.pipe(takeUntilDestroyed(this.destroyRef))
+				.subscribe({
+					next: (fileResponse: FileResponse): void => {
+						downloadFile(fileResponse.data, fileResponse.fileName!);
+					},
+					error: (error: HttpErrorResponse): void => {
+						console.log(error);
+					},
+				});
+		}
+	}
+
+	private downloadImage(fileInfoId: string): void {
+		this.filesClient
+			.getFile(fileInfoId)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: (fileResponse: FileResponse): void => {
+					downloadFile(fileResponse.data, fileResponse.fileName!);
+				},
+				error: (error: HttpErrorResponse): void => {
+					console.log(error);
+				},
+			});
+	}
 }

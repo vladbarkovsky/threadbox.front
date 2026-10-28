@@ -1,25 +1,27 @@
 import { Component, Input, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslocoDirective } from '@ngneat/transloco';
+import { TranslatePipe } from '../localization/translate.pipe';
+import { TranslationKey } from '../localization/translation-key.enum';
 
 @Component({
-  selector: 'app-confirmation-modal',
-  templateUrl: './confirmation-modal.component.html',
-  styleUrl: './confirmation-modal.component.scss',
-  standalone: true,
-  imports: [TranslocoDirective],
+	selector: 'app-confirmation-modal',
+	templateUrl: './confirmation-modal.component.html',
+	styleUrls: ['./confirmation-modal.component.scss'],
+	standalone: true,
+	imports: [TranslatePipe],
 })
 export class ConfirmationModalComponent {
-  private readonly ngbActiveModal = inject(NgbActiveModal);
+	private readonly ngbActiveModal = inject(NgbActiveModal);
 
-  @Input() readonly title?: string;
-  @Input() readonly text!: string;
+	readonly translationKey = TranslationKey;
+	@Input() readonly title?: TranslationKey;
+	@Input() text!: TranslationKey;
 
-  close() {
-    this.ngbActiveModal.close();
-  }
+	close(): void {
+		this.ngbActiveModal.close();
+	}
 
-  dismiss() {
-    this.ngbActiveModal.dismiss();
-  }
+	dismiss(): void {
+		this.ngbActiveModal.dismiss();
+	}
 }

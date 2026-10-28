@@ -13,6 +13,5 @@
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
     "stylelint.vscode-stylelint",
-    "ms-vscode.vs-keybindings"
   ]
 }

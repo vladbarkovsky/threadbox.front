@@ -1,38 +1,37 @@
-import { HttpErrorResponse, HttpInterceptorFn, HttpStatusCode } from '@angular/common/http';
+import type { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { HttpStatusCode } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { switchMap, tap } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { tap } from 'rxjs';
 import { AuthorizationService } from './authorization.service';
 import { ToastService } from '../common/toast/toast.service';
 import { ToastStatus } from '../common/toast/toast-status';
+import { TranslationKey } from '../common/localization/translation-key.enum';
 
-export const authorizationInterceptor: HttpInterceptorFn = (req, next) => {
-  const authorizationService = inject(AuthorizationService);
-  const toastService = inject(ToastService);
+export const authorizationInterceptor: HttpInterceptorFn = (
+	request: HttpRequest<unknown>,
+	next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> => {
+	const authorizationService: AuthorizationService = inject(AuthorizationService);
+	const toastService: ToastService = inject(ToastService);
 
-  return authorizationService.accessToken$.pipe(
-    switchMap(token => {
-      if (!token) {
-        return next(req.clone());
-      }
+	const clonedRequest: HttpRequest<unknown> = request.clone({ withCredentials: true });
 
-      const clonedReq = req.clone({
-        headers: req.headers.set('Authorization', 'Bearer ' + token),
-      });
-
-      return next(clonedReq).pipe(
-        tap({
-          error: (error: HttpErrorResponse) => {
-            switch (error.status) {
-              case HttpStatusCode.Unauthorized:
-                authorizationService.signOutRedirect();
-                break;
-              case HttpStatusCode.Forbidden:
-                toastService.showToast({ text: 'AUTHORIZATION.ACCESS_DENIED', status: ToastStatus.Warning });
-                break;
-            }
-          },
-        })
-      );
-    })
-  );
+	return next(clonedRequest).pipe(
+		tap({
+			error: (error: HttpErrorResponse): void => {
+				switch (error.status as HttpStatusCode) {
+					case HttpStatusCode.Unauthorized:
+						authorizationService.clearSession();
+						break;
+					case HttpStatusCode.Forbidden:
+						toastService.showToast({
+							status: ToastStatus.Warning,
+							translationKey: TranslationKey.Authorization_AccessDenied,
+						});
+						break;
+				}
+			},
+		})
+	);
 };

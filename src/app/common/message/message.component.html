@@ -1,13 +1,11 @@
-<ng-container *transloco="let translate">
-  <div
-    class="alert"
-    [ngClass]="message.status | messageClass"
-    role="alert"
-  >
-    @if (message.status === messageStatusEnum.Error) {
-      {{ translate(message.text || 'COMMON.DEFAULT_ERROR_MESSAGE') }}
-    } @else {
-      {{ translate(message.text) }}
-    }
-  </div>
-</ng-container>
+<div
+  class="alert"
+  [ngClass]="message.status | messageClass"
+  role="alert"
+>
+  @if (message.status === messageStatusEnum.Error) {
+    {{ message.text || (translationKey.Common_DefaultErrorMessage | translate) }}
+  } @else {
+    {{ message.text }}
+  }
+</div>

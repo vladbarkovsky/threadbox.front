@@ -1,0 +1,22 @@
+{
+	"runtime": "Net60",
+	"documentGenerator": {
+		"fromDocument": {
+			"url": "https://localhost:5000/api/specification.json"
+		}
+	},
+	"codeGenerators": {
+		"openApiToTypeScriptClient": {
+			"templateDirectory": "nswag-templates",
+			"typeScriptVersion": 4.3,
+			"template": "Angular",
+			"useSingletonProvider": true,
+			"injectionTokenType": "InjectionToken",
+			"rxJsVersion": 7.0,
+			"nullValue": "Null",
+			"output": "api-client.ts",
+			// Without this property NSwag rewrites settings during generation.
+			"exceptionClass": "ApiException"
+		}
+	}
+}

@@ -1,83 +1,53 @@
-<ng-container *transloco="let translate; read: 'BOARD.CREATE_POST_MODAL'">
-  <div class="modal-header">
-    <h4 class="modal-title">{{ translate('CREATE_POST') }}</h4>
+<div class="modal-header">
+	<h4 class="modal-title">{{ translationKey.Board_CreatePostModal_CreatePost | translate }}</h4>
 
-    <button
-      class="btn-close"
-      (click)="close()"
-    ></button>
-  </div>
+	<button class="btn-close" (click)="close()" type="button" aria-label="translationKey.Close | translate"></button>
+</div>
 
-  <div class="modal-body">
-    <form
-      [formGroup]="createPostForm"
-      (ngSubmit)="onSubmit()"
-    >
-      @if (createPostForm.text; as text) {
-        <div class="mb-3">
-          <label
-            class="mb-2 text-muted"
-            for="text"
-          >
-            {{ translate('TEXT_LABEL') }}
-          </label>
+<div class="modal-body">
+	<form [formGroup]="createPostForm" (ngSubmit)="onSubmit()">
+		@if (createPostForm.text; as text) {
+			<div class="mb-3">
+				<label class="mb-2 text-muted" for="text">
+					{{ translationKey.Board_CreatePostModal_TextLabel | translate }}
+				</label>
 
-          <textarea
-            id="text"
-            class="form-control"
-            [formControl]="text"
-          ></textarea>
+				<textarea id="text" class="form-control" [formControl]="text"></textarea>
 
-          @if (text.touched && text.errors; as errors) {
-            @if (errors['required']) {
-              <small class="text-danger">{{ translate('TEXT_VALIDATION_REQUIRED') }}</small>
-            }
+				@if (text.touched && text.errors; as errors) {
+					@if (errors['required']) {
+						<small class="text-danger">{{ translationKey.Board_CreatePostModal_TextValidationRequired | translate }}</small>
+					}
 
-            <!-- TODO: Max length validation error -->
-          }
-        </div>
-      }
+					<!-- TODO: Max length validation error -->
+				}
+			</div>
+		}
 
-      @if (createPostForm.tripcodeString; as tripcodeString) {
-        <div class="mb-3">
-          <label
-            class="mb-2 text-muted"
-            for="tripcodeString"
-          >
-            {{ translate('TRIPCODE_LABEL') }}
-          </label>
+		@if (createPostForm.tripcodeString; as tripcodeString) {
+			<div class="mb-3">
+				<label class="mb-2 text-muted" for="tripcodeString">
+					{{ translationKey.Board_CreatePostModal_TripcodeLabel | translate }}
+				</label>
 
-          <input
-            id="tripcodeString"
-            class="form-control"
-            [formControl]="tripcodeString"
-          />
+				<input id="tripcodeString" class="form-control" [formControl]="tripcodeString" />
 
-          @if (tripcodeString.touched && tripcodeString.errors; as errors) {
-            @if (errors['pattern']) {
-              <small class="text-danger">{{ translate('TRIPCODE_VALIDATION_PATTERN') }}</small>
-            }
+				@if (tripcodeString.touched && tripcodeString.errors; as errors) {
+					@if (errors['pattern']) {
+						<small class="text-danger">{{ translationKey.Board_CreatePostModal_TripcodeValidationPattern | translate }}</small>
+					}
 
-            <!-- TODO: Tripcode pattern description -->
-          }
-        </div>
-      }
+					<!-- TODO: Tripcode pattern description -->
+				}
+			</div>
+		}
 
-      <div>
-        <app-images-upload
-          [imagesUploadState]="imagesUploadState"
-          [maxCount]="5"
-          [fileInputId]="threadId"
-        ></app-images-upload>
-      </div>
+		<div>
+			<app-images-upload [imagesUploadState]="imagesUploadState" [maxCount]="5" [fileInputId]="threadId"></app-images-upload>
+		</div>
 
-      <button
-        class="btn btn-outline-secondary mt-3"
-        type="submit"
-        [disabled]="createPostForm.invalid"
-      >
-        {{ translate('SUBMIT') }}
-      </button>
-    </form>
-  </div>
-</ng-container>
+		<button class="btn btn-outline-secondary mt-3" type="submit" [disabled]="createPostForm.invalid">
+			{{ translationKey.Board_CreatePostModal_Submit | translate }}
+		</button>
+	</form>
+</div>
