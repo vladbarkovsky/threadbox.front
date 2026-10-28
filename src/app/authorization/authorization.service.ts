@@ -1,12 +1,11 @@
 import { Location } from '@angular/common';
-import type { EffectCleanupRegisterFn, Signal, WritableSignal } from '@angular/core';
-import { Injectable, effect, inject, signal } from '@angular/core';
+import type { Signal, WritableSignal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import type { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { NgxPermissionsService } from 'ngx-permissions';
 import type { UserSession } from '../../../api-client';
-import { IdentityClient } from '../../../api-client';
+import { UserSessionClient } from '../../../api-client';
 import { SessionStorageService } from '../common/session-storage-service';
 import { AuthorizationState } from './authorization-state.enum';
 import type { HttpErrorResponse } from '@angular/common/http';
@@ -15,7 +14,7 @@ import type { HttpErrorResponse } from '@angular/common/http';
 export class AuthorizationService {
 	private readonly location: Location = inject(Location);
 	private readonly router: Router = inject(Router);
-	private readonly identityClient: IdentityClient = inject(IdentityClient);
+	private readonly userSessionClient: UserSessionClient = inject(UserSessionClient);
 	private readonly permissionsService: NgxPermissionsService = inject(NgxPermissionsService);
 	private readonly sessionStorageService: SessionStorageService = inject(SessionStorageService);
 
@@ -30,35 +29,15 @@ export class AuthorizationService {
 		return this._session.asReadonly();
 	}
 
-	constructor() {
-		effect((onCleanup: EffectCleanupRegisterFn): void => {
-			if (this._state() !== AuthorizationState.Authenticated) {
-				return;
-			}
-
-			const subscription: Subscription = this.identityClient.getUserPermissions().subscribe({
-				next: (permissions: string[]): void => {
-					this.permissionsService.loadPermissions(permissions);
-				},
-				error: (error: HttpErrorResponse): void => {
-					console.error(error);
-				},
-			});
-
-			onCleanup((): void => {
-				subscription.unsubscribe();
-			});
-		});
-	}
-
 	checkAuthorization(): void {
 		if (this._state() !== AuthorizationState.Unknown) {
 			return;
 		}
 
-		this.identityClient.getUserSession().subscribe({
+		this.userSessionClient.get().subscribe({
 			next: (session: UserSession): void => {
 				this.setState(AuthorizationState.Authenticated, session);
+				this.permissionsService.loadPermissions(session.permissions);
 				this.navigateToLastUrl();
 			},
 			error: (error: HttpErrorResponse): void => {
