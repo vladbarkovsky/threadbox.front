@@ -1,3 +1,5 @@
 api-client.ts
 api-permissions.ts
 dist/
+eslint-plugin-threadbox/dist/
+eslint-plugin-threadbox/**/*.d.ts

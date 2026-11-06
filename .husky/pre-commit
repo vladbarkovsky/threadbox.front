@@ -3,8 +3,15 @@
 
 echo "Husky: running pre-commit checks..."
 
-# if ! npx lint-staged --allow-empty; then
-#   echo "Husky: pre-commit checks FAILED"
+cd "$(dirname -- "$0")/.."
+
+if ! npx lint-staged --allow-empty; then
+  echo "Husky: lint-staged FAILED"
+  exit 1
+fi
+
+# if ! npm run build -- --configuration development; then
+#   echo "Husky: frontend build FAILED"
 #   exit 1
 # fi
 

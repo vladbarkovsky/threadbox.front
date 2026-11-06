@@ -3,7 +3,7 @@
 		<div class="form-group file-input">
 			<!-- TODO: Check if disabled attribute can be moved to label from input. -->
 			<label [for]="fileInputId" class="btn btn-secondary" [class.disabled]="base64Files.value.length === maxCount">
-				{{ translationKey.Common_ImagesUpload_AddImages | translate }}
+				{{ translationKey.CommonImagesUploadAddImages | translate }}
 			</label>
 
 			<i
@@ -11,7 +11,7 @@
 				(click)="deleteFiles()"
 				(keydown)="deleteFiles()"
 				role="button"
-				[title]="translationKey.Common_ImagesUpload_DeleteAllImages | translate"
+				[title]="translationKey.CommonImagesUploadDeleteAllImages | translate"
 				tabindex="0"
 			></i>
 
@@ -35,11 +35,11 @@
 							(click)="deleteFile(base64File.file.name)"
 							(keydown)="deleteFile(base64File.file.name)"
 							role="button"
-							[title]="translationKey.Common_ImagesUpload_DeleteImage | translate"
+							[title]="translationKey.CommonImagesUploadDeleteImage | translate"
 							tabindex="0"
 						></i>
 
-						<img [src]="base64File.base64" [alt]="base64File.file.name" class="img-thumbnail image img-responsive" />
+						<img [ngSrc]="base64File.base64" [alt]="base64File.file.name" class="img-thumbnail image img-responsive" />
 					</div>
 				}
 			</div>

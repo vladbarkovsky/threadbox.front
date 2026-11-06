@@ -27,8 +27,9 @@ export const authorizationInterceptor: HttpInterceptorFn = (
 					case HttpStatusCode.Forbidden:
 						toastService.showToast({
 							status: ToastStatus.Warning,
-							translationKey: TranslationKey.Authorization_AccessDenied,
+							translationKey: TranslationKey.AuthorizationAccessDenied,
 						});
+
 						break;
 				}
 			},

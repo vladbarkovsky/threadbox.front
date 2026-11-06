@@ -7,7 +7,7 @@ export class SessionStorageService {
 	}
 
 	set lastUrl(value: string) {
-		sessionStorage.removeItem('lastUrl');
+		sessionStorage.setItem('lastUrl', value);
 	}
 
 	removeLastUrl(): void {

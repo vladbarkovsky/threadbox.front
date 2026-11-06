@@ -1,5 +1,5 @@
 <button class="btn btn-secondary" (click)="toggleCollapse()" type="button">
-	{{ translationKey.Board_CreateThread_CreateThread | translate }}
+	{{ translationKey.BoardCreateThreadCreateThread | translate }}
 </button>
 
 <div class="mt-3" #collapse="ngbCollapse" [(ngbCollapse)]="formCollapsed">
@@ -13,14 +13,14 @@
 		@if (createThreadForm.title; as title) {
 			<div class="mb-3">
 				<label class="mb-2 text-muted" for="title">
-					{{ translationKey.Board_CreateThread_TitleLabel | translate }}
+					{{ translationKey.BoardCreateThreadTitleLabel | translate }}
 				</label>
 
 				<input id="title" class="form-control" [formControl]="title" type="text" />
 
 				@if (title.touched && title.errors; as errors) {
 					@if (errors['required']) {
-						<small class="text-danger">{{ translationKey.Board_CreateThread_TitleValidationRequired | translate }}</small>
+						<small class="text-danger">{{ translationKey.BoardCreateThreadTitleValidationRequired | translate }}</small>
 					}
 
 					<!-- TODO: Max length validation error -->
@@ -31,14 +31,14 @@
 		@if (createThreadForm.text; as text) {
 			<div class="mb-3">
 				<label class="mb-2 text-muted" for="text">
-					{{ translationKey.Board_CreateThread_TextLabel | translate }}
+					{{ translationKey.BoardCreateThreadTextLabel | translate }}
 				</label>
 
 				<textarea id="text" class="form-control" [formControl]="text"></textarea>
 
 				@if (text.touched && text.errors; as errors) {
 					@if (errors['required']) {
-						<small class="text-danger">{{ translationKey.Board_CreateThread_TextValidationRequired | translate }}</small>
+						<small class="text-danger">{{ translationKey.BoardCreateThreadTextValidationRequired | translate }}</small>
 					}
 
 					<!-- TODO: Max length validation error -->
@@ -49,14 +49,14 @@
 		@if (createThreadForm.tripcodeString; as tripcodeString) {
 			<div class="mb-3">
 				<label class="mb-2 text-muted" for="tripcodeString">
-					{{ translationKey.Board_CreateThread_TripcodeLabel | translate }}
+					{{ translationKey.BoardCreateThreadTripcodeLabel | translate }}
 				</label>
 
 				<input id="tripcodeString" class="form-control" [formControl]="tripcodeString" />
 
 				@if (tripcodeString.touched && tripcodeString.errors; as errors) {
 					@if (errors['pattern']) {
-						<small class="text-danger">{{ translationKey.Board_CreateThread_TripcodeValidationPattern | translate }}</small>
+						<small class="text-danger">{{ translationKey.BoardCreateThreadTripcodeValidationPattern | translate }}</small>
 					}
 
 					<!-- TODO: Tripcode pattern description -->
@@ -69,7 +69,7 @@
 		</div>
 
 		<button class="btn btn-outline-secondary mt-3" type="submit" [disabled]="createThreadForm.invalid">
-			{{ translationKey.Board_CreateThread_Submit | translate }}
+			{{ translationKey.BoardCreateThreadSubmit | translate }}
 		</button>
 	</form>
 </div>

@@ -2,12 +2,15 @@
 
 {
 	"root": true,
+	"parserOptions": {
+		"ecmaVersion": 2022
+	},
 	"overrides": [
 		{
 			"files": ["*.ts"],
 			"parser": "@typescript-eslint/parser",
 			"parserOptions": { "project": "./tsconfig.json", "ecmaVersion": 2022, "sourceType": "module" },
-			"plugins": ["@typescript-eslint"],
+			"plugins": ["@stylistic", "@typescript-eslint", "threadbox"],
 			"extends": [
 				"eslint:recommended",
 				"plugin:@typescript-eslint/recommended",
@@ -95,6 +98,24 @@
 				"symbol-description": "error",
 				"yoda": ["error", "never"],
 				"unicode-bom": ["error", "never"],
+
+				"@stylistic/padding-line-between-statements": [
+					"error",
+					{ "blankLine": "always", "prev": "*", "next": "multiline-block-like" },
+					{ "blankLine": "always", "prev": "multiline-block-like", "next": "*" },
+					{
+						"blankLine": "always",
+						"prev": "*",
+						"next": ["multiline-const", "multiline-let", "multiline-var", "multiline-expression"]
+					},
+					{
+						"blankLine": "always",
+						"prev": ["multiline-const", "multiline-let", "multiline-var", "multiline-expression"],
+						"next": "*"
+					}
+				],
+				"@stylistic/no-multiple-empty-lines": ["error", { "max": 1 }],
+
 				"@typescript-eslint/adjacent-overload-signatures": "error",
 				"@typescript-eslint/ban-tslint-comment": "error",
 				"@typescript-eslint/class-literal-property-style": "error",
@@ -170,13 +191,21 @@
 				"@typescript-eslint/prefer-string-starts-ends-with": "error",
 				"@typescript-eslint/require-array-sort-compare": "error",
 				"@typescript-eslint/return-await": ["error", "in-try-catch"],
-				"@typescript-eslint/strict-boolean-expressions": "error",
+				"@typescript-eslint/strict-boolean-expressions": [
+					"error",
+					{ "allowNullableObject": false, "allowNumber": false, "allowString": false }
+				],
+				"@typescript-eslint/unbound-method": "off",
 				"@typescript-eslint/use-unknown-in-catch-callback-variable": "error",
 
+				"threadbox/explicit-type": "error",
+
 				// Conflicts with api-client.ts types.
+				"@typescript-eslint/no-unsafe-argument": "off",
 				"@typescript-eslint/no-unsafe-assignment": "off",
-				"@typescript-eslint/no-unsafe-return": "off",
+				"@typescript-eslint/no-unsafe-call": "off",
 				"@typescript-eslint/no-unsafe-member-access": "off",
+				"@typescript-eslint/no-unsafe-return": "off",
 
 				"@angular-eslint/no-async-lifecycle-method": "error",
 				"@angular-eslint/sort-lifecycle-methods": "error",
@@ -205,6 +234,13 @@
 				"@angular-eslint/use-component-selector": "error",
 				"@angular-eslint/use-component-view-encapsulation": "error",
 				"@angular-eslint/use-lifecycle-interface": "error"
+			}
+		},
+		{
+			"files": ["eslint-plugin-threadbox/src/**/*.ts"],
+			"excludedFiles": ["**/*.d.ts"],
+			"parserOptions": {
+				"project": true
 			}
 		},
 		{

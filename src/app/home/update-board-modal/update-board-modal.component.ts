@@ -1,7 +1,9 @@
-import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
+import type { OnInit } from '@angular/core';
+import { Component, DestroyRef, Input, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UpdateBoardForm } from './update-board.form';
-import { BoardDto, BoardsClient } from '../../../../api-client';
+import type { BoardDto } from '../../../../api-client';
+import { BoardClient } from '../../../../api-client';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,18 +14,18 @@ import { TranslationKey } from '../../common/localization/translation-key.enum';
 @Component({
 	selector: 'app-update-board-modal',
 	templateUrl: './update-board-modal.component.html',
-	styleUrl: './update-board-modal.component.scss',
+	styleUrls: ['./update-board-modal.component.scss'],
 	standalone: true,
 	imports: [ReactiveFormsModule, TranslatePipe],
 })
 export class UpdateBoardModalComponent implements OnInit {
-	private readonly destroyRef = inject(DestroyRef);
-	private readonly boardsListClient = inject(BoardsClient);
-	private readonly toastService = inject(ToastService);
-	private readonly ngbActiveModal = inject(NgbActiveModal);
+	private readonly destroyRef: DestroyRef = inject(DestroyRef);
+	private readonly boardClient: BoardClient = inject(BoardClient);
+	private readonly toastService: ToastService = inject(ToastService);
+	private readonly ngbActiveModal: NgbActiveModal = inject(NgbActiveModal);
 
 	@Input() readonly boardDto!: BoardDto;
-	readonly translationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKey = TranslationKey;
 
 	updateBoardForm!: UpdateBoardForm;
 
@@ -32,16 +34,19 @@ export class UpdateBoardModalComponent implements OnInit {
 	}
 
 	onSubmit(): void {
-		this.boardsListClient
-			.updateBoard(this.updateBoardForm!.data)
+		this.boardClient
+			.update(this.boardDto.id, this.updateBoardForm.command)
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe({
-				next: () => {
+				next: (): void => {
 					this.ngbActiveModal.close();
-					this.toastService.showToast({ translationKey: TranslationKey.Home_BoardUpdated, status: ToastStatus.Success });
+					this.toastService.showToast({ translationKey: TranslationKey.HomeBoardUpdated, status: ToastStatus.Success });
 				},
 				// TODO: Set error in sign in state (error must be displayed in component)
-				error: (error) => console.log(error),
+				error: (error: unknown): void => {
+					// eslint-disable-next-line no-console
+					console.log(error);
+				},
 			});
 	}
 

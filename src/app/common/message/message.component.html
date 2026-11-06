@@ -1,11 +1,7 @@
-<div
-  class="alert"
-  [ngClass]="message.status | messageClass"
-  role="alert"
->
-  @if (message.status === messageStatusEnum.Error) {
-    {{ message.text || (translationKey.Common_DefaultErrorMessage | translate) }}
-  } @else {
-    {{ message.text }}
-  }
+<div class="alert" [ngClass]="message.status | messageClass" role="alert">
+	@if (message.status === messageStatusEnum.Error) {
+		{{ message.text || (translationKey.CommonDefaultErrorMessage | translate) }}
+	} @else {
+		{{ message.text }}
+	}
 </div>

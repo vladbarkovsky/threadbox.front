@@ -1,12 +1,14 @@
-import { FileParameter, SwaggerException } from '../../../api-client';
+import type { ApiException, FileParameter } from '../../../api-client';
 
-export function convertToNSwagFileParameter(file: File) {
-  return <FileParameter>{
-    data: file,
-    fileName: file.name,
-  };
+export function convertToNSwagClientFileParameter(file: File): FileParameter {
+	const fileParameter: FileParameter = {
+		data: file,
+		fileName: file.name,
+	};
+
+	return fileParameter;
 }
 
-export function getResponseBody(error: any): string {
-  return (error as SwaggerException).response;
+export function getResponseBody(error: unknown): string {
+	return (error as ApiException).response;
 }

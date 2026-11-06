@@ -2,8 +2,8 @@ import { Component, DestroyRef, Input, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ImagesUploadState } from '../../common/images-upload/images-upload.state';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import type { FileResponse } from '../../../../api-client';
-import { PostsClient } from '../../../../api-client';
+import type { PostDto } from '../../../../api-client';
+import { PostClient } from '../../../../api-client';
 import { CreatePostForm } from './create-post.form';
 import type { Observable } from 'rxjs';
 import { first, switchMap } from 'rxjs';
@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ImagesUploadComponent } from '../../common/images-upload/images-upload.component';
 import { TranslatePipe } from '../../common/localization/translate.pipe';
 import { TranslationKey } from '../../common/localization/translation-key.enum';
-import { convertToNSwagFileParameter } from '../../common/nswag-operations';
+import { convertToNSwagClientFileParameter } from '../../common/nswag-operations';
 import type { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -25,14 +25,14 @@ import type { HttpErrorResponse } from '@angular/common/http';
 // TODO: Create non-modal window.
 // Possible solution here: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog.
 export class CreatePostModalComponent {
-	readonly imagesUploadState = inject(ImagesUploadState);
-	private readonly ngbActiveModal = inject(NgbActiveModal);
-	private readonly postsClient = inject(PostsClient);
-	private readonly destroyRef = inject(DestroyRef);
+	readonly imagesUploadState: ImagesUploadState = inject(ImagesUploadState);
+	private readonly ngbActiveModal: NgbActiveModal = inject(NgbActiveModal);
+	private readonly postClient: PostClient = inject(PostClient);
+	private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
 	@Input() threadId!: string;
-	readonly createPostForm = new CreatePostForm();
-	readonly translationKey = TranslationKey;
+	readonly createPostForm: CreatePostForm = new CreatePostForm();
+	readonly translationKey: typeof TranslationKey = TranslationKey;
 
 	close(): void {
 		this.ngbActiveModal.dismiss();
@@ -44,12 +44,12 @@ export class CreatePostModalComponent {
 			.pipe(
 				first(),
 				switchMap(
-					(files: File[]): Observable<FileResponse> =>
-						this.postsClient.createPost(
+					(files: File[]): Observable<PostDto> =>
+						this.postClient.create(
+							files.map(convertToNSwagClientFileParameter),
 							this.createPostForm.text.value,
 							this.threadId,
-							this.createPostForm.tripcodeString.value,
-							files.map(convertToNSwagFileParameter)
+							this.createPostForm.tripcodeString.value
 						)
 				),
 				takeUntilDestroyed(this.destroyRef)
@@ -59,6 +59,7 @@ export class CreatePostModalComponent {
 					this.ngbActiveModal.close();
 				},
 				error: (error: HttpErrorResponse): void => {
+					// eslint-disable-next-line no-console
 					console.log(error);
 				},
 			});

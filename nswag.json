@@ -16,8 +16,9 @@
 			"nullValue": "Null",
 			"output": "api-client.ts",
 			// Without this property NSwag rewrites settings during generation.
-			"exceptionClass": "ApiException"
-			""
+			"exceptionClass": "ApiException",
+			"markOptionalProperties": false,
+			"newLineBehavior": "CRLF"
 		}
 	}
 }

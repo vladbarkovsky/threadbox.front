@@ -14,19 +14,28 @@ export const APP_ROUTES: Routes = [
 		children: [
 			{
 				loadComponent: (): Promise<Type<HomeComponent>> =>
-					import('./home/home.component').then((module): Type<HomeComponent> => module.HomeComponent),
+					import('./home/home.component').then(
+						// eslint-disable-next-line @typescript-eslint/naming-convention -- module export name
+						(homeModule: { HomeComponent: Type<HomeComponent> }): Type<HomeComponent> => homeModule.HomeComponent
+					),
 				path: 'home',
 			},
 			{
 				loadComponent: (): Promise<Type<BoardComponent>> =>
-					import('./board/board.component').then((module): Type<BoardComponent> => module.BoardComponent),
+					import('./board/board.component').then(
+						// eslint-disable-next-line @typescript-eslint/naming-convention -- module export name
+						(boardModule: { BoardComponent: Type<BoardComponent> }): Type<BoardComponent> => boardModule.BoardComponent
+					),
 				path: 'board/:boardId',
 			},
 			{ path: '', pathMatch: 'full', redirectTo: 'home' },
 			{ path: '**', redirectTo: 'home' },
 		],
 		loadComponent: (): Promise<Type<ShellComponent>> =>
-			import('./shell/shell.component').then((module): Type<ShellComponent> => module.ShellComponent),
+			import('./shell/shell.component').then(
+				// eslint-disable-next-line @typescript-eslint/naming-convention -- module export name
+				(shellModule: { ShellComponent: Type<ShellComponent> }): Type<ShellComponent> => shellModule.ShellComponent
+			),
 		path: ':language',
 	},
 	{

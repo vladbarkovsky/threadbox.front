@@ -11,9 +11,9 @@ import { TranslationKey } from '../localization/translation-key.enum';
 	imports: [TranslatePipe],
 })
 export class ConfirmationModalComponent {
-	private readonly ngbActiveModal = inject(NgbActiveModal);
+	private readonly ngbActiveModal: NgbActiveModal = inject(NgbActiveModal);
 
-	readonly translationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKey = TranslationKey;
 	@Input() readonly title?: TranslationKey;
 	@Input() text!: TranslationKey;
 

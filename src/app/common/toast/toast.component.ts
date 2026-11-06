@@ -14,9 +14,9 @@ import { NgClass } from '@angular/common';
 	imports: [NgbToast, NgClass, TranslatePipe, ToastClassPipe],
 })
 export class ToastComponent {
-	private readonly toastService = inject(ToastService);
+	private readonly toastService: ToastService = inject(ToastService);
 
-	readonly delayMilliseconds = 10000;
+	readonly delayMilliseconds: number = 10000;
 
 	get toasts(): Toast[] {
 		return this.toastService.toasts;

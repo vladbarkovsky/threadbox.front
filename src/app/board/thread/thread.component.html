@@ -1,7 +1,7 @@
 <div class="card border-dark my-2">
 	<div class="card-header thread-header">
 		<span class="fw-bold">{{ thread.title }}</span>
-		<span>{{ thread.tripcodeKey ?? (translationKey.Board_Thread_Anonymous | translate) }}</span>
+		<span>{{ thread.tripcodeKey ?? (translationKey.BoardThreadAnonymous | translate) }}</span>
 		<span>{{ thread.createdAt | localizeDate: dateTimeFormatOptions }}</span>
 
 		<i
@@ -28,15 +28,15 @@
 		<div class="row mb-2">
 			@for (image of thread.threadImages; track $index) {
 				<div class="col-auto p-1">
-					<img [lazyLoad]="image.url!" src="assets/image-placeholder.gif" alt="Thread image" class="img-thumbnail image" />
+					<img [lazyLoad]="image.url!" ngSrc="assets/image-placeholder.gif" alt="Thread image" class="img-thumbnail image" />
 				</div>
 			}
 		</div>
 
-		@if (thread.threadImages?.length; as length) {
+		@if (thread.threadImages.length; as length) {
 			<div>
 				<button class="btn btn-secondary mb-2" type="button" (click)="downloadThreadImages()">
-					{{ (length > 1 ? translationKey.Board_Thread_DownloadImages : translationKey.Board_Thread_DownloadImage) | translate }}
+					{{ (length > 1 ? translationKey.BoardThreadDownloadImages : translationKey.BoardThreadDownloadImage) | translate }}
 				</button>
 			</div>
 		}
@@ -55,14 +55,14 @@
 		@for (post of posts; track post.id) {
 			<div class="card my-2">
 				<div class="card-header post-header">
-					<span>{{ post.tripcodeKey ?? (translationKey.Board_Thread_Anonymous | translate) }}</span>
-					<span>{{ thread.createdAt | localizeDate: dateTimeFormatOptions }}</span>
+					<span>{{ post.tripcodeKey ?? (translationKey.BoardThreadAnonymous | translate) }}</span>
+					<span>{{ post.createdAt | localizeDate: dateTimeFormatOptions }}</span>
 
 					<i
 						*ngxPermissionsOnly="postPermissions.delete"
 						class="icomoon-icon trash align-middle"
-						(click)="openDeletePostModal(post.id)"
-						(keydown)="openDeletePostModal(post.id)"
+						(click)="openDeletePostModal(post)"
+						(keydown)="openDeletePostModal(post)"
 						role="button"
 						tabindex="0"
 					></i>
@@ -79,11 +79,9 @@
 						}
 					</div>
 
-					@if (post.postImages?.length; as length) {
+					@if (post.postImages.length; as length) {
 						<button class="btn btn-secondary mb-2" type="button" (click)="downloadPostImages(post)">
-							{{
-								(length > 1 ? translationKey.Board_Thread_DownloadImages : translationKey.Board_Thread_DownloadImage) | translate
-							}}
+							{{ (length > 1 ? translationKey.BoardThreadDownloadImages : translationKey.BoardThreadDownloadImage) | translate }}
 						</button>
 					}
 				</div>

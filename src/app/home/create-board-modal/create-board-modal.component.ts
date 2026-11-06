@@ -1,10 +1,10 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, Input, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateBoardForm } from './create-board.form';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BoardsClient } from '../../../../api-client';
+import { SectionClient } from '../../../../api-client';
 import { ToastStatus } from '../../common/toast/toast-status';
 import { TranslatePipe } from '../../common/localization/translate.pipe';
 import { TranslationKey } from '../../common/localization/translation-key.enum';
@@ -12,30 +12,36 @@ import { TranslationKey } from '../../common/localization/translation-key.enum';
 @Component({
 	selector: 'app-create-board-modal',
 	templateUrl: './create-board-modal.component.html',
-	styleUrl: './create-board-modal.component.scss',
+	styleUrls: ['./create-board-modal.component.scss'],
 	standalone: true,
 	imports: [ReactiveFormsModule, TranslatePipe],
 })
 export class CreateBoardModalComponent {
-	private readonly destroyRef = inject(DestroyRef);
-	private readonly boardsClient = inject(BoardsClient);
-	private readonly toastService = inject(ToastService);
-	private readonly ngbActiveModal = inject(NgbActiveModal);
+	private readonly destroyRef: DestroyRef = inject(DestroyRef);
+	private readonly sectionClient: SectionClient = inject(SectionClient);
+	private readonly toastService: ToastService = inject(ToastService);
+	private readonly ngbActiveModal: NgbActiveModal = inject(NgbActiveModal);
 
-	readonly createBoardForm = new CreateBoardForm();
-	readonly translationKey = TranslationKey;
+	@Input() sectionId!: string;
+	readonly createBoardForm: CreateBoardForm = new CreateBoardForm();
+	readonly translationKey: typeof TranslationKey = TranslationKey;
 
 	onSubmit(): void {
-		this.boardsClient
-			.createBoard(this.createBoardForm.data)
+		this.createBoardForm.sectionId = this.sectionId;
+
+		this.sectionClient
+			.create2(this.sectionId, this.createBoardForm.data)
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe({
-				next: () => {
+				next: (): void => {
 					this.ngbActiveModal.close();
-					this.toastService.showToast({ translationKey: TranslationKey.Home_BoardCreated, status: ToastStatus.Success });
+					this.toastService.showToast({ translationKey: TranslationKey.HomeBoardCreated, status: ToastStatus.Success });
 				},
 				// TODO: Set error in sign in state (error must be displayed in component)
-				error: (error) => console.log(error),
+				error: (error: unknown): void => {
+					// eslint-disable-next-line no-console
+					console.log(error);
+				},
 			});
 	}
 

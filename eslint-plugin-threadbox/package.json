@@ -1,0 +1,12 @@
+{
+	"name": "eslint-plugin-threadbox",
+	"version": "1.0.0",
+	"private": true,
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "node ../node_modules/typescript/lib/tsc.js -p tsconfig.json",
+		"prepare": "node ../node_modules/typescript/lib/tsc.js -p tsconfig.json",
+		"test": "node ../node_modules/typescript/lib/tsc.js -p tsconfig.json && node dist/rules/explicit-type.test.js"
+	}
+}

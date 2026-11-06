@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import type { PaginatedResultOfThreadDto, ThreadDto } from '../../../api-client';
-import { GetThreadsQuery } from '../../../api-client';
+import { GetThreadListQuery } from '../../../api-client';
 
 @Injectable()
 export class ThreadsListState {
@@ -10,11 +10,11 @@ export class ThreadsListState {
 
 	private _threads: ThreadDto[] = [];
 
-	query: GetThreadsQuery;
+	query: GetThreadListQuery;
 	result: PaginatedResultOfThreadDto | undefined;
 
 	constructor() {
-		this.query = new GetThreadsQuery({
+		this.query = new GetThreadListQuery({
 			pageIndex: 0,
 			pageSize: 4,
 			boardId: '',
@@ -22,16 +22,17 @@ export class ThreadsListState {
 		});
 	}
 
-	addThreads(result: PaginatedResultOfThreadDto) {
+	addThreads(result: PaginatedResultOfThreadDto): void {
 		this.result = result;
-		this._threads = this._threads.concat(result.pageItems!);
+		const pageItems: ThreadDto[] = result.pageItems ?? [];
+		this._threads = this._threads.concat(pageItems);
 	}
 
-	removeThread(threadId: string) {
-		this._threads = this._threads.filter((x) => x.id !== threadId);
+	removeThread(threadId: string): void {
+		this._threads = this._threads.filter((thread: ThreadDto): boolean => thread.id !== threadId);
 	}
 
-	reset() {
+	reset(): void {
 		this._threads = [];
 		this.query.pageIndex = 0;
 	}

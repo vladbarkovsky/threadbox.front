@@ -3,8 +3,8 @@ import type { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { ImagesUploadComponent } from '../../common/images-upload/images-upload.component';
 import { CreateThreadForm } from './create-thread.form';
-import type { FileResponse } from '../../../../api-client';
-import { ThreadsClient } from '../../../../api-client';
+import type { ThreadDto } from '../../../../api-client';
+import { ThreadClient } from '../../../../api-client';
 import { ImagesUploadState } from '../../common/images-upload/images-upload.state';
 import { ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -14,7 +14,7 @@ import { TranslationKey } from '../../common/localization/translation-key.enum';
 import type { Message } from '../../common/message/message';
 import { MessageComponent } from '../../common/message/message.component';
 import { MessageStatus } from '../../common/message/message-status';
-import { convertToNSwagFileParameter, getResponseBody } from '../../common/nswag-operations';
+import { convertToNSwagClientFileParameter, getResponseBody } from '../../common/nswag-operations';
 import type { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -26,9 +26,9 @@ import type { HttpErrorResponse } from '@angular/common/http';
 	providers: [ImagesUploadState],
 })
 export class CreateThreadComponent {
-	readonly imagesUploadState = inject(ImagesUploadState);
-	private readonly threadsClient = inject(ThreadsClient);
-	private readonly destroyRef = inject(DestroyRef);
+	readonly imagesUploadState: ImagesUploadState = inject(ImagesUploadState);
+	private readonly threadClient: ThreadClient = inject(ThreadClient);
+	private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
 	@Input() boardId!: string;
 	@Output() readonly threadCreated: EventEmitter<void> = new EventEmitter<void>();
@@ -36,9 +36,9 @@ export class CreateThreadComponent {
 
 	message: Message | undefined = undefined;
 
-	formCollapsed = true;
-	createThreadForm = new CreateThreadForm();
-	readonly translationKey = TranslationKey;
+	formCollapsed: boolean = true;
+	createThreadForm: CreateThreadForm = new CreateThreadForm();
+	readonly translationKey: typeof TranslationKey = TranslationKey;
 
 	toggleCollapse(): void {
 		this.ngbCollapse.toggle();
@@ -56,13 +56,13 @@ export class CreateThreadComponent {
 			.pipe(
 				first(),
 				switchMap(
-					(files): Observable<FileResponse> =>
-						this.threadsClient.createThread(
+					(files: File[]): Observable<ThreadDto> =>
+						this.threadClient.create(
+							files.map(convertToNSwagClientFileParameter),
+							this.boardId,
 							this.createThreadForm.title.value,
 							this.createThreadForm.text.value,
-							this.boardId,
-							this.createThreadForm.tripcodeString.value,
-							files.map(convertToNSwagFileParameter)
+							this.createThreadForm.tripcodeString.value
 						)
 				),
 				takeUntilDestroyed(this.destroyRef)

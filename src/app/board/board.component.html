@@ -6,7 +6,7 @@
 			<input
 				type="text"
 				class="form-control"
-				[placeholder]="translationKey.Board_SearchPlaceholder | translate"
+				[placeholder]="translationKey.BoardSearchPlaceholder | translate"
 				[(ngModel)]="searchText"
 				(blur)="onSearchInputBlur()"
 			/>
@@ -19,13 +19,13 @@
 
 	<p>{{ board.description }}</p>
 
-	<div scroll-tracking (thresholdPassed)="onThresholdPassed()">
+	<div appScrollTracking (thresholdPassed)="onThresholdPassed()">
 		<app-create-thread [boardId]="board.id" (threadCreated)="onThreadCreated()"></app-create-thread>
 		<hr />
 
 		@if (threads) {
 			@for (thread of threads; track thread.id) {
-				<app-thread [thread]="thread" (deleteThread)="deleteThread(thread.id)"></app-thread>
+				<app-thread [thread]="thread" (deleteThread)="deleteThread(thread)"></app-thread>
 			} @empty {
 				<!-- TODO: Display text 'There are no threads' -->
 			}

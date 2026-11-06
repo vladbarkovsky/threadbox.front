@@ -4,7 +4,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { NgxPermissionsService } from 'ngx-permissions';
-import type { UserSession } from '../../../api-client';
+import type { UserSessionDto } from '../../../api-client';
 import { UserSessionClient } from '../../../api-client';
 import { SessionStorageService } from '../common/session-storage-service';
 import { AuthorizationState } from './authorization-state.enum';
@@ -19,29 +19,31 @@ export class AuthorizationService {
 	private readonly sessionStorageService: SessionStorageService = inject(SessionStorageService);
 
 	private readonly _state: WritableSignal<AuthorizationState> = signal<AuthorizationState>(AuthorizationState.Unknown);
-	private readonly _session: WritableSignal<UserSession | undefined> = signal<UserSession | undefined>(undefined);
+	private readonly _session: WritableSignal<UserSessionDto | undefined> = signal<UserSessionDto | undefined>(undefined);
 
 	get state(): Signal<AuthorizationState> {
 		return this._state.asReadonly();
 	}
 
-	get session(): Signal<UserSession | undefined> {
+	get session(): Signal<UserSessionDto | undefined> {
 		return this._session.asReadonly();
 	}
 
-	checkAuthorization(): void {
+	requestAuthorizationState(): void {
 		if (this._state() !== AuthorizationState.Unknown) {
 			return;
 		}
 
 		this.userSessionClient.get().subscribe({
-			next: (session: UserSession): void => {
+			next: (session: UserSessionDto): void => {
 				this.setState(AuthorizationState.Authenticated, session);
 				this.permissionsService.loadPermissions(session.permissions);
 				this.navigateToLastUrl();
 			},
 			error: (error: HttpErrorResponse): void => {
 				this.setState(AuthorizationState.Anonymous);
+
+				// eslint-disable-next-line no-console
 				console.error(error);
 			},
 		});
@@ -63,7 +65,7 @@ export class AuthorizationService {
 		this.setState(AuthorizationState.Anonymous);
 	}
 
-	private setState(state: AuthorizationState, session?: UserSession): void {
+	private setState(state: AuthorizationState, session?: UserSessionDto): void {
 		this._session.set(session);
 		this._state.set(state);
 	}

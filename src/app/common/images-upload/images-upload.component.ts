@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import type { Base64File } from './base64-file';
 import type { Observable } from 'rxjs';
 import type { ImagesUploadState } from './images-upload.state';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { ToastStatus } from '../toast/toast-status';
 import { TranslatePipe } from '../localization/translate.pipe';
 import { TranslationKey } from '../localization/translation-key.enum';
@@ -14,10 +14,10 @@ import { TranslationKey } from '../localization/translation-key.enum';
 	templateUrl: './images-upload.component.html',
 	styleUrls: ['./images-upload.component.scss'],
 	standalone: true,
-	imports: [ReactiveFormsModule, AsyncPipe, TranslatePipe],
+	imports: [ReactiveFormsModule, AsyncPipe, TranslatePipe, NgOptimizedImage],
 })
 export class ImagesUploadComponent {
-	private readonly toastService = inject(ToastService);
+	private readonly toastService: ToastService = inject(ToastService);
 
 	@Input() imagesUploadState!: ImagesUploadState;
 	@Input() maxCount!: number;
@@ -30,7 +30,7 @@ export class ImagesUploadComponent {
 	 * @memberof ImagesUploadComponent
 	 */
 	@Input() fileInputId!: string;
-	readonly translationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKey = TranslationKey;
 
 	get base64Files$(): Observable<Base64File[]> {
 		return this.imagesUploadState.getBase64Files();
@@ -39,28 +39,37 @@ export class ImagesUploadComponent {
 	readonly allowedFormats: string[] = ['image/jpeg', 'image/gif', 'image/png', 'image/bmp', 'image/svg+xml'];
 
 	onFileInputChange($event: Event): void {
-		const fileInput = $event.target as HTMLInputElement;
-		let files = Array.from(fileInput.files!);
+		const fileInput: HTMLInputElement = $event.target as HTMLInputElement;
+
+		if (fileInput.files === null) {
+			return;
+		}
+
+		let files: File[] = Array.from(fileInput.files);
 
 		// Clearing file input.
 		fileInput.value = '';
 
-		files.forEach((file, i): void => {
-			if (this.imagesUploadState.base64Files.find((x): boolean => x.file.name === file.name)) {
-				files.splice(i, 1);
+		files.forEach((file: File, index: number): void => {
+			const existingFile: Base64File | undefined = this.imagesUploadState.base64Files.find(
+				(base64File: Base64File): boolean => base64File.file.name === file.name
+			);
+
+			if (existingFile !== undefined) {
+				files.splice(index, 1);
 
 				this.toastService.showToast({
-					translationKey: TranslationKey.Common_ImagesUpload_FileAlreadyAdded,
+					translationKey: TranslationKey.CommonImagesUploadFileAlreadyAdded,
 					interpolationParameters: [file.name],
 					status: ToastStatus.Warning,
 				});
 			}
 
 			if (!this.allowedFormats.includes(file.type)) {
-				files.splice(i, 1);
+				files.splice(index, 1);
 
 				this.toastService.showToast({
-					translationKey: TranslationKey.Common_ImagesUpload_FileNotSupported,
+					translationKey: TranslationKey.CommonImagesUploadFileNotSupported,
 					interpolationParameters: [file.name],
 					status: ToastStatus.Warning,
 				});
@@ -69,22 +78,28 @@ export class ImagesUploadComponent {
 
 		if (this.imagesUploadState.base64Files.length + files.length > this.maxCount) {
 			files = files.slice(0, this.maxCount - this.imagesUploadState.base64Files.length);
+
 			this.toastService.showToast({
-				translationKey: TranslationKey.Common_ImagesUpload_MaxCount,
+				translationKey: TranslationKey.CommonImagesUploadMaxCount,
 				interpolationParameters: [this.maxCount],
 				status: ToastStatus.Warning,
 			});
 		}
 
-		if (files.length) {
-			files.forEach((file): void => {
+		if (files.length > 0) {
+			files.forEach((file: File): void => {
 				// We create reader for each uploaded image to get it's Base64 representation,
 				// Because we want to show uploaded images in HTML.
-				const reader = new FileReader();
+				const reader: FileReader = new FileReader();
 
-				reader.onload = (event): void => {
-					const base64 = event.target!.result as string;
-					this.imagesUploadState.addBase64File({ file, base64 });
+				reader.onload = (event: ProgressEvent<FileReader>): void => {
+					const result: string | ArrayBuffer | null | undefined = event.target?.result;
+
+					if (typeof result !== 'string') {
+						return;
+					}
+
+					this.imagesUploadState.addBase64File({ file, base64: result });
 				};
 
 				reader.readAsDataURL(file);

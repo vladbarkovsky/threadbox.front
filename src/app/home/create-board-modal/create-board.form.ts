@@ -1,27 +1,29 @@
-import { Validators, FormControl } from '@angular/forms';
-import { GenericFormGroup } from '../../common/generic-form-group';
+import { Validators, FormControl, FormGroup } from '@angular/forms';
 import { CreateBoardCommand } from '../../../../api-client';
 
-export class CreateBoardForm extends GenericFormGroup<CreateBoardCommand> {
-  override get data(): CreateBoardCommand {
-    return new CreateBoardCommand({
-      title: this.title.value,
-      description: this.description.value,
-    });
-  }
+export class CreateBoardForm extends FormGroup {
+	sectionId: string = '';
 
-  get title(): FormControl<string> {
-    return this.controls['title'] as FormControl<string>;
-  }
+	get data(): CreateBoardCommand {
+		return new CreateBoardCommand({
+			sectionId: this.sectionId,
+			title: this.title.value ?? '',
+			description: this.description.value ?? '',
+		});
+	}
 
-  get description(): FormControl<string> {
-    return this.controls['description'] as FormControl<string>;
-  }
+	get title(): FormControl<string> {
+		return this.controls['title'] as FormControl<string>;
+	}
 
-  constructor() {
-    super({
-      title: new FormControl<string>('', [Validators.required, Validators.maxLength(128)]),
-      description: new FormControl<string>('', [Validators.required, Validators.maxLength(2048)]),
-    });
-  }
+	get description(): FormControl<string> {
+		return this.controls['description'] as FormControl<string>;
+	}
+
+	constructor() {
+		super({
+			title: new FormControl<string>('', [Validators.required, Validators.maxLength(128)]),
+			description: new FormControl<string>('', [Validators.required, Validators.maxLength(2048)]),
+		});
+	}
 }

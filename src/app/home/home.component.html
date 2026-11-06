@@ -1,46 +1,53 @@
-  <div class="sections-list list-group mb-4">
-    @for (section of sections$ | async; track section.id) {
-      <div class="list-group-item">
-        <div class="d-flex justify-content-between">
-          <h2>{{ section.title }}</h2>
+<div class="sections-list list-group mb-4">
+	@for (section of sections$ | async; track section.id) {
+		<div class="list-group-item">
+			<div class="d-flex justify-content-between">
+				<h2>{{ section.title }}</h2>
 
-          <i
-            *ngxPermissionsOnly="sectionsPermissions.manage"
-            class="icomoon-icon plus action-icon"
-            (click)="openCreateBoardModal()"
-            role="button"
-          ></i>
-        </div>
+				<i
+					*ngxPermissionsOnly="sectionsPermissions.manage"
+					class="icomoon-icon plus action-icon"
+					(click)="openCreateBoardModal(section.id)"
+					(keydown)="openCreateBoardModal(section.id)"
+					role="button"
+					tabindex="0"
+				></i>
+			</div>
 
-        <div class="d-flex flex-column">
-          @for (board of section.boards; track board.id) {
-            <div class="d-flex justify-content-between">
-              <a [routerLink]="['../board', board.id]">{{ board.title }}</a>
+			<div class="d-flex flex-column">
+				@for (board of section.boards; track board.id) {
+					<div class="d-flex justify-content-between">
+						<a [routerLink]="['../board', board.id]">{{ board.title }}</a>
 
-              <div *ngxPermissionsOnly="sectionsPermissions.manage">
-                <i
-                  class="icomoon-icon edit action-icon"
-                  (click)="openUpdateBoardModal(board.id)"
-                  role="button"
-                ></i>
+						<div *ngxPermissionsOnly="sectionsPermissions.manage">
+							<i
+								class="icomoon-icon edit action-icon"
+								(click)="openUpdateBoardModal(board.id)"
+								(keydown)="openUpdateBoardModal(board.id)"
+								role="button"
+								tabindex="0"
+							></i>
 
-                <i
-                  class="icomoon-icon trash action-icon"
-                  (click)="openDeleteBoardConfirmationModal(board.id)"
-                  role="button"
-                ></i>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    }
-  </div>
+							<i
+								class="icomoon-icon trash action-icon"
+								(click)="openDeleteBoardConfirmationModal(board)"
+								(keydown)="openDeleteBoardConfirmationModal(board)"
+								role="button"
+								tabindex="0"
+							></i>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	}
+</div>
 
-  <button
-    *ngxPermissionsOnly="sectionsPermissions.manage"
-    class="btn btn-secondary"
-    (click)="openCreateSectionModal()"
-  >
-    {{ translationKey.Home_CreateSection | translate }}
-  </button>
+<button
+	*ngxPermissionsOnly="sectionsPermissions.manage"
+	class="btn btn-secondary"
+	type="button"
+	(click)="openCreateSectionModal()"
+>
+	{{ translationKey.HomeCreateSection | translate }}
+</button>

@@ -3,14 +3,15 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import type { Params } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { first, switchMap } from 'rxjs/operators';
-import type { BoardDto, FileResponse, ThreadDto } from '../../../api-client';
-import { BoardsClient, ThreadsClient } from '../../../api-client';
+import type { BoardDto, FileResponse, PaginatedResultOfThreadDto, ThreadDto } from '../../../api-client';
+import { BoardClient, ThreadClient } from '../../../api-client';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ScrollTrackingDirective } from '../common/scroll-tracking.directive';
 import { ThreadsListState } from './threads-list.state';
 import { ThreadComponent } from './thread/thread.component';
 import { FormsModule } from '@angular/forms';
 import { CreateThreadComponent } from './create-thread/create-thread.component';
+import type { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationModalComponent } from '../common/confirmation-modal/confirmation-modal.component';
 import { TranslatePipe } from '../common/localization/translate.pipe';
@@ -26,14 +27,14 @@ import type { Observable } from 'rxjs';
 	providers: [ThreadsListState],
 })
 export class BoardComponent implements OnInit {
-	private readonly activatedRoute = inject(ActivatedRoute);
-	private readonly threadsListState = inject(ThreadsListState);
-	private readonly boardsClient = inject(BoardsClient);
-	private readonly threadsClient = inject(ThreadsClient);
-	private readonly destroyRef = inject(DestroyRef);
-	private readonly ngbModal = inject(NgbModal);
+	private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+	private readonly threadsListState: ThreadsListState = inject(ThreadsListState);
+	private readonly boardClient: BoardClient = inject(BoardClient);
+	private readonly threadClient: ThreadClient = inject(ThreadClient);
+	private readonly destroyRef: DestroyRef = inject(DestroyRef);
+	private readonly ngbModal: NgbModal = inject(NgbModal);
 
-	readonly translationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKey = TranslationKey;
 
 	get threads(): ThreadDto[] {
 		return this.threadsListState.threads;
@@ -47,7 +48,7 @@ export class BoardComponent implements OnInit {
 	ngOnInit(): void {
 		this.activatedRoute.params
 			.pipe(
-				switchMap((params: Params): Observable<BoardDto> => this.boardsClient.getBoard(params['boardId'] as string)),
+				switchMap((params: Params): Observable<BoardDto> => this.boardClient.get(params['boardId'] as string)),
 				takeUntilDestroyed(this.destroyRef)
 			)
 			.subscribe({
@@ -58,6 +59,7 @@ export class BoardComponent implements OnInit {
 				},
 				// TODO: Show error.
 				error: (): void => {
+					// eslint-disable-next-line no-console
 					console.log('Unable to get board data');
 				},
 			});
@@ -75,7 +77,8 @@ export class BoardComponent implements OnInit {
 	}
 
 	onSearchInputBlur(): void {
-		const querySearchText = this.threadsListState.query.searchText;
+		const querySearchText: string | null | undefined = this.threadsListState.query.searchText;
+
 		if (this.searchText === '' && querySearchText !== undefined && querySearchText !== '') {
 			this.threadsListState.query.searchText = '';
 			this.threadsListState.reset();
@@ -95,37 +98,39 @@ export class BoardComponent implements OnInit {
 		this.getThreads();
 	}
 
-	deleteThread(threadId: string): void {
-		const ngbModalRef = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', centered: true });
+	deleteThread(thread: ThreadDto): void {
+		const ngbModalRef: NgbModalRef = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', centered: true });
 		const component: ConfirmationModalComponent = ngbModalRef.componentInstance as ConfirmationModalComponent;
-		component.text = TranslationKey.Board_DeleteThread;
+		component.text = TranslationKey.BoardDeleteThread;
 
 		ngbModalRef.closed
 			.pipe(
 				first(),
-				switchMap((): Observable<FileResponse> => this.threadsClient.deleteThread(threadId)),
+				switchMap((): Observable<FileResponse> => this.threadClient.delete(thread.id, thread.rowVersion)),
 				takeUntilDestroyed(this.destroyRef)
 			)
 			.subscribe({
 				next: (): void => {
-					this.threadsListState.removeThread(threadId);
+					this.threadsListState.removeThread(thread.id);
 				},
-				error: (error): void => {
+				error: (error: unknown): void => {
+					// eslint-disable-next-line no-console
 					console.log(error);
 				},
 			});
 	}
 
 	private getThreads(): void {
-		this.threadsClient
-			.getThreads(this.threadsListState.query)
+		this.boardClient
+			.getThreadList(this.threadsListState.query.boardId, this.threadsListState.query)
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe({
-				next: (result): void => {
+				next: (result: PaginatedResultOfThreadDto): void => {
 					this.threadsListState.addThreads(result);
 					this.threadsListState.query.pageIndex += 1;
 				},
-				error: (error): void => {
+				error: (error: unknown): void => {
+					// eslint-disable-next-line no-console
 					console.log(error);
 				},
 			});

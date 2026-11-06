@@ -1,7 +1,6 @@
-import { MessageStatus } from './message-status';
+import type { MessageStatus } from './message-status';
 
 export interface Message {
-
-  text: string;
-  status: MessageStatus;
+	text: string;
+	status: MessageStatus;
 }

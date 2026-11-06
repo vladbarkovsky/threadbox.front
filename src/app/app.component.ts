@@ -6,7 +6,6 @@ import { RouterOutlet } from '@angular/router';
 	imports: [ToastComponent, RouterOutlet],
 	selector: 'app-root',
 	standalone: true,
-	styleUrls: ['./app.component.scss'],
 	templateUrl: './app.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

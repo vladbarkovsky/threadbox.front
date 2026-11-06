@@ -10,7 +10,18 @@
 		"source.fixAll.eslint": "explicit",
 		"source.fixAll.stylelint": "explicit"
 	},
-	"cSpell.words": ["browserslist", "imageboard", "ngsrc", "tabindex", "Threadbox", "Tripcode"],
+	"cSpell.words": [
+		"browserslist",
+		"imageboard",
+		"libpeerconnection",
+		"ngsrc",
+		"nswag",
+		"tabindex",
+		"testem",
+		"Threadbox",
+		"Tripcode",
+		"TSES"
+	],
 	// For ESLint @typescript-eslint/consistent-type-imports
 	"js/ts.preferences.preferTypeOnlyAutoImports": true,
 	"files.associations": {

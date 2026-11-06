@@ -24,8 +24,8 @@ export class ShellComponent implements OnInit {
 	navbarCollapsed: boolean = true;
 
 	state: Signal<AuthorizationState> = this.authorizationService.state;
-	userName: Signal<string | undefined> = computed((): string | undefined => this.authorizationService.session()?.userName);
-	readonly authorizationState = AuthorizationState;
+	userName: Signal<string | undefined> = computed((): string | undefined => this.authorizationService.session()?.username);
+	readonly authorizationState: typeof AuthorizationState = AuthorizationState;
 	protected activeLanguage: Signal<Language> = this.localizationService.activeLanguage;
 	protected availableLanguages: Language[] = Object.values(Language);
 
@@ -35,10 +35,10 @@ export class ShellComponent implements OnInit {
 		[Language.Russian]: 'RU',
 	};
 
-	readonly translationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKey = TranslationKey;
 
 	ngOnInit(): void {
-		this.authorizationService.checkAuthorization();
+		this.authorizationService.requestAuthorizationState();
 	}
 
 	signIn(): void {
