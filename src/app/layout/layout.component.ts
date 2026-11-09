@@ -1,5 +1,5 @@
 import type { OnInit, Signal } from '@angular/core';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthorizationService } from '../authorization/authorization.service';
@@ -12,7 +12,7 @@ import { TranslationKeys } from '../common/localization/translation-keys.enum';
 @Component({
 	selector: 'app-layout',
 	templateUrl: './layout.component.html',
-	standalone: true,
+	changeDetection: ChangeDetectionStrategy.Eager,
 	imports: [RouterOutlet, RouterLink, TranslatePipe, UpperCasePipe],
 })
 export class LayoutComponent implements OnInit {

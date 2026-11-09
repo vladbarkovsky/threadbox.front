@@ -1,4 +1,0 @@
-api-client.ts
-dist/
-eslint-plugin-threadbox/dist/
-eslint-plugin-threadbox/**/*.d.ts

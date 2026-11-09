@@ -1,11 +1,12 @@
 {
 	"prettier.enable": true,
 	"eslint.enable": true,
+	"eslint.useFlatConfig": true,
 	"stylelint.enable": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"eslint.format.enable": false,
-	"stylelint.validate": ["scss"],
+	"stylelint.validate": ["css"],
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit",
 		"source.fixAll.stylelint": "explicit"
