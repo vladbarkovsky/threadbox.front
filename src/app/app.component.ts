@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ToastComponent } from './common/toast/toast.component';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-	imports: [ToastComponent, RouterOutlet],
+	imports: [RouterOutlet],
 	selector: 'app-root',
 	standalone: true,
 	templateUrl: './app.component.html',

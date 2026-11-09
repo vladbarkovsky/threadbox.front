@@ -1,58 +1,18 @@
 @if (state() !== authorizationState.Unknown) {
-	<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-		<div class="container-fluid">
-			<div class="navbar-brand d-flex" routerLink="/" role="button">
-				<div class="mr-2">Threadbox</div>
-				<img ngSrc="assets/logo.png" alt="Threadbox logo image" width="30" />
-			</div>
-			<button class="navbar-toggler" type="button" (click)="navbarCollapsed = !navbarCollapsed">
-				<!-- TODO: Replace with icomoon icon. -->
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div [ngbCollapse]="navbarCollapsed" class="navbar-collapse justify-content-between" [class.collapse]="navbarCollapsed">
-				<ul class="navbar-nav">
-					<li class="nav-item">
-						<a class="nav-link" routerLink="#"> Link 1 </a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" routerLink="#"> Link 2 </a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" routerLink="#"> Link 3 </a>
-					</li>
-				</ul>
-				<ul class="navbar-nav">
-					<li class="nav-item">
-						@if (state() === authorizationState.Authenticated) {
-							{{ translationKey.Layout_AuthorizedAs | translate }} {{ userName() }}
-							<button class="btn btn-secondary ms-2" type="button" (click)="signOut()">
-								{{ translationKey.Layout_SignOut | translate }}
-							</button>
-						} @else {
-							<button class="btn btn-secondary" type="button" (click)="signIn()">
-								{{ translationKey.Layout_SignIn | translate }}
-							</button>
-						}
-					</li>
-					<li ngbDropdown class="nav-item ms-lg-2">
-						<a ngbDropdownToggle class="nav-link" role="button">
-							{{ activeLanguage() | uppercase }}
-						</a>
-						<div ngbDropdownMenu class="dropdown-menu dropdown-menu-end">
-							@for (language of availableLanguages; track $index) {
-								@if (language !== activeLanguage()) {
-									<a ngbDropdownItem tabindex="0" (click)="changeLanguage(language)" (keydown)="changeLanguage(language)">
-										{{ languageDisplayNames[language] }}
-									</a>
-								}
-							}
-						</div>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-	<div class="container mt-3">
-		<router-outlet></router-outlet>
-	</div>
+	<header>
+		<a routerLink="/">Threadbox</a>
+		@if (state() === authorizationState.Authenticated) {
+			<span>{{ translationKey.Layout_AuthorizedAs | translate }} {{ userName() }}</span>
+			<button type="button" (click)="signOut()">{{ translationKey.Layout_SignOut | translate }}</button>
+		} @else {
+			<button type="button" (click)="signIn()">{{ translationKey.Layout_SignIn | translate }}</button>
+		}
+		<span>{{ activeLanguage() | uppercase }}</span>
+		@for (language of availableLanguages; track language) {
+			@if (language !== activeLanguage()) {
+				<button type="button" (click)="changeLanguage(language)">{{ languageDisplayNames[language] }}</button>
+			}
+		}
+	</header>
+	<router-outlet />
 }
