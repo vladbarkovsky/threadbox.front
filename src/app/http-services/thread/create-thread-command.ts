@@ -3,5 +3,5 @@ export interface CreateThreadCommand {
 	title: string;
 	text: string;
 	tripcodeString: string | null;
-	images: readonly File[];
+	images: readonly File[] | null;
 }

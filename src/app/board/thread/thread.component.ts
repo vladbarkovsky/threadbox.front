@@ -11,10 +11,10 @@ import type { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreatePostModalComponent } from '../create-post/create-post-modal.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
-import { PostsPermissions, ThreadsPermissions } from '../../../../api-permissions';
+import { PostPermissions, ThreadPermissions } from '../../../../api-permissions';
 import { TranslatePipe } from '../../common/localization/translate.pipe';
 import { ConfirmationModalComponent } from '../../common/confirmation-modal/confirmation-modal.component';
-import { TranslationKey } from '../../common/localization/translation-key.enum';
+import { TranslationKeys } from '../../common/localization/translation-keys.enum';
 import type { HttpErrorResponse } from '@angular/common/http';
 import { LocalizeDatePipe } from '../../common/localization/translate-date.pipe';
 
@@ -43,9 +43,9 @@ export class ThreadComponent implements OnInit {
 	private readonly threadClient: ThreadClient = inject(ThreadClient);
 	private readonly ngbModal: NgbModal = inject(NgbModal);
 
-	threadPermissions: typeof ThreadsPermissions = ThreadsPermissions;
-	postPermissions: typeof PostsPermissions = PostsPermissions;
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	threadPermissions: typeof ThreadPermissions = ThreadPermissions;
+	postPermissions: typeof PostPermissions = PostPermissions;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 
 	@Input() thread!: ThreadDto;
 	@Output() readonly deleteThread: EventEmitter<void> = new EventEmitter<void>();
@@ -113,7 +113,7 @@ export class ThreadComponent implements OnInit {
 	openDeletePostModal(post: PostDto): void {
 		const ngbModalRef: NgbModalRef = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', centered: true });
 		const component: ConfirmationModalComponent = ngbModalRef.componentInstance as ConfirmationModalComponent;
-		component.text = TranslationKey.BoardDeletePost;
+		component.text = TranslationKeys.Board_DeletePost;
 
 		ngbModalRef.closed
 			.pipe(

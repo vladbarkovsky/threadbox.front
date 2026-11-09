@@ -8,13 +8,13 @@ import { lvTranslations } from './lv-translations';
 import { ruTranslations } from './ru-translations';
 import type { InterpolationParameter } from './interpolation-parameter.type';
 import { Language } from './language.enum';
-import type { TranslationKey } from './translation-key.enum';
+import type { TranslationKeys } from './translation-keys.enum';
 
 @Injectable({ providedIn: 'root' })
 export class LocalizationService {
 	readonly defaultLanguage: Language = Language.English;
 
-	private readonly translations: Record<Language, Record<TranslationKey, string>> = {
+	private readonly translations: Record<Language, Record<TranslationKeys, string>> = {
 		[Language.English]: enTranslations,
 		[Language.Latvian]: lvTranslations,
 		[Language.Russian]: ruTranslations,
@@ -88,8 +88,8 @@ export class LocalizationService {
 		return this.router.createUrlTree(pathSegments, urlCreationOptions);
 	}
 
-	translate(key: TranslationKey, interpolationParameters: InterpolationParameter[] = []): string {
-		const translations: Record<TranslationKey, string> = this.translations[this._activeLanguage()];
+	translate(key: TranslationKeys, interpolationParameters: InterpolationParameter[] = []): string {
+		const translations: Record<TranslationKeys, string> = this.translations[this._activeLanguage()];
 		const template: string = translations[key];
 
 		return this.interpolate(template, interpolationParameters);

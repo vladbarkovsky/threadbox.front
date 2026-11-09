@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import explicitType = require('./explicit-type');
-import { MessageIds } from './message-ids.enum.js';
+import { MessageIdentifiers } from './message-identifiers.enum.js';
 
 const nodeRequire: ReturnType<typeof createRequire> = createRequire(__filename);
 const rule: Rule.RuleModule = explicitType as unknown as Rule.RuleModule;
@@ -51,206 +51,206 @@ ruleTester.run('explicit-type', rule, {
 		{
 			code: 'const count = 1;',
 			output: 'const count: number = 1;',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 		{
 			code: `const label = 'text';`,
 			output: `const label: string = 'text';`,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'label' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'label' } }],
 		},
 		{
 			code: 'const enabled = false;',
 			output: 'const enabled: boolean = false;',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'enabled' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'enabled' } }],
 		},
 		{
 			code: 'const count = -1;',
 			output: 'const count: number = -1;',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 		{
 			code: 'const count = 1n;',
 			output: 'const count: bigint = 1n;',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 		{
 			code: 'const count = -1n;',
 			output: 'const count: bigint = -1n;',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 		{
 			code: 'const empty = null;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'empty' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'empty' } }],
 		},
 		{
 			code: 'const missing = undefined;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'missing' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'missing' } }],
 		},
 		{
 			code: 'const label = `text`;',
 			output: 'const label: string = `text`;',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'label' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'label' } }],
 		},
 		{
 			// eslint-disable-next-line no-template-curly-in-string -- fixture source contains a template placeholder
 			code: 'const label = `text${name}`;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'label' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'label' } }],
 		},
 		{
 			code: 'let label;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'label' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'label' } }],
 		},
 		{
 			code: 'const run = getRun();',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'run' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'run' } }],
 		},
 		{
 			code: 'const example = ExampleEnum;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'example' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'example' } }],
 		},
 		{
 			code: 'const status = ExampleEnum.Success;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'status' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'status' } }],
 		},
 		{
 			code: 'const sections = new Subject();',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'sections' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'sections' } }],
 		},
 		{
 			code: 'const sections = new Subject<SectionListDto[]>();',
 			output: 'const sections: Subject<SectionListDto[]> = new Subject<SectionListDto[]>();',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'sections' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'sections' } }],
 		},
 		{
 			code: 'const messageClassMap = new Map<MessageStatus, string>();',
 			output: 'const messageClassMap: Map<MessageStatus, string> = new Map<MessageStatus, string>();',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'messageClassMap' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'messageClassMap' } }],
 		},
 		{
 			code: 'const control = new forms.FormControl<string>("");',
 			output: 'const control: forms.FormControl<string> = new forms.FormControl<string>("");',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'control' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'control' } }],
 		},
 		{
 			code: 'const sections = new getSubject()<void>();',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'sections' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'sections' } }],
 		},
 		{
 			code: 'const input = target as HTMLInputElement;',
 			output: 'const input: HTMLInputElement = target as HTMLInputElement;',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'input' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'input' } }],
 		},
 		{
 			code: 'const control = this.controls["title"] as FormControl<string>;',
 			output: 'const control: FormControl<string> = this.controls["title"] as FormControl<string>;',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'control' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'control' } }],
 		},
 		{
 			code: 'const record = value as const;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'record' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'record' } }],
 		},
 		{
 			code: 'const { name } = user;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitType }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitType }],
 		},
 		{
 			code: 'const [first] = items;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitType }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitType }],
 		},
 		{
 			code: 'for (let index = 0; index < 10; index++) {}',
 			output: 'for (let index: number = 0; index < 10; index++) {}',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'index' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'index' } }],
 		},
 		{
 			code: 'class Box { value = 1; }',
 			output: 'class Box { value: number = 1; }',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'value' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'value' } }],
 		},
 		{
 			code: 'class Box { private readonly value = 1; }',
 			output: 'class Box { private readonly value: number = 1; }',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'value' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'value' } }],
 		},
 		{
 			code: 'class Box { accessor value = 1; }',
 			output: 'class Box { accessor value: number = 1; }',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'value' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'value' } }],
 		},
 		{
 			code: 'class Box { #value = 1; }',
 			output: 'class Box { #value: number = 1; }',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: '#value' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: '#value' } }],
 		},
 		{
 			code: 'class Box { scrolling = new Subject<void>(); }',
 			output: 'class Box { scrolling: Subject<void> = new Subject<void>(); }',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'scrolling' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'scrolling' } }],
 		},
 		{
 			code: `class Box { ['value'] = 1; }`,
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitType }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitType }],
 		},
 		{
 			code: 'function run(count): void {}',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 		{
 			code: `function run(count = 1, label = 'text'): void {}`,
 			output: `function run(count: number = 1, label: string = 'text'): void {}`,
 			errors: [
-				{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } },
-				{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'label' } },
+				{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } },
+				{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'label' } },
 			],
 		},
 		{
 			code: 'const run = (count = 1): void => {};',
 			output: 'const run = (count: number = 1): void => {};',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 		{
 			code: 'class Box { run(count): void {} }',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 		{
 			code: 'class Box { constructor(private count = 1) {} }',
 			output: 'class Box { constructor(private count: number = 1) {} }',
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 		{
 			code: 'function run({ name }): void {}',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitType }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitType }],
 		},
 		{
 			code: 'interface User { name; }',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'name' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'name' } }],
 		},
 		{
 			code: 'interface User { [key: string]; }',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitType }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitType }],
 		},
 		{
 			code: 'type Run = (count) => void;',
 			output: null,
-			errors: [{ messageId: MessageIds.MissingExplicitTypeNamed, data: { name: 'count' } }],
+			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'count' } }],
 		},
 	],
 });
@@ -362,7 +362,7 @@ try {
 			parser: '@typescript-eslint/parser',
 			parserOptions,
 			rules: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention -- ESLint rule id
+				// eslint-disable-next-line @typescript-eslint/naming-convention
 				'explicit-type': 'error',
 			},
 		},

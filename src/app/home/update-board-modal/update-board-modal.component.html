@@ -1,5 +1,5 @@
 <div class="modal-header">
-	<h4 class="modal-title">{{ translationKey.HomeBoardModalsUpdateBoard | translate }}</h4>
+	<h4 class="modal-title">{{ translationKey.Home_BoardModals_UpdateBoard | translate }}</h4>
 	<button type="button" class="btn-close" (click)="cancel()" aria-label="Close"></button>
 </div>
 <div class="modal-body">
@@ -7,16 +7,16 @@
 		@if (updateBoardForm.title; as title) {
 			<div class="mb-3">
 				<label class="mb-2 text-muted" for="title">
-					{{ translationKey.HomeBoardModalsTitleLabel | translate }}
+					{{ translationKey.Home_BoardModals_TitleLabel | translate }}
 				</label>
 				<input id="title" class="form-control" [formControl]="title" type="text" />
 				@if (title.touched && title.errors; as errors) {
 					@if (errors['required']) {
-						<small class="text-danger">{{ translationKey.HomeBoardModalsTitleValidationRequired | translate }}</small>
+						<small class="text-danger">{{ translationKey.Home_BoardModals_TitleValidationRequired | translate }}</small>
 					}
 					@if (errors['maxlength']; as maxLength) {
 						<small class="text-danger">
-							{{ translationKey.HomeBoardModalsTitleValidationMaxLength | translate: [maxLength.requiredLength] }}
+							{{ translationKey.Home_BoardModals_TitleValidationMaxLength | translate: [maxLength.requiredLength] }}
 						</small>
 					}
 				}
@@ -25,16 +25,16 @@
 		@if (updateBoardForm.description; as description) {
 			<div class="mb-3">
 				<label class="mb-2 text-muted" for="description">
-					{{ translationKey.HomeBoardModalsDescriptionLabel | translate }}
+					{{ translationKey.Home_BoardModals_DescriptionLabel | translate }}
 				</label>
 				<textarea id="description" class="form-control" autoResize [formControl]="description"></textarea>
 				@if (description.touched && description.errors; as errors) {
 					@if (errors['required']) {
-						<small class="text-danger">{{ translationKey.HomeBoardModalsDescriptionValidationRequired | translate }}</small>
+						<small class="text-danger">{{ translationKey.Home_BoardModals_DescriptionValidationRequired | translate }}</small>
 					}
 					@if (errors['maxLength']; as maxLength) {
 						<small class="text-danger">
-							{{ translationKey.HomeBoardModalsDescriptionValidationMaxLength | translate: [maxLength.requiredLength] }}
+							{{ translationKey.Home_BoardModals_DescriptionValidationMaxLength | translate: [maxLength.requiredLength] }}
 						</small>
 					}
 				}
@@ -44,6 +44,6 @@
 </div>
 <div class="modal-footer">
 	<button class="btn btn-outline-secondary" type="submit" [disabled]="updateBoardForm.invalid">
-		{{ translationKey.HomeBoardModalsSubmit | translate }}
+		{{ translationKey.Home_BoardModals_Submit | translate }}
 	</button>
 </div>

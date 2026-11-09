@@ -10,7 +10,7 @@ import {
 	readParameterInitializer,
 	readTypedBinding,
 } from './binding.js';
-import { MessageIds } from './message-ids.enum.js';
+import { MessageIdentifiers } from './message-identifiers.enum.js';
 import { readExplicitTypeText, readPrimitiveTypeName } from './syntactic-type-text.js';
 import { readConstructedClassTypeText, readEnumTypeText } from './type-aware-type-text.js';
 
@@ -25,7 +25,7 @@ function readFixTypeText(node: TSESTree.Node | null | undefined, sourceCode: TSE
 	);
 }
 
-export = createRule<[], MessageIds>({
+export = createRule<[], MessageIdentifiers>({
 	meta: {
 		type: 'suggestion',
 		docs: {
@@ -33,14 +33,14 @@ export = createRule<[], MessageIds>({
 				'Require an explicit type on a variable, field, property, or parameter, unless a variable or field is initialized with a function.',
 		},
 		messages: {
-			[MessageIds.MissingExplicitType]: 'Expected an explicit type.',
-			[MessageIds.MissingExplicitTypeNamed]: 'Expected {{name}} to have an explicit type.',
+			[MessageIdentifiers.MissingExplicitType]: 'Expected an explicit type.',
+			[MessageIdentifiers.MissingExplicitTypeNamed]: 'Expected {{name}} to have an explicit type.',
 		},
 		fixable: 'code',
 		schema: [],
 	},
 	defaultOptions: [],
-	create(context: Readonly<TSESLint.RuleContext<MessageIds, []>>): TSESLint.RuleListener {
+	create(context: Readonly<TSESLint.RuleContext<MessageIdentifiers, []>>): TSESLint.RuleListener {
 		const sourceCode: TSESLint.SourceCode = context.sourceCode;
 
 		function reportMissingExplicitType(binding: TSESTree.Node, typeText: string | undefined, allowFix: boolean): void {
@@ -55,7 +55,7 @@ export = createRule<[], MessageIds>({
 				if (name !== undefined) {
 					context.report({
 						node: binding,
-						messageId: MessageIds.MissingExplicitTypeNamed,
+						messageId: MessageIdentifiers.MissingExplicitTypeNamed,
 						data: { name },
 						fix: insertType,
 					});
@@ -65,7 +65,7 @@ export = createRule<[], MessageIds>({
 
 				context.report({
 					node: binding,
-					messageId: MessageIds.MissingExplicitType,
+					messageId: MessageIdentifiers.MissingExplicitType,
 					fix: insertType,
 				});
 
@@ -75,7 +75,7 @@ export = createRule<[], MessageIds>({
 			if (name !== undefined) {
 				context.report({
 					node: binding,
-					messageId: MessageIds.MissingExplicitTypeNamed,
+					messageId: MessageIdentifiers.MissingExplicitTypeNamed,
 					data: { name },
 				});
 
@@ -84,7 +84,7 @@ export = createRule<[], MessageIds>({
 
 			context.report({
 				node: binding,
-				messageId: MessageIds.MissingExplicitType,
+				messageId: MessageIdentifiers.MissingExplicitType,
 			});
 		}
 
@@ -105,7 +105,7 @@ export = createRule<[], MessageIds>({
 		}
 
 		return {
-			// eslint-disable-next-line @typescript-eslint/naming-convention -- ESLint visitor key
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			VariableDeclarator(node: TSESTree.VariableDeclarator): void {
 				if (
 					node.id.typeAnnotation !== undefined ||
@@ -117,7 +117,7 @@ export = createRule<[], MessageIds>({
 
 				reportMissingExplicitType(node.id, readFixTypeText(node.init, sourceCode), canInsertTypeAnnotation(node.id, false));
 			},
-			// eslint-disable-next-line @typescript-eslint/naming-convention -- ESLint visitor key
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'PropertyDefinition, AccessorProperty'(node: TSESTree.PropertyDefinition | TSESTree.AccessorProperty): void {
 				if (node.typeAnnotation !== undefined || (node.value !== null && isFunctionValue(node.value))) {
 					return;
@@ -129,7 +129,7 @@ export = createRule<[], MessageIds>({
 					canInsertTypeAnnotation(node.key, node.computed || node.definite || node.optional)
 				);
 			},
-			// eslint-disable-next-line @typescript-eslint/naming-convention -- ESLint visitor key
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'FunctionDeclaration, FunctionExpression, ArrowFunctionExpression, TSEmptyBodyFunctionExpression, TSDeclareFunction, TSFunctionType, TSCallSignatureDeclaration, TSConstructSignatureDeclaration, TSMethodSignature, TSConstructorType'(
 				node:
 					| TSESTree.FunctionDeclaration
@@ -145,7 +145,7 @@ export = createRule<[], MessageIds>({
 			): void {
 				checkParameters(node.params);
 			},
-			// eslint-disable-next-line @typescript-eslint/naming-convention -- ESLint visitor key
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			TSPropertySignature(node: TSESTree.TSPropertySignature): void {
 				if (node.typeAnnotation !== undefined) {
 					return;
@@ -153,7 +153,7 @@ export = createRule<[], MessageIds>({
 
 				reportMissingExplicitType(node.key, undefined, false);
 			},
-			// eslint-disable-next-line @typescript-eslint/naming-convention -- ESLint visitor key
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			TSIndexSignature(node: TSESTree.TSIndexSignature): void {
 				checkParameters(node.parameters);
 

@@ -361,27 +361,28 @@ export class BoardClient {
         return _observableOf(null as any);
     }
 
-    get(id: string): Observable<BoardDto> {
-        let url_ = this.baseUrl + "/api/boards/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    create(command: CreateBoardCommand): Observable<BoardDto> {
+        let url_ = this.baseUrl + "/api/boards";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGet(response_ as any);
+                    return this.processCreate(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<BoardDto>;
                 }
@@ -390,19 +391,19 @@ export class BoardClient {
         }));
     }
 
-    protected processGet(response: HttpResponseBase): Observable<BoardDto> {
+    protected processCreate(response: HttpResponseBase): Observable<BoardDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
+        if (status === 201) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BoardDto.fromJS(resultData200);
-            return _observableOf(result200);
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = BoardDto.fromJS(resultData201);
+            return _observableOf(result201);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -412,11 +413,8 @@ export class BoardClient {
         return _observableOf(null as any);
     }
 
-    update(id: string, command: UpdateBoardCommand): Observable<BoardDto> {
-        let url_ = this.baseUrl + "/api/boards/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    update(command: UpdateBoardCommand): Observable<BoardDto> {
+        let url_ = this.baseUrl + "/api/boards";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -467,11 +465,8 @@ export class BoardClient {
         return _observableOf(null as any);
     }
 
-    delete(id: string, command: DeleteBoardCommand): Observable<void> {
-        let url_ = this.baseUrl + "/api/boards/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    delete(command: DeleteBoardCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/boards";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -518,40 +513,36 @@ export class BoardClient {
         return _observableOf(null as any);
     }
 
-    getThreadList(boardId: string, query: GetThreadListQuery): Observable<PaginatedResultOfThreadDto> {
-        let url_ = this.baseUrl + "/api/boards/{boardId}/threads";
-        if (boardId === undefined || boardId === null)
-            throw new Error("The parameter 'boardId' must be defined.");
-        url_ = url_.replace("{boardId}", encodeURIComponent("" + boardId));
+    get(id: string): Observable<BoardDto> {
+        let url_ = this.baseUrl + "/api/boards/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(query);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetThreadList(response_);
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetThreadList(response_ as any);
+                    return this.processGet(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PaginatedResultOfThreadDto>;
+                    return _observableThrow(e) as any as Observable<BoardDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PaginatedResultOfThreadDto>;
+                return _observableThrow(response_) as any as Observable<BoardDto>;
         }));
     }
 
-    protected processGetThreadList(response: HttpResponseBase): Observable<PaginatedResultOfThreadDto> {
+    protected processGet(response: HttpResponseBase): Observable<BoardDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -562,7 +553,7 @@ export class BoardClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedResultOfThreadDto.fromJS(resultData200);
+            result200 = BoardDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -649,11 +640,12 @@ export class FileClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5000";
     }
 
-    get(fileInfoId: string): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/files/{fileInfoId}";
-        if (fileInfoId === undefined || fileInfoId === null)
-            throw new Error("The parameter 'fileInfoId' must be defined.");
-        url_ = url_.replace("{fileInfoId}", encodeURIComponent("" + fileInfoId));
+    get(fileInfoId: string | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/files?";
+        if (fileInfoId === null)
+            throw new Error("The parameter 'fileInfoId' cannot be null.");
+        else if (fileInfoId !== undefined)
+            url_ += "fileInfoId=" + encodeURIComponent("" + fileInfoId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -842,6 +834,54 @@ export class PostClient {
         return _observableOf(null as any);
     }
 
+    delete(command: DeletePostCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/posts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     get(id: string): Observable<PostDto> {
         let url_ = this.baseUrl + "/api/posts/{id}";
         if (id === undefined || id === null)
@@ -884,57 +924,6 @@ export class PostClient {
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = PostDto.fromJS(resultData200);
             return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    delete(id: string, rowVersion: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/posts/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(rowVersion);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDelete(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDelete(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDelete(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1120,62 +1109,8 @@ export class SectionClient {
         return _observableOf(null as any);
     }
 
-    get(id: string): Observable<SectionDto> {
-        let url_ = this.baseUrl + "/api/sections/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGet(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<SectionDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<SectionDto>;
-        }));
-    }
-
-    protected processGet(response: HttpResponseBase): Observable<SectionDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SectionDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    update(id: string, command: UpdateSectionCommand): Observable<SectionDto> {
-        let url_ = this.baseUrl + "/api/sections/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    update(command: UpdateSectionCommand): Observable<SectionDto> {
+        let url_ = this.baseUrl + "/api/sections";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -1226,52 +1161,48 @@ export class SectionClient {
         return _observableOf(null as any);
     }
 
-    create2(sectionId: string, command: CreateBoardCommand): Observable<BoardDto> {
-        let url_ = this.baseUrl + "/api/sections/{sectionId}";
-        if (sectionId === undefined || sectionId === null)
-            throw new Error("The parameter 'sectionId' must be defined.");
-        url_ = url_.replace("{sectionId}", encodeURIComponent("" + sectionId));
+    get(id: string): Observable<SectionDto> {
+        let url_ = this.baseUrl + "/api/sections/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(command);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreate2(response_);
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreate2(response_ as any);
+                    return this.processGet(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BoardDto>;
+                    return _observableThrow(e) as any as Observable<SectionDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BoardDto>;
+                return _observableThrow(response_) as any as Observable<SectionDto>;
         }));
     }
 
-    protected processCreate2(response: HttpResponseBase): Observable<BoardDto> {
+    protected processGet(response: HttpResponseBase): Observable<SectionDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 201) {
+        if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result201: any = null;
-            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result201 = BoardDto.fromJS(resultData201);
-            return _observableOf(result201);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SectionDto.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1295,11 +1226,22 @@ export class ThreadClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5000";
     }
 
-    get(id: string): Observable<ThreadDto> {
-        let url_ = this.baseUrl + "/api/threads/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    getList(boardId: string | undefined, searchText: string | null | undefined, pageIndex: number | undefined, pageSize: number | undefined): Observable<PaginatedResultOfThreadDto> {
+        let url_ = this.baseUrl + "/api/threads?";
+        if (boardId === null)
+            throw new Error("The parameter 'boardId' cannot be null.");
+        else if (boardId !== undefined)
+            url_ += "boardId=" + encodeURIComponent("" + boardId) + "&";
+        if (searchText !== undefined && searchText !== null)
+            url_ += "searchText=" + encodeURIComponent("" + searchText) + "&";
+        if (pageIndex === null)
+            throw new Error("The parameter 'pageIndex' cannot be null.");
+        else if (pageIndex !== undefined)
+            url_ += "pageIndex=" + encodeURIComponent("" + pageIndex) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1311,20 +1253,20 @@ export class ThreadClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
+            return this.processGetList(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGet(response_ as any);
+                    return this.processGetList(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ThreadDto>;
+                    return _observableThrow(e) as any as Observable<PaginatedResultOfThreadDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ThreadDto>;
+                return _observableThrow(response_) as any as Observable<PaginatedResultOfThreadDto>;
         }));
     }
 
-    protected processGet(response: HttpResponseBase): Observable<ThreadDto> {
+    protected processGetList(response: HttpResponseBase): Observable<PaginatedResultOfThreadDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1335,59 +1277,8 @@ export class ThreadClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ThreadDto.fromJS(resultData200);
+            result200 = PaginatedResultOfThreadDto.fromJS(resultData200);
             return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    delete(id: string, rowVersion: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/threads/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(rowVersion);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDelete(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDelete(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDelete(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1451,6 +1342,105 @@ export class ThreadClient {
             let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result201 = ThreadDto.fromJS(resultData201);
             return _observableOf(result201);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    delete(command: DeleteThreadCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/threads";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    get(id: string): Observable<ThreadDto> {
+        let url_ = this.baseUrl + "/api/threads/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ThreadDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ThreadDto>;
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<ThreadDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ThreadDto.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1670,6 +1660,50 @@ export interface IBoardDto {
     description: string | null;
 }
 
+export class CreateBoardCommand implements ICreateBoardCommand {
+    sectionId!: string;
+    title!: string;
+    description!: string;
+
+    constructor(data?: ICreateBoardCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sectionId = _data["sectionId"] !== undefined ? _data["sectionId"] : <any>null;
+            this.title = _data["title"] !== undefined ? _data["title"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CreateBoardCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateBoardCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sectionId"] = this.sectionId !== undefined ? this.sectionId : <any>null;
+        data["title"] = this.title !== undefined ? this.title : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        return data;
+    }
+}
+
+export interface ICreateBoardCommand {
+    sectionId: string;
+    title: string;
+    description: string;
+}
+
 export class UpdateBoardCommand implements IUpdateBoardCommand {
     id!: string;
     title!: string;
@@ -1758,15 +1792,10 @@ export interface IDeleteBoardCommand {
     rowVersion: number;
 }
 
-export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {
-    pageItems!: ThreadDto[] | null;
-    pageIndex!: number;
-    totalPages!: number;
-    totalCount!: number;
-    hasPreviousPage!: boolean;
-    hasNextPage!: boolean;
+export class CreateCspReportCommand implements ICreateCspReportCommand {
+    cspReport!: CspReport | null;
 
-    constructor(data?: IPaginatedResultOfThreadDto) {
+    constructor(data?: ICreateCspReportCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1777,146 +1806,86 @@ export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {
 
     init(_data?: any) {
         if (_data) {
-            if (Array.isArray(_data["pageItems"])) {
-                this.pageItems = [] as any;
-                for (let item of _data["pageItems"])
-                    this.pageItems!.push(ThreadDto.fromJS(item));
-            }
-            else {
-                this.pageItems = <any>null;
-            }
-            this.pageIndex = _data["pageIndex"] !== undefined ? _data["pageIndex"] : <any>null;
-            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
-            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
-            this.hasPreviousPage = _data["hasPreviousPage"] !== undefined ? _data["hasPreviousPage"] : <any>null;
-            this.hasNextPage = _data["hasNextPage"] !== undefined ? _data["hasNextPage"] : <any>null;
+            this.cspReport = _data["csp-report"] ? CspReport.fromJS(_data["csp-report"]) : <any>null;
         }
     }
 
-    static fromJS(data: any): PaginatedResultOfThreadDto {
+    static fromJS(data: any): CreateCspReportCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedResultOfThreadDto();
+        let result = new CreateCspReportCommand();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.pageItems)) {
-            data["pageItems"] = [];
-            for (let item of this.pageItems)
-                data["pageItems"].push(item.toJSON());
-        }
-        data["pageIndex"] = this.pageIndex !== undefined ? this.pageIndex : <any>null;
-        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
-        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
-        data["hasPreviousPage"] = this.hasPreviousPage !== undefined ? this.hasPreviousPage : <any>null;
-        data["hasNextPage"] = this.hasNextPage !== undefined ? this.hasNextPage : <any>null;
+        data["csp-report"] = this.cspReport ? this.cspReport.toJSON() : <any>null;
         return data;
     }
 }
 
-export interface IPaginatedResultOfThreadDto {
-    pageItems: ThreadDto[] | null;
-    pageIndex: number;
-    totalPages: number;
-    totalCount: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+export interface ICreateCspReportCommand {
+    cspReport: CspReport | null;
 }
 
-export class ThreadDto implements IThreadDto {
-    id!: string;
-    rowVersion!: number;
-    title!: string;
-    text!: string;
-    tripcodeKey!: string | null;
-    posts!: PostDto[];
-    threadImages!: ThreadImageDto[];
-    hasMorePosts!: boolean;
-    createdAt!: Date;
+export class CspReport implements ICspReport {
+    documentUri!: string | null;
+    referrer!: string | null;
+    violatedDirective!: string | null;
+    effectiveDirective!: string | null;
+    originalPolicy!: string | null;
+    blockedUri!: string | null;
+    statusCode!: number;
 
-    constructor(data?: IThreadDto) {
+    constructor(data?: ICspReport) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
         }
-        if (!data) {
-            this.posts = [];
-            this.threadImages = [];
-        }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
-            this.rowVersion = _data["rowVersion"] !== undefined ? _data["rowVersion"] : <any>null;
-            this.title = _data["title"] !== undefined ? _data["title"] : <any>null;
-            this.text = _data["text"] !== undefined ? _data["text"] : <any>null;
-            this.tripcodeKey = _data["tripcodeKey"] !== undefined ? _data["tripcodeKey"] : <any>null;
-            if (Array.isArray(_data["posts"])) {
-                this.posts = [] as any;
-                for (let item of _data["posts"])
-                    this.posts!.push(PostDto.fromJS(item));
-            }
-            else {
-                this.posts = <any>null;
-            }
-            if (Array.isArray(_data["threadImages"])) {
-                this.threadImages = [] as any;
-                for (let item of _data["threadImages"])
-                    this.threadImages!.push(ThreadImageDto.fromJS(item));
-            }
-            else {
-                this.threadImages = <any>null;
-            }
-            this.hasMorePosts = _data["hasMorePosts"] !== undefined ? _data["hasMorePosts"] : <any>null;
-            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>null;
+            this.documentUri = _data["document-uri"] !== undefined ? _data["document-uri"] : <any>null;
+            this.referrer = _data["referrer"] !== undefined ? _data["referrer"] : <any>null;
+            this.violatedDirective = _data["violated-directive"] !== undefined ? _data["violated-directive"] : <any>null;
+            this.effectiveDirective = _data["effective-directive"] !== undefined ? _data["effective-directive"] : <any>null;
+            this.originalPolicy = _data["original-policy"] !== undefined ? _data["original-policy"] : <any>null;
+            this.blockedUri = _data["blocked-uri"] !== undefined ? _data["blocked-uri"] : <any>null;
+            this.statusCode = _data["status-code"] !== undefined ? _data["status-code"] : <any>null;
         }
     }
 
-    static fromJS(data: any): ThreadDto {
+    static fromJS(data: any): CspReport {
         data = typeof data === 'object' ? data : {};
-        let result = new ThreadDto();
+        let result = new CspReport();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["rowVersion"] = this.rowVersion !== undefined ? this.rowVersion : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["text"] = this.text !== undefined ? this.text : <any>null;
-        data["tripcodeKey"] = this.tripcodeKey !== undefined ? this.tripcodeKey : <any>null;
-        if (Array.isArray(this.posts)) {
-            data["posts"] = [];
-            for (let item of this.posts)
-                data["posts"].push(item.toJSON());
-        }
-        if (Array.isArray(this.threadImages)) {
-            data["threadImages"] = [];
-            for (let item of this.threadImages)
-                data["threadImages"].push(item.toJSON());
-        }
-        data["hasMorePosts"] = this.hasMorePosts !== undefined ? this.hasMorePosts : <any>null;
-        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
+        data["document-uri"] = this.documentUri !== undefined ? this.documentUri : <any>null;
+        data["referrer"] = this.referrer !== undefined ? this.referrer : <any>null;
+        data["violated-directive"] = this.violatedDirective !== undefined ? this.violatedDirective : <any>null;
+        data["effective-directive"] = this.effectiveDirective !== undefined ? this.effectiveDirective : <any>null;
+        data["original-policy"] = this.originalPolicy !== undefined ? this.originalPolicy : <any>null;
+        data["blocked-uri"] = this.blockedUri !== undefined ? this.blockedUri : <any>null;
+        data["status-code"] = this.statusCode !== undefined ? this.statusCode : <any>null;
         return data;
     }
 }
 
-export interface IThreadDto {
-    id: string;
-    rowVersion: number;
-    title: string;
-    text: string;
-    tripcodeKey: string | null;
-    posts: PostDto[];
-    threadImages: ThreadImageDto[];
-    hasMorePosts: boolean;
-    createdAt: Date;
+export interface ICspReport {
+    documentUri: string | null;
+    referrer: string | null;
+    violatedDirective: string | null;
+    effectiveDirective: string | null;
+    originalPolicy: string | null;
+    blockedUri: string | null;
+    statusCode: number;
 }
 
 export class PostDto implements IPostDto {
@@ -2033,11 +2002,11 @@ export interface IPostImageDto {
     url: string;
 }
 
-export class ThreadImageDto implements IThreadImageDto {
-    fileInfoId!: string;
-    url!: string;
+export class DeletePostCommand implements IDeletePostCommand {
+    id!: string;
+    rowVersion!: number;
 
-    constructor(data?: IThreadImageDto) {
+    constructor(data?: IDeletePostCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2048,200 +2017,29 @@ export class ThreadImageDto implements IThreadImageDto {
 
     init(_data?: any) {
         if (_data) {
-            this.fileInfoId = _data["fileInfoId"] !== undefined ? _data["fileInfoId"] : <any>null;
-            this.url = _data["url"] !== undefined ? _data["url"] : <any>null;
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.rowVersion = _data["rowVersion"] !== undefined ? _data["rowVersion"] : <any>null;
         }
     }
 
-    static fromJS(data: any): ThreadImageDto {
+    static fromJS(data: any): DeletePostCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new ThreadImageDto();
+        let result = new DeletePostCommand();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["fileInfoId"] = this.fileInfoId !== undefined ? this.fileInfoId : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["rowVersion"] = this.rowVersion !== undefined ? this.rowVersion : <any>null;
         return data;
     }
 }
 
-export interface IThreadImageDto {
-    fileInfoId: string;
-    url: string;
-}
-
-export abstract class PaginatedQuery implements IPaginatedQuery {
-    pageIndex!: number;
-    pageSize!: number;
-
-    constructor(data?: IPaginatedQuery) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.pageIndex = _data["pageIndex"] !== undefined ? _data["pageIndex"] : <any>null;
-            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): PaginatedQuery {
-        data = typeof data === 'object' ? data : {};
-        throw new Error("The abstract class 'PaginatedQuery' cannot be instantiated.");
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["pageIndex"] = this.pageIndex !== undefined ? this.pageIndex : <any>null;
-        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
-        return data;
-    }
-}
-
-export interface IPaginatedQuery {
-    pageIndex: number;
-    pageSize: number;
-}
-
-export class GetThreadListQuery extends PaginatedQuery implements IGetThreadListQuery {
-    boardId!: string;
-    searchText!: string | null;
-
-    constructor(data?: IGetThreadListQuery) {
-        super(data);
-    }
-
-    override init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.boardId = _data["boardId"] !== undefined ? _data["boardId"] : <any>null;
-            this.searchText = _data["searchText"] !== undefined ? _data["searchText"] : <any>null;
-        }
-    }
-
-    static override fromJS(data: any): GetThreadListQuery {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetThreadListQuery();
-        result.init(data);
-        return result;
-    }
-
-    override toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["boardId"] = this.boardId !== undefined ? this.boardId : <any>null;
-        data["searchText"] = this.searchText !== undefined ? this.searchText : <any>null;
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IGetThreadListQuery extends IPaginatedQuery {
-    boardId: string;
-    searchText: string | null;
-}
-
-export class CreateCspReportCommand implements ICreateCspReportCommand {
-    cspReport!: CspReport | null;
-
-    constructor(data?: ICreateCspReportCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.cspReport = _data["csp-report"] ? CspReport.fromJS(_data["csp-report"]) : <any>null;
-        }
-    }
-
-    static fromJS(data: any): CreateCspReportCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateCspReportCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["csp-report"] = this.cspReport ? this.cspReport.toJSON() : <any>null;
-        return data;
-    }
-}
-
-export interface ICreateCspReportCommand {
-    cspReport: CspReport | null;
-}
-
-export class CspReport implements ICspReport {
-    documentUri!: string | null;
-    referrer!: string | null;
-    violatedDirective!: string | null;
-    effectiveDirective!: string | null;
-    originalPolicy!: string | null;
-    blockedUri!: string | null;
-    statusCode!: number;
-
-    constructor(data?: ICspReport) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.documentUri = _data["document-uri"] !== undefined ? _data["document-uri"] : <any>null;
-            this.referrer = _data["referrer"] !== undefined ? _data["referrer"] : <any>null;
-            this.violatedDirective = _data["violated-directive"] !== undefined ? _data["violated-directive"] : <any>null;
-            this.effectiveDirective = _data["effective-directive"] !== undefined ? _data["effective-directive"] : <any>null;
-            this.originalPolicy = _data["original-policy"] !== undefined ? _data["original-policy"] : <any>null;
-            this.blockedUri = _data["blocked-uri"] !== undefined ? _data["blocked-uri"] : <any>null;
-            this.statusCode = _data["status-code"] !== undefined ? _data["status-code"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): CspReport {
-        data = typeof data === 'object' ? data : {};
-        let result = new CspReport();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["document-uri"] = this.documentUri !== undefined ? this.documentUri : <any>null;
-        data["referrer"] = this.referrer !== undefined ? this.referrer : <any>null;
-        data["violated-directive"] = this.violatedDirective !== undefined ? this.violatedDirective : <any>null;
-        data["effective-directive"] = this.effectiveDirective !== undefined ? this.effectiveDirective : <any>null;
-        data["original-policy"] = this.originalPolicy !== undefined ? this.originalPolicy : <any>null;
-        data["blocked-uri"] = this.blockedUri !== undefined ? this.blockedUri : <any>null;
-        data["status-code"] = this.statusCode !== undefined ? this.statusCode : <any>null;
-        return data;
-    }
-}
-
-export interface ICspReport {
-    documentUri: string | null;
-    referrer: string | null;
-    violatedDirective: string | null;
-    effectiveDirective: string | null;
-    originalPolicy: string | null;
-    blockedUri: string | null;
-    statusCode: number;
+export interface IDeletePostCommand {
+    id: string;
+    rowVersion: number;
 }
 
 export class SectionListDto implements ISectionListDto {
@@ -2426,12 +2224,15 @@ export interface IUpdateSectionCommand {
     title: string;
 }
 
-export class CreateBoardCommand implements ICreateBoardCommand {
-    sectionId!: string;
-    title!: string;
-    description!: string;
+export class PaginatedResultOfThreadDto implements IPaginatedResultOfThreadDto {
+    pageItems!: ThreadDto[] | null;
+    pageIndex!: number;
+    totalPages!: number;
+    totalCount!: number;
+    hasPreviousPage!: boolean;
+    hasNextPage!: boolean;
 
-    constructor(data?: ICreateBoardCommand) {
+    constructor(data?: IPaginatedResultOfThreadDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2442,32 +2243,226 @@ export class CreateBoardCommand implements ICreateBoardCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.sectionId = _data["sectionId"] !== undefined ? _data["sectionId"] : <any>null;
-            this.title = _data["title"] !== undefined ? _data["title"] : <any>null;
-            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            if (Array.isArray(_data["pageItems"])) {
+                this.pageItems = [] as any;
+                for (let item of _data["pageItems"])
+                    this.pageItems!.push(ThreadDto.fromJS(item));
+            }
+            else {
+                this.pageItems = <any>null;
+            }
+            this.pageIndex = _data["pageIndex"] !== undefined ? _data["pageIndex"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.hasPreviousPage = _data["hasPreviousPage"] !== undefined ? _data["hasPreviousPage"] : <any>null;
+            this.hasNextPage = _data["hasNextPage"] !== undefined ? _data["hasNextPage"] : <any>null;
         }
     }
 
-    static fromJS(data: any): CreateBoardCommand {
+    static fromJS(data: any): PaginatedResultOfThreadDto {
         data = typeof data === 'object' ? data : {};
-        let result = new CreateBoardCommand();
+        let result = new PaginatedResultOfThreadDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["sectionId"] = this.sectionId !== undefined ? this.sectionId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
+        if (Array.isArray(this.pageItems)) {
+            data["pageItems"] = [];
+            for (let item of this.pageItems)
+                data["pageItems"].push(item.toJSON());
+        }
+        data["pageIndex"] = this.pageIndex !== undefined ? this.pageIndex : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["hasPreviousPage"] = this.hasPreviousPage !== undefined ? this.hasPreviousPage : <any>null;
+        data["hasNextPage"] = this.hasNextPage !== undefined ? this.hasNextPage : <any>null;
         return data;
     }
 }
 
-export interface ICreateBoardCommand {
-    sectionId: string;
+export interface IPaginatedResultOfThreadDto {
+    pageItems: ThreadDto[] | null;
+    pageIndex: number;
+    totalPages: number;
+    totalCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+}
+
+export class ThreadDto implements IThreadDto {
+    id!: string;
+    rowVersion!: number;
+    title!: string;
+    text!: string;
+    tripcodeKey!: string | null;
+    posts!: PostDto[];
+    threadImages!: ThreadImageDto[];
+    hasMorePosts!: boolean;
+    createdAt!: Date;
+
+    constructor(data?: IThreadDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.posts = [];
+            this.threadImages = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.rowVersion = _data["rowVersion"] !== undefined ? _data["rowVersion"] : <any>null;
+            this.title = _data["title"] !== undefined ? _data["title"] : <any>null;
+            this.text = _data["text"] !== undefined ? _data["text"] : <any>null;
+            this.tripcodeKey = _data["tripcodeKey"] !== undefined ? _data["tripcodeKey"] : <any>null;
+            if (Array.isArray(_data["posts"])) {
+                this.posts = [] as any;
+                for (let item of _data["posts"])
+                    this.posts!.push(PostDto.fromJS(item));
+            }
+            else {
+                this.posts = <any>null;
+            }
+            if (Array.isArray(_data["threadImages"])) {
+                this.threadImages = [] as any;
+                for (let item of _data["threadImages"])
+                    this.threadImages!.push(ThreadImageDto.fromJS(item));
+            }
+            else {
+                this.threadImages = <any>null;
+            }
+            this.hasMorePosts = _data["hasMorePosts"] !== undefined ? _data["hasMorePosts"] : <any>null;
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ThreadDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ThreadDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["rowVersion"] = this.rowVersion !== undefined ? this.rowVersion : <any>null;
+        data["title"] = this.title !== undefined ? this.title : <any>null;
+        data["text"] = this.text !== undefined ? this.text : <any>null;
+        data["tripcodeKey"] = this.tripcodeKey !== undefined ? this.tripcodeKey : <any>null;
+        if (Array.isArray(this.posts)) {
+            data["posts"] = [];
+            for (let item of this.posts)
+                data["posts"].push(item.toJSON());
+        }
+        if (Array.isArray(this.threadImages)) {
+            data["threadImages"] = [];
+            for (let item of this.threadImages)
+                data["threadImages"].push(item.toJSON());
+        }
+        data["hasMorePosts"] = this.hasMorePosts !== undefined ? this.hasMorePosts : <any>null;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export interface IThreadDto {
+    id: string;
+    rowVersion: number;
     title: string;
-    description: string;
+    text: string;
+    tripcodeKey: string | null;
+    posts: PostDto[];
+    threadImages: ThreadImageDto[];
+    hasMorePosts: boolean;
+    createdAt: Date;
+}
+
+export class ThreadImageDto implements IThreadImageDto {
+    fileInfoId!: string;
+    url!: string;
+
+    constructor(data?: IThreadImageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fileInfoId = _data["fileInfoId"] !== undefined ? _data["fileInfoId"] : <any>null;
+            this.url = _data["url"] !== undefined ? _data["url"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ThreadImageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ThreadImageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fileInfoId"] = this.fileInfoId !== undefined ? this.fileInfoId : <any>null;
+        data["url"] = this.url !== undefined ? this.url : <any>null;
+        return data;
+    }
+}
+
+export interface IThreadImageDto {
+    fileInfoId: string;
+    url: string;
+}
+
+export class DeleteThreadCommand implements IDeleteThreadCommand {
+    id!: string;
+    rowVersion!: number;
+
+    constructor(data?: IDeleteThreadCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.rowVersion = _data["rowVersion"] !== undefined ? _data["rowVersion"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeleteThreadCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteThreadCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["rowVersion"] = this.rowVersion !== undefined ? this.rowVersion : <any>null;
+        return data;
+    }
+}
+
+export interface IDeleteThreadCommand {
+    id: string;
+    rowVersion: number;
 }
 
 export class UserSessionDto implements IUserSessionDto {

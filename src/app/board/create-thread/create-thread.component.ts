@@ -10,7 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { first, switchMap, type Observable } from 'rxjs';
 import { TranslatePipe } from '../../common/localization/translate.pipe';
-import { TranslationKey } from '../../common/localization/translation-key.enum';
+import { TranslationKeys } from '../../common/localization/translation-keys.enum';
 import type { Message } from '../../common/message/message';
 import { MessageComponent } from '../../common/message/message.component';
 import { MessageStatus } from '../../common/message/message-status';
@@ -38,7 +38,7 @@ export class CreateThreadComponent {
 
 	formCollapsed: boolean = true;
 	createThreadForm: CreateThreadForm = new CreateThreadForm();
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 
 	toggleCollapse(): void {
 		this.ngbCollapse.toggle();

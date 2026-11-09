@@ -6,7 +6,7 @@ import { tap } from 'rxjs';
 import { AuthorizationService } from './authorization.service';
 import { ToastService } from '../common/toast/toast.service';
 import { ToastStatus } from '../common/toast/toast-status';
-import { TranslationKey } from '../common/localization/translation-key.enum';
+import { TranslationKeys } from '../common/localization/translation-keys.enum';
 
 export const authorizationInterceptor: HttpInterceptorFn = (
 	request: HttpRequest<unknown>,
@@ -27,7 +27,7 @@ export const authorizationInterceptor: HttpInterceptorFn = (
 					case HttpStatusCode.Forbidden:
 						toastService.showToast({
 							status: ToastStatus.Warning,
-							translationKey: TranslationKey.AuthorizationAccessDenied,
+							translationKey: TranslationKeys.Authorization_AccessDenied,
 						});
 
 						break;

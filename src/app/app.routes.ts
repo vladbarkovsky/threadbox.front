@@ -5,7 +5,7 @@ import { applyLanguageGuard } from './common/localization/apply-language.guard';
 import { localizeUrlGuard } from './common/localization/localize-url.guard';
 import { supportedLanguageGuard } from './common/localization/supported-language.guard';
 import type { HomeComponent } from './home/home.component';
-import type { ShellComponent } from './shell/shell.component';
+import type { LayoutComponent } from './layout/layout.component';
 
 export const APP_ROUTES: Routes = [
 	{
@@ -31,10 +31,10 @@ export const APP_ROUTES: Routes = [
 			{ path: '', pathMatch: 'full', redirectTo: 'home' },
 			{ path: '**', redirectTo: 'home' },
 		],
-		loadComponent: (): Promise<Type<ShellComponent>> =>
-			import('./shell/shell.component').then(
+		loadComponent: (): Promise<Type<LayoutComponent>> =>
+			import('./layout/layout.component').then(
 				// eslint-disable-next-line @typescript-eslint/naming-convention -- module export name
-				(shellModule: { ShellComponent: Type<ShellComponent> }): Type<ShellComponent> => shellModule.ShellComponent
+				(layoutModule: { LayoutComponent: Type<LayoutComponent> }): Type<LayoutComponent> => layoutModule.LayoutComponent
 			),
 		path: ':language',
 	},

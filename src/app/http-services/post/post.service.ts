@@ -1,11 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
-import { map } from 'rxjs';
-import type { FileResponse, PostDto } from '../../../../api-client';
+import type { DeletePostCommand, FileResponse, PostDto } from '../../../../api-client';
 import { PostClient } from '../../../../api-client';
 import { convertToNSwagClientFileParameter } from '../../common/nswag-operations';
 import type { CreatePostCommand } from './create-post-command';
-import type { DeletePostCommand } from './delete-post-command';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -24,20 +22,15 @@ export class PostService {
 			command.text,
 			command.threadId,
 			command.tripcodeString,
-			command.postImages.map(convertToNSwagClientFileParameter)
+			command.postImages?.map(convertToNSwagClientFileParameter)
 		);
 	}
 
 	delete(command: DeletePostCommand): Observable<void> {
-		return this.postClient.delete(command.id, command.rowVersion);
+		return this.postClient.delete(command);
 	}
 
-	getImagesZip(postId: string): Observable<{ data: Blob; fileName: string }> {
-		return this.postClient.getImagesZip(postId).pipe(
-			map((fileResponse: FileResponse): { data: Blob; fileName: string } => ({
-				data: fileResponse.data,
-				fileName: fileResponse.fileName ?? '',
-			}))
-		);
+	getImagesZip(postId: string): Observable<FileResponse> {
+		return this.postClient.getImagesZip(postId);
 	}
 }

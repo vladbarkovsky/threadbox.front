@@ -4,7 +4,7 @@ import { TranslatePipe } from '../localization/translate.pipe';
 import { MessageClassPipe } from './message-class.pipe';
 import { NgClass } from '@angular/common';
 import { MessageStatus } from './message-status';
-import { TranslationKey } from '../localization/translation-key.enum';
+import { TranslationKeys } from '../localization/translation-keys.enum';
 
 @Component({
 	selector: 'app-message',
@@ -17,5 +17,5 @@ export class MessageComponent {
 	@Input() message!: Message;
 
 	readonly messageStatusEnum: typeof MessageStatus = MessageStatus;
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 }

@@ -7,7 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SectionClient } from '../../../../api-client';
 import { ToastStatus } from '../../common/toast/toast-status';
 import { TranslatePipe } from '../../common/localization/translate.pipe';
-import { TranslationKey } from '../../common/localization/translation-key.enum';
+import { TranslationKeys } from '../../common/localization/translation-keys.enum';
 
 @Component({
 	selector: 'app-create-board-modal',
@@ -24,7 +24,7 @@ export class CreateBoardModalComponent {
 
 	@Input() sectionId!: string;
 	readonly createBoardForm: CreateBoardForm = new CreateBoardForm();
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 
 	onSubmit(): void {
 		this.createBoardForm.sectionId = this.sectionId;
@@ -35,7 +35,7 @@ export class CreateBoardModalComponent {
 			.subscribe({
 				next: (): void => {
 					this.ngbActiveModal.close();
-					this.toastService.showToast({ translationKey: TranslationKey.HomeBoardCreated, status: ToastStatus.Success });
+					this.toastService.showToast({ translationKey: TranslationKeys.Home_BoardCreated, status: ToastStatus.Success });
 				},
 				// TODO: Set error in sign in state (error must be displayed in component)
 				error: (error: unknown): void => {

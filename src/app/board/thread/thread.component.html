@@ -1,7 +1,7 @@
 <div class="card border-dark my-2">
 	<div class="card-header thread-header">
 		<span class="fw-bold">{{ thread.title }}</span>
-		<span>{{ thread.tripcodeKey ?? (translationKey.BoardThreadAnonymous | translate) }}</span>
+		<span>{{ thread.tripcodeKey ?? (translationKey.Board_Thread_Anonymous | translate) }}</span>
 		<span>{{ thread.createdAt | localizeDate: dateTimeFormatOptions }}</span>
 
 		<i
@@ -36,7 +36,7 @@
 		@if (thread.threadImages.length; as length) {
 			<div>
 				<button class="btn btn-secondary mb-2" type="button" (click)="downloadThreadImages()">
-					{{ (length > 1 ? translationKey.BoardThreadDownloadImages : translationKey.BoardThreadDownloadImage) | translate }}
+					{{ (length > 1 ? translationKey.Board_Thread_DownloadImages : translationKey.Board_Thread_DownloadImage) | translate }}
 				</button>
 			</div>
 		}
@@ -55,7 +55,7 @@
 		@for (post of posts; track post.id) {
 			<div class="card my-2">
 				<div class="card-header post-header">
-					<span>{{ post.tripcodeKey ?? (translationKey.BoardThreadAnonymous | translate) }}</span>
+					<span>{{ post.tripcodeKey ?? (translationKey.Board_Thread_Anonymous | translate) }}</span>
 					<span>{{ post.createdAt | localizeDate: dateTimeFormatOptions }}</span>
 
 					<i
@@ -81,7 +81,9 @@
 
 					@if (post.postImages.length; as length) {
 						<button class="btn btn-secondary mb-2" type="button" (click)="downloadPostImages(post)">
-							{{ (length > 1 ? translationKey.BoardThreadDownloadImages : translationKey.BoardThreadDownloadImage) | translate }}
+							{{
+								(length > 1 ? translationKey.Board_Thread_DownloadImages : translationKey.Board_Thread_DownloadImage) | translate
+							}}
 						</button>
 					}
 				</div>

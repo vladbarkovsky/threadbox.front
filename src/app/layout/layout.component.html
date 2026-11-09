@@ -24,13 +24,13 @@
 				<ul class="navbar-nav">
 					<li class="nav-item">
 						@if (state() === authorizationState.Authenticated) {
-							{{ translationKey.ShellAuthorizedAs | translate }} {{ userName() }}
+							{{ translationKey.Layout_AuthorizedAs | translate }} {{ userName() }}
 							<button class="btn btn-secondary ms-2" type="button" (click)="signOut()">
-								{{ translationKey.ShellSignOut | translate }}
+								{{ translationKey.Layout_SignOut | translate }}
 							</button>
 						} @else {
 							<button class="btn btn-secondary" type="button" (click)="signIn()">
-								{{ translationKey.ShellSignIn | translate }}
+								{{ translationKey.Layout_SignIn | translate }}
 							</button>
 						}
 					</li>

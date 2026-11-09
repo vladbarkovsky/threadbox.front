@@ -93,7 +93,7 @@ export function readExplicitTypeText(
 			return undefined;
 		}
 
-		return `${sourceCode.getText(node.callee)}${sourceCode.getText(typeArguments)}`;
+		return sourceCode.getText(node.callee) + sourceCode.getText(typeArguments);
 	}
 
 	if (node.type === AST_NODE_TYPES.TSAsExpression && !isConstAssertion(node.typeAnnotation)) {

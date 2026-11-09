@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import type { ActivatedRouteSnapshot, CanActivateFn, UrlSegment } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
 
-export const permissionsGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Promise<boolean> => {
+export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Promise<boolean> => {
 	const routePermission: unknown = route.data['permission'];
 	const url: string = '/' + route.url.map((segment: UrlSegment): string => segment.path).join('/');
 

@@ -1,4 +1,4 @@
-export enum MessageIds {
+export enum MessageIdentifiers {
 	MissingExplicitType = 'missingExplicitType',
 	MissingExplicitTypeNamed = 'missingExplicitTypeNamed',
 }

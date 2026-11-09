@@ -3,7 +3,7 @@
 		<div class="form-group file-input">
 			<!-- TODO: Check if disabled attribute can be moved to label from input. -->
 			<label [for]="fileInputId" class="btn btn-secondary" [class.disabled]="base64Files.value.length === maxCount">
-				{{ translationKey.CommonImagesUploadAddImages | translate }}
+				{{ translationKey.Common_ImagesUpload_AddImages | translate }}
 			</label>
 
 			<i
@@ -11,7 +11,7 @@
 				(click)="deleteFiles()"
 				(keydown)="deleteFiles()"
 				role="button"
-				[title]="translationKey.CommonImagesUploadDeleteAllImages | translate"
+				[title]="translationKey.Common_ImagesUpload_DeleteAllImages | translate"
 				tabindex="0"
 			></i>
 
@@ -35,7 +35,7 @@
 							(click)="deleteFile(base64File.file.name)"
 							(keydown)="deleteFile(base64File.file.name)"
 							role="button"
-							[title]="translationKey.CommonImagesUploadDeleteImage | translate"
+							[title]="translationKey.Common_ImagesUpload_DeleteImage | translate"
 							tabindex="0"
 						></i>
 

@@ -12,14 +12,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { Observable } from 'rxjs';
 import { switchMap } from 'rxjs';
 import { ToastService } from '../common/toast/toast.service';
-import { BoardsPermissions, SectionsPermissions } from '../../../api-permissions';
+import { BoardPermissions, SectionPermissions } from '../../../api-permissions';
 import type { ApiException, BoardDto, FileResponse, SectionBoardDto, SectionListDto } from '../../../api-client';
 import { BoardClient, DeleteBoardCommand, SectionClient } from '../../../api-client';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { CreateSectionModalComponent } from './create-section-modal/create-section-modal.component';
 import { ToastStatus } from '../common/toast/toast-status';
 import { TranslatePipe } from '../common/localization/translate.pipe';
-import { TranslationKey } from '../common/localization/translation-key.enum';
+import { TranslationKeys } from '../common/localization/translation-keys.enum';
 
 @Component({
 	selector: 'app-home',
@@ -36,9 +36,9 @@ export class HomeComponent implements OnInit {
 	private readonly ngbModal: NgbModal = inject(NgbModal);
 	private readonly toastService: ToastService = inject(ToastService);
 
-	sectionsPermissions: typeof SectionsPermissions = SectionsPermissions;
-	boardsPermissions: typeof BoardsPermissions = BoardsPermissions;
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	sectionsPermissions: typeof SectionPermissions = SectionPermissions;
+	boardsPermissions: typeof BoardPermissions = BoardPermissions;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 
 	sections$: Observable<SectionListDto[] | undefined> = this.homePageState.getSections();
 
@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
 			scrollable: true,
 		});
 
-		modal.componentInstance.text = TranslationKey.HomeDeleteBoard;
+		modal.componentInstance.text = TranslationKeys.Home_DeleteBoard;
 
 		modal.closed
 			.pipe(
@@ -117,10 +117,10 @@ export class HomeComponent implements OnInit {
 			)
 			.subscribe({
 				next: (): void => {
-					this.toastService.showToast({ translationKey: TranslationKey.HomeBoardDeleted, status: ToastStatus.Success });
+					this.toastService.showToast({ translationKey: TranslationKeys.Home_BoardDeleted, status: ToastStatus.Success });
 				},
 				error: (): void => {
-					this.toastService.showToast({ translationKey: TranslationKey.HomeUnableToDeleteBoard, status: ToastStatus.Error });
+					this.toastService.showToast({ translationKey: TranslationKeys.Home_UnableToDeleteBoard, status: ToastStatus.Error });
 				},
 			});
 	}

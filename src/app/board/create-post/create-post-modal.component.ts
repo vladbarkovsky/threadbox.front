@@ -10,7 +10,7 @@ import { first, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ImagesUploadComponent } from '../../common/images-upload/images-upload.component';
 import { TranslatePipe } from '../../common/localization/translate.pipe';
-import { TranslationKey } from '../../common/localization/translation-key.enum';
+import { TranslationKeys } from '../../common/localization/translation-keys.enum';
 import { convertToNSwagClientFileParameter } from '../../common/nswag-operations';
 import type { HttpErrorResponse } from '@angular/common/http';
 
@@ -32,7 +32,7 @@ export class CreatePostModalComponent {
 
 	@Input() threadId!: string;
 	readonly createPostForm: CreatePostForm = new CreatePostForm();
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	readonly translationKeys: typeof TranslationKeys = TranslationKeys;
 
 	close(): void {
 		this.ngbActiveModal.dismiss();

@@ -7,17 +7,17 @@ import { NgbCollapse, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgOptimizedImage, UpperCasePipe } from '@angular/common';
 import { TranslatePipe } from '../common/localization/translate.pipe';
 import { LocalizationService } from '../common/localization/localization.service';
-import { TranslationKey } from '../common/localization/translation-key.enum';
+import { TranslationKeys } from '../common/localization/translation-keys.enum';
 import { Language } from '../common/localization/language.enum';
 
 @Component({
-	selector: 'app-shell',
-	templateUrl: './shell.component.html',
-	styleUrls: ['./shell.component.scss'],
+	selector: 'app-layout',
+	templateUrl: './layout.component.html',
+	styleUrls: ['./layout.component.scss'],
 	standalone: true,
 	imports: [RouterOutlet, RouterLink, NgbCollapse, TranslatePipe, NgbDropdownModule, UpperCasePipe, NgOptimizedImage],
 })
-export class ShellComponent implements OnInit {
+export class LayoutComponent implements OnInit {
 	private readonly authorizationService: AuthorizationService = inject(AuthorizationService);
 	private readonly localizationService: LocalizationService = inject(LocalizationService);
 
@@ -35,7 +35,7 @@ export class ShellComponent implements OnInit {
 		[Language.Russian]: 'RU',
 	};
 
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 
 	ngOnInit(): void {
 		this.authorizationService.requestAuthorizationState();

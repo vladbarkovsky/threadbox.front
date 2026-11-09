@@ -1,16 +1,15 @@
-export class BoardsPermissions {
-  static readonly manage: string = 'Boards.Manage';
+export enum BoardPermissions {
+	Manage = 'Boards.Manage',
 }
 
-export class PostsPermissions {
-  static readonly delete: string = 'Posts.Delete';
+export enum PostPermissions {
+	Delete = 'Posts.Delete',
 }
 
-export class SectionsPermissions {
-  static readonly manage: string = 'Sections.Manage';
+export enum SectionPermissions {
+	Manage = 'Sections.Manage',
 }
 
-export class ThreadsPermissions {
-  static readonly delete: string = 'Permissions.Delete';
+export enum ThreadPermissions {
+	Delete = 'Threads.Delete',
 }
-

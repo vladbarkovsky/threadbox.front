@@ -1,7 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslatePipe } from '../localization/translate.pipe';
-import { TranslationKey } from '../localization/translation-key.enum';
+import { TranslationKeys } from '../localization/translation-keys.enum';
 
 @Component({
 	selector: 'app-confirmation-modal',
@@ -13,9 +13,9 @@ import { TranslationKey } from '../localization/translation-key.enum';
 export class ConfirmationModalComponent {
 	private readonly ngbActiveModal: NgbActiveModal = inject(NgbActiveModal);
 
-	readonly translationKey: typeof TranslationKey = TranslationKey;
-	@Input() readonly title?: TranslationKey;
-	@Input() text!: TranslationKey;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
+	@Input() readonly title?: TranslationKeys;
+	@Input() text!: TranslationKeys;
 
 	close(): void {
 		this.ngbActiveModal.close();

@@ -7,7 +7,7 @@ import type { ImagesUploadState } from './images-upload.state';
 import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { ToastStatus } from '../toast/toast-status';
 import { TranslatePipe } from '../localization/translate.pipe';
-import { TranslationKey } from '../localization/translation-key.enum';
+import { TranslationKeys } from '../localization/translation-keys.enum';
 
 @Component({
 	selector: 'app-images-upload',
@@ -30,7 +30,7 @@ export class ImagesUploadComponent {
 	 * @memberof ImagesUploadComponent
 	 */
 	@Input() fileInputId!: string;
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 
 	get base64Files$(): Observable<Base64File[]> {
 		return this.imagesUploadState.getBase64Files();
@@ -59,7 +59,7 @@ export class ImagesUploadComponent {
 				files.splice(index, 1);
 
 				this.toastService.showToast({
-					translationKey: TranslationKey.CommonImagesUploadFileAlreadyAdded,
+					translationKey: TranslationKeys.Common_ImagesUpload_FileAlreadyAdded,
 					interpolationParameters: [file.name],
 					status: ToastStatus.Warning,
 				});
@@ -69,7 +69,7 @@ export class ImagesUploadComponent {
 				files.splice(index, 1);
 
 				this.toastService.showToast({
-					translationKey: TranslationKey.CommonImagesUploadFileNotSupported,
+					translationKey: TranslationKeys.Common_ImagesUpload_FileNotSupported,
 					interpolationParameters: [file.name],
 					status: ToastStatus.Warning,
 				});
@@ -80,7 +80,7 @@ export class ImagesUploadComponent {
 			files = files.slice(0, this.maxCount - this.imagesUploadState.base64Files.length);
 
 			this.toastService.showToast({
-				translationKey: TranslationKey.CommonImagesUploadMaxCount,
+				translationKey: TranslationKeys.Common_ImagesUpload_MaxCount,
 				interpolationParameters: [this.maxCount],
 				status: ToastStatus.Warning,
 			});

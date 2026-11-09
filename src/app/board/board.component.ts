@@ -15,7 +15,7 @@ import type { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationModalComponent } from '../common/confirmation-modal/confirmation-modal.component';
 import { TranslatePipe } from '../common/localization/translate.pipe';
-import { TranslationKey } from '../common/localization/translation-key.enum';
+import { TranslationKeys } from '../common/localization/translation-keys.enum';
 import type { Observable } from 'rxjs';
 
 @Component({
@@ -34,7 +34,7 @@ export class BoardComponent implements OnInit {
 	private readonly destroyRef: DestroyRef = inject(DestroyRef);
 	private readonly ngbModal: NgbModal = inject(NgbModal);
 
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 
 	get threads(): ThreadDto[] {
 		return this.threadsListState.threads;
@@ -101,7 +101,7 @@ export class BoardComponent implements OnInit {
 	deleteThread(thread: ThreadDto): void {
 		const ngbModalRef: NgbModalRef = this.ngbModal.open(ConfirmationModalComponent, { backdrop: 'static', centered: true });
 		const component: ConfirmationModalComponent = ngbModalRef.componentInstance as ConfirmationModalComponent;
-		component.text = TranslationKey.BoardDeleteThread;
+		component.text = TranslationKeys.Board_DeleteThread;
 
 		ngbModalRef.closed
 			.pipe(

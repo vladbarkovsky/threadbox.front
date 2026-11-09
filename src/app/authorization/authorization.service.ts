@@ -36,12 +36,14 @@ export class AuthorizationService {
 
 		this.userSessionClient.get().subscribe({
 			next: (session: UserSessionDto): void => {
-				this.setState(AuthorizationState.Authenticated, session);
+				this._session.set(session);
+				this._state.set(AuthorizationState.Authenticated);
 				this.permissionsService.loadPermissions(session.permissions);
 				this.navigateToLastUrl();
 			},
 			error: (error: HttpErrorResponse): void => {
-				this.setState(AuthorizationState.Anonymous);
+				this._session.set(undefined);
+				this._state.set(AuthorizationState.Anonymous);
 
 				// eslint-disable-next-line no-console
 				console.error(error);
@@ -51,23 +53,19 @@ export class AuthorizationService {
 
 	executeSignInRedirect(): void {
 		this.saveLastUrl();
-		window.location.href = `${environment.apiBaseUrl}/bff/login`;
+		window.location.href = environment.apiBaseUrl + '/bff/login';
 	}
 
 	executeSignOutRedirect(): void {
 		this.saveLastUrl();
 		this.clearSession();
-		window.location.href = `${environment.apiBaseUrl}/bff/logout`;
+		window.location.href = environment.apiBaseUrl + '/bff/logout';
 	}
 
 	clearSession(): void {
 		this.permissionsService.flushPermissions();
-		this.setState(AuthorizationState.Anonymous);
-	}
-
-	private setState(state: AuthorizationState, session?: UserSessionDto): void {
-		this._session.set(session);
-		this._state.set(state);
+		this._session.set(undefined);
+		this._state.set(AuthorizationState.Anonymous);
 	}
 
 	private saveLastUrl(): void {

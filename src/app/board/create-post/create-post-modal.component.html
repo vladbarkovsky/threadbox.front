@@ -1,7 +1,6 @@
 <div class="modal-header">
-	<h4 class="modal-title">{{ translationKey.BoardCreatePostModalCreatePost | translate }}</h4>
-
-	<button class="btn-close" (click)="close()" type="button" aria-label="translationKey.Close | translate"></button>
+	<h4 class="modal-title">{{ translationKeys.Board_CreatePostModal_CreatePost | translate }}</h4>
+	<button class="btn-close" (click)="close()" type="button" aria-label="translationKeys.Close | translate"></button>
 </div>
 
 <div class="modal-body">
@@ -9,14 +8,14 @@
 		@if (createPostForm.text; as text) {
 			<div class="mb-3">
 				<label class="mb-2 text-muted" for="text">
-					{{ translationKey.BoardCreatePostModalTextLabel | translate }}
+					{{ translationKeys.Board_CreatePostModal_TextLabel | translate }}
 				</label>
 
 				<textarea id="text" class="form-control" [formControl]="text"></textarea>
 
 				@if (text.touched && text.errors; as errors) {
 					@if (errors['required']) {
-						<small class="text-danger">{{ translationKey.BoardCreatePostModalTextValidationRequired | translate }}</small>
+						<small class="text-danger">{{ translationKeys.Board_CreatePostModal_TextValidation_Required | translate }}</small>
 					}
 
 					<!-- TODO: Max length validation error -->
@@ -27,14 +26,16 @@
 		@if (createPostForm.tripcodeString; as tripcodeString) {
 			<div class="mb-3">
 				<label class="mb-2 text-muted" for="tripcodeString">
-					{{ translationKey.BoardCreatePostModalTripcodeLabel | translate }}
+					{{ translationKeys.Board_CreatePostModal_TripcodeLabel | translate }}
 				</label>
 
 				<input id="tripcodeString" class="form-control" [formControl]="tripcodeString" />
 
 				@if (tripcodeString.touched && tripcodeString.errors; as errors) {
 					@if (errors['pattern']) {
-						<small class="text-danger">{{ translationKey.BoardCreatePostModalTripcodeValidationPattern | translate }}</small>
+						<small class="text-danger">
+							{{ translationKeys.Board_CreatePostModal_TripcodeValidation_Pattern | translate }}
+						</small>
 					}
 
 					<!-- TODO: Tripcode pattern description -->
@@ -43,11 +44,11 @@
 		}
 
 		<div>
-			<app-images-upload [imagesUploadState]="imagesUploadState" [maxCount]="5" [fileInputId]="threadId"></app-images-upload>
+			<app-images-upload [imagesUploadState]="imagesUploadState" [maxCount]="5" [fileInputId]="threadId" />
 		</div>
 
 		<button class="btn btn-outline-secondary mt-3" type="submit" [disabled]="createPostForm.invalid">
-			{{ translationKey.BoardCreatePostModalSubmit | translate }}
+			{{ translationKeys.Board_CreatePostModal_Submit | translate }}
 		</button>
 	</form>
 </div>

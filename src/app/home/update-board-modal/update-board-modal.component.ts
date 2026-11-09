@@ -9,7 +9,7 @@ import { ToastService } from '../../common/toast/toast.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ToastStatus } from '../../common/toast/toast-status';
 import { TranslatePipe } from '../../common/localization/translate.pipe';
-import { TranslationKey } from '../../common/localization/translation-key.enum';
+import { TranslationKeys } from '../../common/localization/translation-keys.enum';
 
 @Component({
 	selector: 'app-update-board-modal',
@@ -25,7 +25,7 @@ export class UpdateBoardModalComponent implements OnInit {
 	private readonly ngbActiveModal: NgbActiveModal = inject(NgbActiveModal);
 
 	@Input() readonly boardDto!: BoardDto;
-	readonly translationKey: typeof TranslationKey = TranslationKey;
+	readonly translationKey: typeof TranslationKeys = TranslationKeys;
 
 	updateBoardForm!: UpdateBoardForm;
 
@@ -40,7 +40,7 @@ export class UpdateBoardModalComponent implements OnInit {
 			.subscribe({
 				next: (): void => {
 					this.ngbActiveModal.close();
-					this.toastService.showToast({ translationKey: TranslationKey.HomeBoardUpdated, status: ToastStatus.Success });
+					this.toastService.showToast({ translationKey: TranslationKeys.Home_BoardUpdated, status: ToastStatus.Success });
 				},
 				// TODO: Set error in sign in state (error must be displayed in component)
 				error: (error: unknown): void => {
