@@ -2,17 +2,17 @@ import type { Signal, WritableSignal } from '@angular/core';
 import { effect, inject, Injectable, signal } from '@angular/core';
 import type { UrlCreationOptions, UrlSegment, UrlTree } from '@angular/router';
 import { PRIMARY_OUTLET, Router } from '@angular/router';
-import { LocalStorageService } from '../local-storage.service';
-import { enTranslations } from './en-translations';
-import { lvTranslations } from './lv-translations';
-import { ruTranslations } from './ru-translations';
+import { LocalStorageService } from '../common/local-storage.service';
 import type { InterpolationParameter } from './interpolation-parameter.type';
 import { Language } from './language.enum';
-import type { TranslationKeys } from './translation-keys.enum';
+import { enTranslations } from './translations/en-translations';
+import { lvTranslations } from './translations/lv-translations';
+import { ruTranslations } from './translations/ru-translations';
+import type { TranslationKeys } from './translations/translation-keys.enum';
 
 @Injectable({ providedIn: 'root' })
 export class LocalizationService {
-	readonly defaultLanguage: Language = Language.English;
+	private readonly defaultLanguage: Language = Language.English;
 
 	private readonly translations: Record<Language, Record<TranslationKeys, string>> = {
 		[Language.English]: enTranslations,
@@ -64,7 +64,7 @@ export class LocalizationService {
 
 	localizeUrlTree(language?: Language): UrlTree {
 		const activeLanguage: Language = language ?? this.activeLanguage();
-		const urlTree: UrlTree = this.router.getCurrentNavigation()?.extractedUrl ?? this.router.parseUrl(this.router.url);
+		const urlTree: UrlTree = this.router.currentNavigation()?.extractedUrl ?? this.router.parseUrl(this.router.url);
 
 		const pathSegments: string[] =
 			urlTree.root.children[PRIMARY_OUTLET]?.segments.map((segment: UrlSegment): string => segment.path) ?? [];

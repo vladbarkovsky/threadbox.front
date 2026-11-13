@@ -56,4 +56,9 @@ export enum TranslationKeys {
 	Layout_AuthorizedAs = 53,
 	Layout_SignIn = 54,
 	Layout_SignOut = 55,
+	LoggedOut_RedirectCountdown = 56,
+	LoggedOut_SessionEnded = 57,
+	AuthorizationError_Continue = 58,
+	AuthorizationError_Message = 59,
+	AuthorizationError_Title = 60,
 }

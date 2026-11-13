@@ -57,4 +57,9 @@ export const lvTranslations: Record<TranslationKeys, string> = {
 	[TranslationKeys.Layout_AuthorizedAs]: 'Autorizēts kā',
 	[TranslationKeys.Layout_SignIn]: 'Ienākt',
 	[TranslationKeys.Layout_SignOut]: 'Iziet',
+	[TranslationKeys.LoggedOut_RedirectCountdown]: 'Pāreja pēc {0} s.',
+	[TranslationKeys.LoggedOut_SessionEnded]: 'Sesija ir pabeigta.',
+	[TranslationKeys.AuthorizationError_Continue]: 'Turpināt',
+	[TranslationKeys.AuthorizationError_Message]: 'Pierakstīties neizdevās.',
+	[TranslationKeys.AuthorizationError_Title]: 'Autorizācijas kļūda',
 };

@@ -57,4 +57,9 @@ export const enTranslations: Record<TranslationKeys, string> = {
 	[TranslationKeys.Layout_AuthorizedAs]: 'Authorized as',
 	[TranslationKeys.Layout_SignIn]: 'Sign in',
 	[TranslationKeys.Layout_SignOut]: 'Sign out',
+	[TranslationKeys.LoggedOut_RedirectCountdown]: 'Redirect in {0} s.',
+	[TranslationKeys.LoggedOut_SessionEnded]: 'You have signed out.',
+	[TranslationKeys.AuthorizationError_Continue]: 'Continue',
+	[TranslationKeys.AuthorizationError_Message]: 'Sign-in could not be completed.',
+	[TranslationKeys.AuthorizationError_Title]: 'Authorization error',
 };

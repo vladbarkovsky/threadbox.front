@@ -1,19 +1,35 @@
-import type { Type } from '@angular/core';
+/* eslint-disable @typescript-eslint/explicit-function-return-type, threadbox/explicit-type */
+
 import type { Routes } from '@angular/router';
-import { applyLanguageGuard } from './common/localization/apply-language.guard';
-import { localizeUrlGuard } from './common/localization/localize-url.guard';
-import { supportedLanguageGuard } from './common/localization/supported-language.guard';
-import type { LayoutComponent } from './layout/layout.component';
+import { supportedLanguageGuard } from './localization/guards/supported-language.guard';
+import { applyLanguageGuard } from './localization/guards/apply-language.guard';
+import { localizeUrlGuard } from './localization/guards/localize-url.guard';
 
 export const APP_ROUTES: Routes = [
 	{
 		canActivate: [applyLanguageGuard],
 		canMatch: [supportedLanguageGuard],
-		loadComponent: (): Promise<Type<LayoutComponent>> =>
-			import('./layout/layout.component').then(
-				// eslint-disable-next-line @typescript-eslint/naming-convention -- module export name
-				(layoutModule: { LayoutComponent: Type<LayoutComponent> }): Type<LayoutComponent> => layoutModule.LayoutComponent
-			),
+		children: [
+			{
+				loadComponent: () =>
+					import('./authorization/authorization-error/authorization-error.component').then(
+						authorizationErrorModule => authorizationErrorModule.AuthorizationErrorComponent
+					),
+				path: 'authorization-error',
+			},
+			{
+				loadComponent: () =>
+					import('./authorization/logged-out/logged-out.component').then(loggedOutModule => loggedOutModule.LoggedOutComponent),
+				path: 'logged-out',
+			},
+			{
+				loadComponent: () => import('./layout/layout.component').then(layoutModule => layoutModule.LayoutComponent),
+				path: '',
+				pathMatch: 'full',
+			},
+		],
+		loadComponent: () =>
+			import('./localization/language/language.component').then(languageModule => languageModule.LanguageComponent),
 		path: ':language',
 	},
 	{

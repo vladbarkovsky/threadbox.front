@@ -57,4 +57,9 @@ export const ruTranslations: Record<TranslationKeys, string> = {
 	[TranslationKeys.Layout_AuthorizedAs]: 'Авторизован как',
 	[TranslationKeys.Layout_SignIn]: 'Войти',
 	[TranslationKeys.Layout_SignOut]: 'Выйти',
+	[TranslationKeys.LoggedOut_RedirectCountdown]: 'Переход через {0} с.',
+	[TranslationKeys.LoggedOut_SessionEnded]: 'Сессия завершена.',
+	[TranslationKeys.AuthorizationError_Continue]: 'Продолжить',
+	[TranslationKeys.AuthorizationError_Message]: 'Войти не удалось.',
+	[TranslationKeys.AuthorizationError_Title]: 'Ошибка авторизации',
 };

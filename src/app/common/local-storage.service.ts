@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import type { Language } from './localization/language.enum';
+import type { Language } from '../localization/language.enum';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageService {

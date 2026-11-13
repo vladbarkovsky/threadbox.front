@@ -8,7 +8,7 @@ import type { UserSessionDto } from '../../../api-client';
 import { UserSessionClient } from '../../../api-client';
 import { SessionStorageService } from '../common/session-storage-service';
 import { AuthorizationState } from './authorization-state.enum';
-import type { HttpErrorResponse } from '@angular/common/http';
+import { HttpStatusCode, type HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthorizationService {
@@ -41,9 +41,12 @@ export class AuthorizationService {
 				this.permissionsService.loadPermissions(session.permissions);
 				this.navigateToLastUrl();
 			},
+			// TODO: Handle not 401 - error message, "Try again" button.
 			error: (error: HttpErrorResponse): void => {
-				this._session.set(undefined);
-				this._state.set(AuthorizationState.Anonymous);
+				if ((error.status as HttpStatusCode) !== HttpStatusCode.Unauthorized) {
+					this._session.set(undefined);
+					this._state.set(AuthorizationState.Anonymous);
+				}
 
 				// eslint-disable-next-line no-console
 				console.error(error);

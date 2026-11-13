@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import type { ActivatedRouteSnapshot, CanActivateFn } from '@angular/router';
-import { LocalizationService } from './localization.service';
+import { LocalizationService } from '../localization.service';
 
 export const applyLanguageGuard: CanActivateFn = (route: ActivatedRouteSnapshot): boolean => {
 	const localizationService: LocalizationService = inject(LocalizationService);

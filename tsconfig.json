@@ -15,20 +15,27 @@
 		"allowUnusedLabels": false,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
+		"isolatedModules": true,
 		"esModuleInterop": true,
 		"sourceMap": true,
 		"experimentalDecorators": true,
-		"moduleResolution": "bundler",
 		"importHelpers": true,
 		"target": "ES2022",
-		"module": "ES2022",
-		"useDefineForClassFields": false
+		"module": "preserve"
 	},
-	"exclude": ["node_modules", "eslint-plugin-threadbox"],
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false,
 		"strictInjectionParameters": true,
 		"strictInputAccessModifiers": true,
 		"strictTemplates": true
-	}
+	},
+	"files": [],
+	"references": [
+		{
+			"path": "./tsconfig.app.json"
+		},
+		{
+			"path": "./tsconfig.spec.json"
+		}
+	]
 }
