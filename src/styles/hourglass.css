@@ -1,0 +1,4 @@
+.hourglass,
+.hourglass * {
+	cursor: wait;
+}

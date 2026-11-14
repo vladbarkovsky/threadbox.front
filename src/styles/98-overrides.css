@@ -1,0 +1,261 @@
+html[data-theme] {
+	--border-raised:
+		inset -1px -1px var(--color-frame), inset 1px 1px var(--color-highlight), inset -2px -2px var(--color-shadow),
+		inset 2px 2px var(--color-face);
+	--border-sunken:
+		inset -1px -1px var(--color-highlight), inset 1px 1px var(--color-frame), inset -2px -2px var(--color-face),
+		inset 2px 2px var(--color-shadow);
+	--border-window:
+		inset -1px -1px var(--color-frame), inset 1px 1px var(--color-face), inset -2px -2px var(--color-shadow),
+		inset 2px 2px var(--color-highlight);
+	--border-field:
+		inset -1px -1px var(--color-highlight), inset 1px 1px var(--color-shadow), inset -2px -2px var(--color-face),
+		inset 2px 2px var(--color-frame);
+	--border-default-raised:
+		inset -2px -2px var(--color-frame), inset 1px 1px var(--color-frame), inset 2px 2px var(--color-highlight),
+		inset -3px -3px var(--color-shadow), inset 3px 3px var(--color-face);
+	--border-default-sunken:
+		inset 2px 2px var(--color-frame), inset -1px -1px var(--color-frame), inset -2px -2px var(--color-highlight),
+		inset 3px 3px var(--color-shadow), inset -3px -3px var(--color-face);
+	--border-status: inset -1px -1px var(--color-face), inset 1px 1px var(--color-shadow);
+	--border-tab:
+		inset -1px 0 var(--color-frame), inset 1px 1px var(--color-face), inset -2px 0 var(--color-shadow),
+		inset 2px 2px var(--color-highlight);
+	background-color: var(--color-background);
+	color: var(--color-foreground);
+}
+
+html[data-theme] body {
+	background-color: var(--color-background);
+	color: var(--color-foreground);
+}
+
+html[data-theme] ::selection {
+	background-color: var(--color-accent);
+	color: var(--color-accent-foreground);
+}
+
+html[data-theme] u {
+	border-bottom-color: var(--color-foreground);
+}
+
+html[data-theme] a {
+	color: var(--color-link);
+}
+
+html[data-theme] a:focus {
+	outline-color: var(--color-link);
+}
+
+html[data-theme] .window {
+	background-color: var(--color-surface);
+	box-shadow: var(--border-window);
+}
+
+html[data-theme] .title-bar {
+	background-image: linear-gradient(90deg, var(--color-title), var(--color-title-end));
+}
+
+html[data-theme] .title-bar.inactive {
+	background-image: linear-gradient(90deg, var(--color-title-inactive), var(--color-title-inactive-end));
+}
+
+html[data-theme] .title-bar-text {
+	color: var(--color-title-foreground);
+}
+
+html[data-theme] legend,
+html[data-theme] .status-field-border,
+html[data-theme] .vertical-bar {
+	background-color: var(--color-surface);
+}
+
+html[data-theme] .status-bar-field,
+html[data-theme] .status-field-border {
+	box-shadow: var(--border-status);
+}
+
+html[data-theme] .vertical-bar,
+html[data-theme] :not(.title-bar-controls) > button,
+html[data-theme] input[type='reset'],
+html[data-theme] input[type='submit'] {
+	background-color: var(--color-surface);
+	box-shadow: var(--border-raised);
+}
+
+html[data-theme] :not(.title-bar-controls) > button,
+html[data-theme] input[type='reset'],
+html[data-theme] input[type='submit'] {
+	text-shadow: 0 0 var(--color-foreground);
+}
+
+html[data-theme] :not(.title-bar-controls) > button.default,
+html[data-theme] input[type='reset'].default,
+html[data-theme] input[type='submit'].default {
+	box-shadow: var(--border-default-raised);
+}
+
+html[data-theme] :disabled,
+html[data-theme] :disabled + label {
+	color: var(--color-disabled);
+}
+
+html[data-theme] :disabled + label,
+html[data-theme] :not(.title-bar-controls) > button:disabled,
+html[data-theme] input[type='reset']:disabled,
+html[data-theme] input[type='submit']:disabled {
+	text-shadow: 1px 1px 0 var(--color-highlight);
+}
+
+html[data-theme] input[readonly],
+html[data-theme] input[readonly] + label {
+	color: var(--color-disabled);
+}
+
+html[data-theme] :not(.title-bar-controls) > button:focus,
+html[data-theme] input[type='reset']:focus,
+html[data-theme] input[type='submit']:focus,
+html[data-theme] input[type='checkbox']:focus + label,
+html[data-theme] input[type='radio']:focus + label,
+html[data-theme] summary:focus {
+	outline-color: var(--color-focus);
+}
+
+html[data-theme] :not(.title-bar-controls) > button:not(:disabled):active,
+html[data-theme] input[type='reset']:not(:disabled):active,
+html[data-theme] input[type='submit']:not(:disabled):active {
+	box-shadow: var(--border-sunken);
+	text-shadow: 1px 1px var(--color-foreground);
+}
+
+html[data-theme] :not(.title-bar-controls) > button.default:not(:disabled):active,
+html[data-theme] input[type='reset'].default:not(:disabled):active,
+html[data-theme] input[type='submit'].default:not(:disabled):active {
+	box-shadow: var(--border-default-sunken);
+}
+
+html[data-theme] input[type='email'],
+html[data-theme] input[type='number'],
+html[data-theme] input[type='password'],
+html[data-theme] input[type='search'],
+html[data-theme] input[type='tel'],
+html[data-theme] input[type='text'],
+html[data-theme] input[type='url'],
+html[data-theme] select,
+html[data-theme] textarea,
+html[data-theme] input[type='checkbox'] + label::before,
+html[data-theme] ul.tree-view,
+html[data-theme] pre,
+html[data-theme] .field-border,
+html[data-theme] .field-border-disabled {
+	background-color: var(--color-field);
+	box-shadow: var(--border-field);
+}
+
+html[data-theme] .sunken-panel,
+html[data-theme] table {
+	background-color: var(--color-field);
+}
+
+html[data-theme] input[type='email']:disabled,
+html[data-theme] input[type='email']:read-only,
+html[data-theme] input[type='number']:disabled,
+html[data-theme] input[type='number']:read-only,
+html[data-theme] input[type='password']:disabled,
+html[data-theme] input[type='password']:read-only,
+html[data-theme] input[type='search']:disabled,
+html[data-theme] input[type='search']:read-only,
+html[data-theme] input[type='tel']:disabled,
+html[data-theme] input[type='tel']:read-only,
+html[data-theme] input[type='text']:disabled,
+html[data-theme] input[type='text']:read-only,
+html[data-theme] input[type='url']:disabled,
+html[data-theme] input[type='url']:read-only,
+html[data-theme] textarea:disabled,
+html[data-theme] input[type='checkbox']:active + label::before,
+html[data-theme] input[type='checkbox'][disabled] + label::before,
+html[data-theme] .field-border-disabled {
+	background-color: var(--color-surface);
+}
+
+html[data-theme] select:focus {
+	background-color: var(--color-accent);
+	color: var(--color-accent-foreground);
+}
+
+html[data-theme] select:focus option {
+	background-color: var(--color-field);
+	color: var(--color-foreground);
+}
+
+html[data-theme='dark'] input[type='checkbox']:checked + label::after,
+html[data-theme='dark'] input[type='radio']:checked + label::after {
+	filter: invert(1);
+}
+
+html[data-theme] ul.tree-view a {
+	color: var(--color-foreground);
+}
+
+html[data-theme] menu[role='tablist'] > li > a {
+	color: var(--color-foreground);
+}
+
+html[data-theme] ul.tree-view a:focus {
+	background-color: var(--color-accent);
+	color: var(--color-accent-foreground);
+}
+
+html[data-theme] ul.tree-view ul {
+	border-left-color: var(--color-shadow);
+}
+
+html[data-theme] ul.tree-view ul > li::before {
+	border-bottom-color: var(--color-shadow);
+}
+
+html[data-theme] ul.tree-view ul > li:last-child::after {
+	background-color: var(--color-field);
+}
+
+html[data-theme] ul.tree-view details > summary::before {
+	background-color: var(--color-field);
+	border-color: var(--color-shadow);
+}
+
+html[data-theme] table > thead > tr > * {
+	background-color: var(--color-surface);
+	box-shadow: var(--border-raised);
+}
+
+html[data-theme] table > tbody > tr.highlighted {
+	background-color: var(--color-accent);
+	color: var(--color-accent-foreground);
+}
+
+html[data-theme] menu[role='tablist'] > li {
+	box-shadow: var(--border-tab);
+}
+
+html[data-theme] menu[role='tablist'] > li[aria-selected='true'] {
+	background-color: var(--color-surface);
+}
+
+html[data-theme] menu[role='tablist'] > li > a:focus {
+	outline-color: var(--color-foreground);
+}
+
+html[data-theme] .progress-indicator {
+	box-shadow:
+		inset -2px -2px var(--color-face),
+		inset 2px 2px var(--color-shadow);
+}
+
+html[data-theme] .progress-indicator > .progress-indicator-bar {
+	background-color: var(--color-accent);
+}
+
+html[data-theme] .progress-indicator.segmented > .progress-indicator-bar {
+	background-color: transparent;
+	background-image: linear-gradient(90deg, var(--color-accent) 0 16px, transparent 0 2px);
+}
