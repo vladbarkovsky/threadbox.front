@@ -3,11 +3,5 @@
 @import url('./styles/hourglass.css');
 @import url('./styles/98-overrides/fonts.css');
 @import url('./styles/98-overrides/sizes.css');
+@import url('./styles/layout.css');
 
-.theme-preview {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	max-width: 36rem;
-	padding: 12px;
-}

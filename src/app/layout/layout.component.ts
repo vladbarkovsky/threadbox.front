@@ -1,6 +1,5 @@
 import type { OnInit, Signal } from '@angular/core';
 import { Component, computed, inject } from '@angular/core';
-import { UpperCasePipe } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthorizationService } from '../authorization/authorization.service';
 import { AuthorizationState } from '../authorization/authorization-state.enum';
@@ -8,11 +7,13 @@ import { TranslatePipe } from '../localization/pipes/translate.pipe';
 import { Language } from '../localization/language.enum';
 import { LocalizationService } from '../localization/localization.service';
 import { TranslationKeys as TranslationKey } from '../localization/translations/translation-keys.enum';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
 	selector: 'app-layout',
 	templateUrl: './layout.component.html',
-	imports: [RouterOutlet, RouterLink, TranslatePipe, UpperCasePipe],
+	styleUrls: ['./layout.component.css'],
+	imports: [RouterOutlet, RouterLink, TranslatePipe, NgOptimizedImage],
 })
 export class LayoutComponent implements OnInit {
 	private readonly authorizationService: AuthorizationService = inject(AuthorizationService);
@@ -23,6 +24,7 @@ export class LayoutComponent implements OnInit {
 	protected readonly userName: Signal<string | undefined> = computed(
 		(): string | undefined => this.authorizationService.session()?.username
 	);
+
 	protected readonly activeLanguage: Signal<Language> = this.localizationService.activeLanguage;
 	protected readonly availableLanguages: Language[] = Object.values(Language);
 

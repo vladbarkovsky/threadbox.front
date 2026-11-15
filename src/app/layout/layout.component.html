@@ -1,22 +1,21 @@
 @if (authorizationState() !== authorizationStateEnum.Unknown) {
-	<header>
-		<a routerLink="/">Threadbox</a>
+	<header class="navbar">
+		<a class="navbar-logo" routerLink="/">
+			<img ngSrc="assets/logo.png" width="32" height="32" alt="" />
+			<span>Threadbox</span>
+		</a>
 
-		@if (authorizationState() === authorizationStateEnum.Authenticated) {
-			<span>{{ translationKey.Layout_AuthorizedAs | translate }} {{ userName() }}</span>
-			<button type="button" (click)="signOut()">{{ translationKey.Layout_SignOut | translate }}</button>
-		} @else {
-			<button type="button" (click)="signIn()">{{ translationKey.Layout_SignIn | translate }}</button>
-		}
-
-		<span>{{ activeLanguage() | uppercase }}</span>
-
-		@for (language of availableLanguages; track language) {
-			@if (language !== activeLanguage()) {
-				<button type="button" (click)="changeLanguage(language)">{{ languageDisplayNames[language] }}</button>
+		<div class="navbar-account">
+			@if (authorizationState() === authorizationStateEnum.Authenticated) {
+				<span>{{ translationKey.Layout_AuthorizedAs | translate }} {{ userName() }}</span>
+				<button type="button" (click)="signOut()">{{ translationKey.Layout_SignOut | translate }}</button>
+			} @else {
+				<button type="button" (click)="signIn()">{{ translationKey.Layout_SignIn | translate }}</button>
 			}
-		}
+		</div>
 	</header>
 
-	<router-outlet />
+	<div class="page">
+		<router-outlet />
+	</div>
 }

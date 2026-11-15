@@ -1,0 +1,20 @@
+html {
+	--page-padding: 8px;
+	--column-max-width: 100%;
+}
+
+@media (width >= 48rem) {
+	html {
+		--page-padding: 24px;
+	}
+}
+
+@media (width >= 64rem) {
+	html {
+		--column-max-width: calc(64rem - 2 * var(--page-padding));
+	}
+}
+
+body {
+	margin: 0;
+}
