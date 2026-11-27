@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
 import {
 	ThreadClient,
@@ -6,12 +6,12 @@ import {
 	type FileResponse,
 	type PaginatedResultOfThreadDto,
 	type ThreadDto,
-} from '../../../../api-client';
-import { convertToNSwagClientFileParameter } from '../../common/nswag-operations';
+} from '../api-client';
+import { convertToNSwagClientFileParameter } from '../convert-to-nswag-client-file-parameter.function';
 import type { CreateThreadCommand } from './create-thread-command';
 import type { GetThreadListQuery } from './get-thread-list-query';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ThreadService {
 	private readonly threadClient: ThreadClient = inject(ThreadClient);
 

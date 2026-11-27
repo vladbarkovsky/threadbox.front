@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
 import {
 	BoardClient,
@@ -7,9 +7,9 @@ import {
 	type DeleteBoardCommand,
 	type SectionBoardDto,
 	type UpdateBoardCommand,
-} from '../../../../api-client';
+} from '../api-client';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class BoardService {
 	private readonly boardClient: BoardClient = inject(BoardClient);
 

@@ -1,55 +1,83 @@
-import type { OnInit, Signal } from '@angular/core';
-import { Component, computed, inject } from '@angular/core';
+import type { OnInit, Signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthorizationService } from '../authorization/authorization.service';
 import { AuthorizationState } from '../authorization/authorization-state.enum';
-import { NgbCollapse, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgOptimizedImage, UpperCasePipe } from '@angular/common';
-import { TranslatePipe } from '../common/localization/translate.pipe';
-import { LocalizationService } from '../common/localization/localization.service';
-import { TranslationKeys } from '../common/localization/translation-keys.enum';
-import { Language } from '../common/localization/language.enum';
+import { TranslatePipe } from '../localization/pipes/translate.pipe';
+import { Language } from '../localization/language.enum';
+import { LocalizationService } from '../localization/localization.service';
+import { TranslationKey } from '../localization/translations/translation-key.enum';
+import { NgOptimizedImage } from '@angular/common';
+import { DropdownComponent } from '../common/dropdown/dropdown.component';
+import type { DropdownOption } from '../common/dropdown/dropdown-option';
+import { ThemeService } from '../theme/theme.service';
+import { Theme } from '../theme/theme.enum';
 
 @Component({
 	selector: 'app-layout',
 	templateUrl: './layout.component.html',
-	styleUrls: ['./layout.component.scss'],
-	standalone: true,
-	imports: [RouterOutlet, RouterLink, NgbCollapse, TranslatePipe, NgbDropdownModule, UpperCasePipe, NgOptimizedImage],
+	styleUrls: ['./layout.component.css'],
+	imports: [DropdownComponent, NgOptimizedImage, RouterLink, RouterOutlet, TranslatePipe],
 })
 export class LayoutComponent implements OnInit {
 	private readonly authorizationService: AuthorizationService = inject(AuthorizationService);
 	private readonly localizationService: LocalizationService = inject(LocalizationService);
+	private readonly themeService: ThemeService = inject(ThemeService);
 
-	navbarCollapsed: boolean = true;
+	protected readonly authorizationState: Signal<AuthorizationState> = this.authorizationService.state;
+	protected readonly authorizationStateEnum: typeof AuthorizationState = AuthorizationState;
 
-	state: Signal<AuthorizationState> = this.authorizationService.state;
-	userName: Signal<string | undefined> = computed((): string | undefined => this.authorizationService.session()?.username);
-	readonly authorizationState: typeof AuthorizationState = AuthorizationState;
-	protected activeLanguage: Signal<Language> = this.localizationService.activeLanguage;
-	protected availableLanguages: Language[] = Object.values(Language);
+	protected readonly userName: Signal<string | undefined> = computed(
+		(): string | undefined => this.authorizationService.session()?.username
+	);
 
-	languageDisplayNames: Record<Language, string> = {
+	protected readonly activeLanguage: Signal<Language> = this.localizationService.activeLanguage;
+	protected readonly availableLanguages: Language[] = Object.values(Language);
+
+	protected readonly languageDisplayNames: Record<Language, string> = {
 		[Language.English]: 'EN',
 		[Language.Latvian]: 'LV',
 		[Language.Russian]: 'RU',
 	};
+	protected readonly languageOptions: readonly DropdownOption<Language>[] = this.availableLanguages.map(
+		(language: Language): DropdownOption<Language> => ({
+			value: language,
+			label: this.languageDisplayNames[language],
+		})
+	);
 
-	readonly translationKey: typeof TranslationKeys = TranslationKeys;
+	protected readonly translationKeyEnum: typeof TranslationKey = TranslationKey;
+	protected readonly menuOpen: WritableSignal<boolean> = signal(false);
+	protected readonly themeEnum: typeof Theme = Theme;
+	protected readonly theme: Signal<Theme> = this.themeService.theme;
 
 	ngOnInit(): void {
 		this.authorizationService.requestAuthorizationState();
 	}
 
-	signIn(): void {
+	protected signIn(): void {
 		this.authorizationService.executeSignInRedirect();
 	}
 
-	signOut(): void {
+	protected signOut(): void {
 		this.authorizationService.executeSignOutRedirect();
 	}
 
-	changeLanguage(language: Language): void {
+	protected selectLanguage(language: Language): void {
 		this.localizationService.changeLanguage(language);
+	}
+
+	protected selectDarkTheme(event: Event): void {
+		const checkbox: EventTarget | null = event.target;
+
+		if (!(checkbox instanceof HTMLInputElement)) {
+			return;
+		}
+
+		this.themeService.theme = checkbox.checked ? Theme.Dark : Theme.Light;
+	}
+
+	protected toggleMenu(): void {
+		this.menuOpen.update((open: boolean): boolean => !open);
 	}
 }

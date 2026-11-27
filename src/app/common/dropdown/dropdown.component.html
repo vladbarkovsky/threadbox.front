@@ -1,0 +1,7 @@
+<label [attr.for]="selectId()">{{ label() }}</label>
+
+<select [id]="selectId()" (change)="changeValue($event)">
+	@for (option of options(); track $index) {
+		<option [value]="$index" [selected]="option.value === value()">{{ option.label }}</option>
+	}
+</select>

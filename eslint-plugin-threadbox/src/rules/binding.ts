@@ -6,13 +6,7 @@ export function isFunctionValue(node: TSESTree.Node): node is TSESTree.ArrowFunc
 }
 
 export function isForInOrForOfBinding(declarator: TSESTree.VariableDeclarator): boolean {
-	const declaration: TSESTree.Node = declarator.parent;
-
-	if (declaration.type !== AST_NODE_TYPES.VariableDeclaration) {
-		return false;
-	}
-
-	const statement: TSESTree.Node = declaration.parent;
+	const statement: TSESTree.Node = declarator.parent.parent;
 	return statement.type === AST_NODE_TYPES.ForInStatement || statement.type === AST_NODE_TYPES.ForOfStatement;
 }
 

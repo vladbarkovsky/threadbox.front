@@ -1,0 +1,19 @@
+<app-window [title]="title()">
+	<div class="alert">
+		<img
+			class="icon"
+			[ngSrc]="'assets/alert-icons/' + iconViewModel().fileName"
+			width="64"
+			height="64"
+			[alt]="iconViewModel().translationKey | translate"
+		/>
+
+		<div class="content">
+			<ng-content />
+		</div>
+
+		<div class="actions field-row">
+			<ng-content select="[appAlertActions]" />
+		</div>
+	</div>
+</app-window>

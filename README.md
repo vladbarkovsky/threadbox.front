@@ -26,6 +26,14 @@ Code changes are automatically formatted and linted on creating local commits.
 
 TODO: Add icomoon guide.
 
+## Font
+
+Arimo in `src/fonts/arimo` comes from [Google Fonts](https://fonts.google.com/specimen/Arimo) (SIL Open Font License).
+
+## Alert icons
+
+Icons in `src/assets/alert-icons` come from [pixelart-icons](https://github.com/tstamborski/pixelart-icons) (CC0 1.0).
+
 # Build and Test
 
 TODO: Describe and show how to build your code and run the tests.

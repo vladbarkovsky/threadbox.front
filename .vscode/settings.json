@@ -1,17 +1,20 @@
 {
 	"prettier.enable": true,
 	"eslint.enable": true,
+	"eslint.useFlatConfig": true,
 	"stylelint.enable": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"eslint.format.enable": false,
-	"stylelint.validate": ["scss"],
+	"stylelint.validate": ["css"],
+	"css.customData": ["css-custom-data.json"],
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit",
 		"source.fixAll.stylelint": "explicit"
 	},
 	"cSpell.words": [
 		"browserslist",
+		"esbenp",
 		"imageboard",
 		"libpeerconnection",
 		"Newtonsoft",
@@ -22,6 +25,10 @@
 		"Threadbox",
 		"Tripcode",
 		"TSES"
+	],
+	"cSpell.ignorePaths": [
+		"src/app/localization/translations/lv-translations.ts",
+		"src/app/localization/translations/ru-translations.ts"
 	],
 	// For ESLint @typescript-eslint/consistent-type-imports
 	"js/ts.preferences.preferTypeOnlyAutoImports": true,

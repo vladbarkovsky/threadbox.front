@@ -1,0 +1,10 @@
+<div class="message-page">
+	<app-alert [icon]="alertIconEnum.Information" title="Threadbox">
+		<p>{{ translationKeyEnum.LoggedOut_SessionEnded | translate }}</p>
+		<p>{{ translationKeyEnum.LoggedOut_RedirectCountdown | translate: [remainingSeconds()] }}</p>
+
+		<button appAlertActions appAutofocus type="button" class="default" (click)="redirect()">
+			{{ translationKeyEnum.LoggedOut_Continue | translate }}
+		</button>
+	</app-alert>
+</div>

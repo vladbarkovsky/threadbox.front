@@ -1,22 +1,24 @@
 import { Location } from '@angular/common';
 import type { Signal, WritableSignal } from '@angular/core';
-import { Injectable, inject, signal } from '@angular/core';
+import { Service, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { NgxPermissionsService } from 'ngx-permissions';
-import type { UserSessionDto } from '../../../api-client';
-import { UserSessionClient } from '../../../api-client';
+import type { UserSessionDto } from '../http-services/api-client';
+import { UserSessionClient } from '../http-services/api-client';
 import { SessionStorageService } from '../common/session-storage-service';
+import { LocalizationService } from '../localization/localization.service';
 import { AuthorizationState } from './authorization-state.enum';
-import type { HttpErrorResponse } from '@angular/common/http';
+import { HttpStatusCode, type HttpErrorResponse } from '@angular/common/http';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthorizationService {
 	private readonly location: Location = inject(Location);
 	private readonly router: Router = inject(Router);
 	private readonly userSessionClient: UserSessionClient = inject(UserSessionClient);
 	private readonly permissionsService: NgxPermissionsService = inject(NgxPermissionsService);
 	private readonly sessionStorageService: SessionStorageService = inject(SessionStorageService);
+	private readonly localizationService: LocalizationService = inject(LocalizationService);
 
 	private readonly _state: WritableSignal<AuthorizationState> = signal<AuthorizationState>(AuthorizationState.Unknown);
 	private readonly _session: WritableSignal<UserSessionDto | undefined> = signal<UserSessionDto | undefined>(undefined);
@@ -41,9 +43,12 @@ export class AuthorizationService {
 				this.permissionsService.loadPermissions(session.permissions);
 				this.navigateToLastUrl();
 			},
+			// TODO: Handle not 401 - error message, "Try again" button.
 			error: (error: HttpErrorResponse): void => {
-				this._session.set(undefined);
-				this._state.set(AuthorizationState.Anonymous);
+				if ((error.status as HttpStatusCode) !== HttpStatusCode.Unauthorized) {
+					this._session.set(undefined);
+					this._state.set(AuthorizationState.Anonymous);
+				}
 
 				// eslint-disable-next-line no-console
 				console.error(error);
@@ -69,7 +74,7 @@ export class AuthorizationService {
 	}
 
 	private saveLastUrl(): void {
-		this.sessionStorageService.lastUrl = this.location.path();
+		this.sessionStorageService.lastUrl = this.localizationService.removeLanguageFromUrl(this.location.path());
 	}
 
 	private navigateToLastUrl(): void {

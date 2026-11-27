@@ -1,0 +1,9 @@
+<div class="title-bar">
+	@if (title() !== undefined && title() !== '') {
+		<div class="title-bar-text">{{ title() }}</div>
+	}
+</div>
+
+<div class="window-body">
+	<ng-content />
+</div>

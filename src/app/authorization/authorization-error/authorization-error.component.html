@@ -1,0 +1,9 @@
+<div class="message-page">
+	<app-alert [icon]="alertIconEnum.Error" title="Threadbox">
+		<p>{{ translationKeyEnum.AuthorizationError_Message | translate }}</p>
+
+		<button appAlertActions appAutofocus type="button" class="default" (click)="goHome()">
+			{{ translationKeyEnum.AuthorizationError_Continue | translate }}
+		</button>
+	</app-alert>
+</div>

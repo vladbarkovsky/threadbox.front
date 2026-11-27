@@ -1,0 +1,13 @@
+.message-page {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	min-height: 100vh;
+	padding: var(--page-padding);
+
+	> app-alert {
+		box-sizing: border-box;
+		width: min(100%, 22rem);
+	}
+}

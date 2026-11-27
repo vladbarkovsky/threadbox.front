@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "Husky: running pre-commit checks..."
 
 cd "$(dirname -- "$0")/.."
@@ -10,9 +7,9 @@ if ! npx lint-staged --allow-empty; then
   exit 1
 fi
 
-# if ! npm run build -- --configuration development; then
-#   echo "Husky: frontend build FAILED"
-#   exit 1
-# fi
+if ! npm run build -- --configuration development; then
+  echo "Husky: frontend build FAILED"
+  exit 1
+fi
 
 echo "Husky: pre-commit checks PASSED"

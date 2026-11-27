@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/naming-convention
 declare const __filename: string;
 
 declare module 'fs' {
@@ -17,7 +18,7 @@ declare module 'path' {
 declare module 'module' {
 	interface NodeRequire {
 		(moduleName: string): unknown;
-		resolve(moduleName: string): string;
+		resolve: (moduleName: string) => string;
 	}
 
 	export function createRequire(filename: string): NodeRequire;

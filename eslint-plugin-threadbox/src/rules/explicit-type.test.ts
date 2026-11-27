@@ -1,3 +1,4 @@
+/// <reference path="../test-runtime.d.ts" />
 import { createRequire } from 'module';
 import { equal } from 'node:assert/strict';
 import { Linter, RuleTester } from 'eslint';
@@ -5,18 +6,19 @@ import type { Rule } from 'eslint';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import explicitType = require('./explicit-type');
 import { MessageIdentifiers } from './message-identifiers.enum.js';
 
 const nodeRequire: ReturnType<typeof createRequire> = createRequire(__filename);
-const rule: Rule.RuleModule = explicitType as unknown as Rule.RuleModule;
-const typescriptEslintParser: Linter.ParserModule = nodeRequire('@typescript-eslint/parser') as Linter.ParserModule;
+const rule: Rule.RuleModule = nodeRequire('./explicit-type') as Rule.RuleModule;
+const typescriptEslintParser: Linter.Parser = nodeRequire('@typescript-eslint/parser') as Linter.Parser;
 
 const ruleTester: RuleTester = new RuleTester({
-	parser: nodeRequire.resolve('@typescript-eslint/parser'),
-	parserOptions: {
-		ecmaVersion: 2022,
-		sourceType: 'module',
+	languageOptions: {
+		parser: typescriptEslintParser,
+		parserOptions: {
+			ecmaVersion: 2022,
+			sourceType: 'module',
+		},
 	},
 });
 
@@ -94,7 +96,7 @@ ruleTester.run('explicit-type', rule, {
 			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'label' } }],
 		},
 		{
-			// eslint-disable-next-line no-template-curly-in-string -- fixture source contains a template placeholder
+			// eslint-disable-next-line no-template-curly-in-string
 			code: 'const label = `text${name}`;',
 			output: null,
 			errors: [{ messageId: MessageIdentifiers.MissingExplicitTypeNamed, data: { name: 'label' } }],
@@ -284,13 +286,31 @@ try {
 		'',
 	].join('\n');
 
-	const linter: Linter = new Linter();
+	const linter: Linter = new Linter({ cwd: directory });
 
 	const parserOptions: Linter.ParserOptions = {
 		ecmaVersion: 2022,
 		sourceType: 'module',
 		project: './tsconfig.json',
 		tsconfigRootDir: directory,
+	};
+
+	const config: Linter.Config = {
+		files: ['**/*.ts'],
+		languageOptions: {
+			parser: typescriptEslintParser,
+			parserOptions,
+		},
+		plugins: {
+			threadbox: {
+				rules: {
+					'explicit-type': rule,
+				},
+			},
+		},
+		rules: {
+			'threadbox/explicit-type': 'error',
+		},
 	};
 
 	fs.writeFileSync(
@@ -324,21 +344,8 @@ try {
 	);
 
 	fs.writeFileSync(classValuePath, classValueSource);
-	linter.defineParser('@typescript-eslint/parser', typescriptEslintParser);
-	linter.defineRule('explicit-type', rule);
 
-	const fixedEnumValue: Linter.FixReport = linter.verifyAndFix(
-		enumValueSource,
-		{
-			parser: '@typescript-eslint/parser',
-			parserOptions,
-			rules: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention -- ESLint rule id
-				'explicit-type': 'error',
-			},
-		},
-		{ filename: enumValuePath }
-	);
+	const fixedEnumValue: Linter.FixReport = linter.verifyAndFix(enumValueSource, config, { filename: enumValuePath });
 
 	equal(
 		fixedEnumValue.output,
@@ -356,18 +363,7 @@ try {
 		].join('\n')
 	);
 
-	const fixedClassValue: Linter.FixReport = linter.verifyAndFix(
-		classValueSource,
-		{
-			parser: '@typescript-eslint/parser',
-			parserOptions,
-			rules: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				'explicit-type': 'error',
-			},
-		},
-		{ filename: classValuePath }
-	);
+	const fixedClassValue: Linter.FixReport = linter.verifyAndFix(classValueSource, config, { filename: classValuePath });
 
 	equal(
 		fixedClassValue.output,

@@ -34,7 +34,7 @@ export = createRule<[], MessageIdentifiers>({
 		},
 		messages: {
 			[MessageIdentifiers.MissingExplicitType]: 'Expected an explicit type.',
-			[MessageIdentifiers.MissingExplicitTypeNamed]: 'Expected {{name}} to have an explicit type.',
+			[MessageIdentifiers.MissingExplicitTypeNamed]: "Expected '{{name}}' to have an explicit type.",
 		},
 		fixable: 'code',
 		schema: [],
@@ -117,7 +117,6 @@ export = createRule<[], MessageIdentifiers>({
 
 				reportMissingExplicitType(node.id, readFixTypeText(node.init, sourceCode), canInsertTypeAnnotation(node.id, false));
 			},
-			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'PropertyDefinition, AccessorProperty'(node: TSESTree.PropertyDefinition | TSESTree.AccessorProperty): void {
 				if (node.typeAnnotation !== undefined || (node.value !== null && isFunctionValue(node.value))) {
 					return;
@@ -129,7 +128,6 @@ export = createRule<[], MessageIdentifiers>({
 					canInsertTypeAnnotation(node.key, node.computed || node.definite || node.optional)
 				);
 			},
-			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'FunctionDeclaration, FunctionExpression, ArrowFunctionExpression, TSEmptyBodyFunctionExpression, TSDeclareFunction, TSFunctionType, TSCallSignatureDeclaration, TSConstructSignatureDeclaration, TSMethodSignature, TSConstructorType'(
 				node:
 					| TSESTree.FunctionDeclaration

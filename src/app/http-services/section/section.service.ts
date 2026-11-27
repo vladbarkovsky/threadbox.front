@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
 import {
 	SectionClient,
@@ -6,9 +6,9 @@ import {
 	type SectionDto,
 	type SectionListDto,
 	type UpdateSectionCommand,
-} from '../../../../api-client';
+} from '../api-client';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SectionService {
 	private readonly sectionClient: SectionClient = inject(SectionClient);
 

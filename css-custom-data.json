@@ -1,0 +1,9 @@
+{
+	"version": 1.1,
+	"atDirectives": [
+		{
+			"name": "@custom-media",
+			"description": "Named media query. postcss-custom-media expands it during the build."
+		}
+	]
+}

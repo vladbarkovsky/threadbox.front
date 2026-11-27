@@ -1,11 +1,11 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
-import type { DeletePostCommand, FileResponse, PostDto } from '../../../../api-client';
-import { PostClient } from '../../../../api-client';
-import { convertToNSwagClientFileParameter } from '../../common/nswag-operations';
+import type { DeletePostCommand, FileResponse, PostDto } from '../api-client';
+import { PostClient } from '../api-client';
+import { convertToNSwagClientFileParameter } from '../convert-to-nswag-client-file-parameter.function';
 import type { CreatePostCommand } from './create-post-command';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PostService {
 	private readonly postClient: PostClient = inject(PostClient);
 

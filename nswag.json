@@ -14,9 +14,11 @@
 			"injectionTokenType": "InjectionToken",
 			"rxJsVersion": 7.0,
 			"nullValue": "Null",
-			"output": "api-client.ts",
+			"output": "src/app/http-services/api-client.ts",
+
 			// Without this property NSwag rewrites settings during generation.
 			"exceptionClass": "ApiException",
+
 			"markOptionalProperties": false,
 			"newLineBehavior": "CRLF"
 		}
